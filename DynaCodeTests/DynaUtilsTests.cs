@@ -37,6 +37,19 @@ namespace DynaCodeTests
             Assert.AreEqual(r1, 5);
         }
 
+        [TestMethod()]
+        public void CodeInvodeMethodFullPathTest()
+        {
+            DynaCode.Init("DynaCodeRoot");
+
+            string data = @"{""a"": 1,""b"": 1,""s"": ""ali""}";
+            using JsonDocument doc = JsonDocument.Parse(data);
+            JsonElement root = doc.RootElement;
+
+            int r1 = (int)DynaCode.CodeInvode("SandboxNS.SandboxT.SandboxM2", root);
+            Assert.AreEqual(r1, 5);
+        }
+
 
         [TestMethod()]
         public void RefreshTest()

@@ -73,6 +73,11 @@ namespace AppEnd
             asmPath = null;
             dynaAsm = null;
         }
+        public static object? CodeInvode(string methodFullPath, JsonElement inputParams)
+        {
+            MethodInfo methodInfo = GetMethodInfo(methodFullPath);
+            return methodInfo.Invoke(null, ExtractParams(methodInfo, inputParams));
+        }
         public static object? CodeInvode(string typeName, string methodName, JsonElement inputParams)
         {
             MethodInfo methodInfo = GetMethodInfo(null, typeName, methodName);
@@ -88,11 +93,18 @@ namespace AppEnd
             MethodInfo methodInfo = GetMethodInfo(null, typeName, methodName);
             return methodInfo.Invoke(null, inputParams);
         }
+        public static object? CodeInvode(string methodFullPath, object[] inputParams)
+        {
+            MethodInfo methodInfo = GetMethodInfo(methodFullPath);
+            return methodInfo.Invoke(null, inputParams);
+        }
         public static object? CodeInvode(string? nameSpaceName, string typeName, string methodName, object[] inputParams)
         {
             MethodInfo methodInfo = GetMethodInfo(nameSpaceName, typeName, methodName);
             return methodInfo.Invoke(null, inputParams);
         }
+
+        
 
         private static bool Build()
         {
@@ -185,6 +197,13 @@ namespace AppEnd
             if (parameterInfo.ParameterType == typeof(Decimal)) return Decimal.Parse(s.ToString());
             if (parameterInfo.ParameterType == typeof(byte[])) return Encoding.UTF8.GetBytes(s.ToString());
             return s;
+        }
+        private static MethodInfo GetMethodInfo(string methodFullPath)
+        {
+            if (methodFullPath.Trim() == "") throw new Exception($"{methodFullPath} can not be empty");
+            string[] parts = methodFullPath.Trim().Split('.');
+            if (parts.Length < 2 || parts.Length > 3) throw new Exception($"Requested method [{methodFullPath}] does not exist.");
+            return parts.Length == 3 ? GetMethodInfo(parts[0], parts[1], parts[2]) : GetMethodInfo(null, parts[0], parts[1]);
         }
         private static MethodInfo GetMethodInfo(string? nameSpaceName, string typeName, string methodName)
         {
