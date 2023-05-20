@@ -10,7 +10,7 @@ namespace DynaCode.Tests
         public void CodeInvodeSimpleArraySandboxNSSandboxTSandboxM1()
         {
             DynaCompiler.Init("DynaCodeRoot");
-            int r = (int)DynaUtils.CodeInvode("SandboxNS", "SandboxT", "SandboxM1", new object[] { 4, 6 });
+            int r = (int)DynaCompiler.CodeInvode("SandboxNS", "SandboxT", "SandboxM1", new object[] { 4, 6 });
             Assert.AreEqual(r, 10);
         }
 
@@ -18,7 +18,7 @@ namespace DynaCode.Tests
         public void CodeInvodeSubFolderTest()
         {
             DynaCompiler.Init("DynaCodeRoot");
-            int r = (int)DynaUtils.CodeInvode("SandboxNS", "SandboxTNew", "SandboxM1", new object[] { 7, 6 });
+            int r = (int)DynaCompiler.CodeInvode("SandboxNS", "SandboxTNew", "SandboxM1", new object[] { 7, 6 });
             Assert.AreEqual(r, 13);
         }
 
@@ -31,7 +31,7 @@ namespace DynaCode.Tests
             using JsonDocument doc = JsonDocument.Parse(data);
             JsonElement root = doc.RootElement;
 
-            int r1 = (int)DynaUtils.CodeInvode("SandboxNS", "SandboxT", "SandboxM2", root);
+            int r1 = (int)DynaCompiler.CodeInvode("SandboxNS", "SandboxT", "SandboxM2", root);
             Assert.AreEqual(r1, 5);
         }
 
@@ -43,25 +43,25 @@ namespace DynaCode.Tests
 
             try
             {
-                int r1 = (int)DynaUtils.CodeInvode("Example", "ExampleT", "ExampleM", new object[] { 4, 6 });
+                int r1 = (int)DynaCompiler.CodeInvode("Example", "ExampleT", "ExampleM", new object[] { 4, 6 });
             }
             catch (Exception ex)
             {
                 Assert.AreEqual(ex.Message, "Requested type [ Example.ExampleT ] does not exist.");
             }
 
-            DynaUtils.AddExampleCode();
+            DynaCompiler.AddExampleCode();
             DynaCompiler.Refresh();
 
-            int r2 = (int)DynaUtils.CodeInvode("Example", "ExampleT", "ExampleM", new object[] { 4, 6 });
+            int r2 = (int)DynaCompiler.CodeInvode("Example", "ExampleT", "ExampleM", new object[] { 4, 6 });
             Assert.AreEqual(r2, 10);
 
-            DynaUtils.RemoveExampleCode();
+            DynaCompiler.RemoveExampleCode();
             DynaCompiler.Refresh();
 
             try
             {
-                int r3 = (int)DynaUtils.CodeInvode("Example", "ExampleT", "ExampleM", new object[] { 4, 6 });
+                int r3 = (int)DynaCompiler.CodeInvode("Example", "ExampleT", "ExampleM", new object[] { 4, 6 });
             }
             catch (Exception ex)
             {
