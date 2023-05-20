@@ -6,10 +6,9 @@ using static System.Text.Json.JsonElement;
 using System.Text.Json;
 using System.Text;
 
-namespace DynaCode
+namespace AppEnd
 {
-
-    public static class DynaCompiler
+    public static class DynaCode
     {
         private static bool codeIncluded = false;
         public static bool CodeIncluded
@@ -69,26 +68,6 @@ namespace DynaCode
             codeIncluded = dynaCodeIncluded;
             isDevelopment = isDevelopmentArea;
         }
-        public static bool Build()
-        {
-            using var peStream = new MemoryStream();
-            List<string> sourceCodes = GetAllSourceCodes();
-            var result = GenerateCSharpCompilation(sourceCodes).Emit(peStream);
-
-            if (!result.Success)
-            {
-                var failures = result.Diagnostics.Where(diagnostic => diagnostic.IsWarningAsError || diagnostic.Severity == DiagnosticSeverity.Error);
-                var error = failures.FirstOrDefault();
-                throw new Exception($"{error?.Id}: {error?.GetMessage()}");
-            }
-
-            peStream.Seek(0, SeekOrigin.Begin);
-            byte[] dllBytes = peStream.ToArray();
-
-            File.WriteAllBytes(AsmPath, dllBytes);
-
-            return true;
-        }
         public static void Refresh()
         {
             asmPath = null;
@@ -115,6 +94,26 @@ namespace DynaCode
             return methodInfo.Invoke(null, inputParams);
         }
 
+        private static bool Build()
+        {
+            using var peStream = new MemoryStream();
+            List<string> sourceCodes = GetAllSourceCodes();
+            var result = GenerateCSharpCompilation(sourceCodes).Emit(peStream);
+
+            if (!result.Success)
+            {
+                var failures = result.Diagnostics.Where(diagnostic => diagnostic.IsWarningAsError || diagnostic.Severity == DiagnosticSeverity.Error);
+                var error = failures.FirstOrDefault();
+                throw new Exception($"{error?.Id}: {error?.GetMessage()}");
+            }
+
+            peStream.Seek(0, SeekOrigin.Begin);
+            byte[] dllBytes = peStream.ToArray();
+
+            File.WriteAllBytes(AsmPath, dllBytes);
+
+            return true;
+        }
         private static List<string> GetAllSourceCodes()
         {
             string[] scriptFiles = GetFiles(StartPath, "*.cs").ToArray();
@@ -205,17 +204,17 @@ namespace DynaCode
                 nsName = typeFullName.Split('.')[0];
                 tName = typeFullName.Split(".")[1];
             }
-            if (DynaCompiler.IsDevelopment || DynaCompiler.CodeIncluded)
+            if (IsDevelopment || CodeIncluded)
             {
                 dynamicType = Assembly.GetEntryAssembly()?.GetTypes().FirstOrDefault(i => i.Name == tName && (nsName == "" || i.Namespace == nsName));
                 if (dynamicType == null)
                 {
-                    dynamicType = DynaCompiler.DynaAsm?.GetTypes().FirstOrDefault(i => i.Name == tName && (nsName == "" || i.Namespace == nsName));
+                    dynamicType = DynaAsm?.GetTypes().FirstOrDefault(i => i.Name == tName && (nsName == "" || i.Namespace == nsName));
                 }
             }
             else
             {
-                dynamicType = DynaCompiler.DynaAsm?.GetTypes().FirstOrDefault(i => i.Name == tName && (nsName == "" || i.Namespace == nsName));
+                dynamicType = DynaAsm?.GetTypes().FirstOrDefault(i => i.Name == tName && (nsName == "" || i.Namespace == nsName));
                 if (dynamicType == null)
                 {
                     dynamicType = Assembly.GetEntryAssembly()?.GetTypes().FirstOrDefault(i => i.Name == tName && (nsName == "" || i.Namespace == nsName));
@@ -254,7 +253,7 @@ namespace DynaCode
         }
         public static void AddExampleCode()
         {
-            File.WriteAllText(DynaCompiler.StartPath + "/Example.cs", @"
+            File.WriteAllText(StartPath + "/Example.cs", @"
 namespace Example
 {
     public static class ExampleT
@@ -270,8 +269,8 @@ namespace Example
         }
         public static void RemoveExampleCode()
         {
-            if (File.Exists(DynaCompiler.StartPath + "/Example.cs"))
-                File.Delete(DynaCompiler.StartPath + "/Example.cs");
+            if (File.Exists(StartPath + "/Example.cs"))
+                File.Delete(StartPath + "/Example.cs");
         }
     }
 }
