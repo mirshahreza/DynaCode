@@ -5,36 +5,53 @@ using System.Reflection;
 using static System.Text.Json.JsonElement;
 using System.Text.Json;
 using System.Text;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Text.Json.Nodes;
+using System.Text.Json.Serialization.Metadata;
+using System.Text.Json.Serialization;
+using Microsoft.Extensions.Caching.Memory;
+using System.Security.AccessControl;
+using System.Diagnostics;
 
 namespace AppEnd
 {
     public static class DynaCode
     {
-        private static bool codeIncluded = false;
-        public static bool CodeIncluded
+        private static CodeInvokeOptions invokeOptions;
+
+        private static IMemoryCache memoryCache = new MemoryCache(new MemoryCacheOptions());
+        public static IMemoryCache MemoryCache
         {
             get
             {
-                return codeIncluded;
+                return memoryCache;
+            }
+        }
+        private static IEnumerable<SyntaxTree>? entierCodeSyntaxes;
+        private static IEnumerable<SyntaxTree> EntierCodeSyntaxes
+        {
+            get
+            {
+                if (entierCodeSyntaxes is null)
+                {
+                    List<SourceCode> sourceCodes = GetAllSourceCodes();
+                    var options = CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp10);
+                    entierCodeSyntaxes = sourceCodes.Select(sourceCode => SyntaxFactory.ParseSyntaxTree(sourceCode.RawCode, options, sourceCode.FilePath));
+                }
+                return entierCodeSyntaxes;
             }
         }
 
-        private static bool isDevelopment = false;
-        public static bool IsDevelopment
+        private static string[]? scriptFiles;
+        public static string[] ScriptFiles
         {
             get
             {
-                return isDevelopment;
-            }
-        }
-
-        private static string? startPath;
-        public static string StartPath
-        {
-            get
-            {
-                if (startPath is null) throw new Exception("Start path is not configured yet :|");
-                return startPath;
+                if(scriptFiles is null)
+                {
+                    scriptFiles = GetFiles(invokeOptions.StartPath, "*.cs").ToArray();
+                }
+                return scriptFiles;
             }
         }
 
@@ -62,55 +79,195 @@ namespace AppEnd
             }
         }
 
-        public static void Init(string dynaCodeStartPath, bool dynaCodeIncluded = false, bool isDevelopmentArea = false)
+        private static List<CodeMap> codeMaps;
+        public static List<CodeMap> CodeMaps
         {
-            startPath = dynaCodeStartPath;
-            codeIncluded = dynaCodeIncluded;
-            isDevelopment = isDevelopmentArea;
+            get
+            {
+                if (codeMaps is null)
+                {
+                    codeMaps = GenerateSourceCodeMap();
+                }
+                return codeMaps;
+            }
+        }
+
+        public static void Init(CodeInvokeOptions codeInvokeOptions)
+        {
+            invokeOptions = codeInvokeOptions;
+            EnsureLogFolders();
+            Refresh();
         }
         public static void Refresh()
         {
+            entierCodeSyntaxes = null;
+            scriptFiles = null;
             asmPath = null;
             dynaAsm = null;
         }
-        public static object? CodeInvode(string methodFullPath, JsonElement inputParams)
-        {
-            MethodInfo methodInfo = GetMethodInfo(methodFullPath);
-            return methodInfo.Invoke(null, ExtractParams(methodInfo, inputParams));
-        }
-        public static object? CodeInvode(string typeName, string methodName, JsonElement inputParams)
-        {
-            MethodInfo methodInfo = GetMethodInfo(null, typeName, methodName);
-            return methodInfo.Invoke(null, ExtractParams(methodInfo, inputParams));
-        }
-        public static object? CodeInvode(string nameSpaceName, string typeName, string methodName, JsonElement inputParams)
-        {
-            MethodInfo methodInfo = GetMethodInfo(nameSpaceName, typeName, methodName);
-            return methodInfo.Invoke(null, ExtractParams(methodInfo, inputParams));
-        }
-        public static object? CodeInvode(string typeName, string methodName, object[] inputParams)
-        {
-            MethodInfo methodInfo = GetMethodInfo(null, typeName, methodName);
-            return methodInfo.Invoke(null, inputParams);
-        }
-        public static object? CodeInvode(string methodFullPath, object[] inputParams)
-        {
-            MethodInfo methodInfo = GetMethodInfo(methodFullPath);
-            return methodInfo.Invoke(null, inputParams);
-        }
-        public static object? CodeInvode(string? nameSpaceName, string typeName, string methodName, object[] inputParams)
-        {
-            MethodInfo methodInfo = GetMethodInfo(nameSpaceName, typeName, methodName);
-            return methodInfo.Invoke(null, inputParams);
-        }
-
         
+        public static CodeInvokeResult CodeInvode(string methodFullPath, JsonElement? inputParams = null, DynaUser? dynaUser = null, string clientInfo = "")
+        {
+            MethodInfo methodInfo = GetMethodInfo(methodFullPath);
+            return Invoke(methodInfo, ExtractParams(methodInfo, inputParams), dynaUser, clientInfo);
+        }
+        public static CodeInvokeResult CodeInvode(string typeName, string methodName, JsonElement? inputParams = null, DynaUser? dynaUser = null, string clientInfo = "")
+        {
+            MethodInfo methodInfo = GetMethodInfo(null, typeName, methodName);
+            return Invoke(methodInfo, ExtractParams(methodInfo, inputParams), dynaUser, clientInfo);
+        }
+        public static CodeInvokeResult CodeInvode(string nameSpaceName, string typeName, string methodName, JsonElement? inputParams = null, DynaUser? dynaUser = null, string clientInfo = "")
+        {
+            MethodInfo methodInfo = GetMethodInfo(nameSpaceName, typeName, methodName);
+            return Invoke(methodInfo, ExtractParams(methodInfo, inputParams), dynaUser, clientInfo);
+        }
 
-        private static bool Build()
+        public static CodeInvokeResult CodeInvode(string typeName, string methodName, object[]? inputParams=null, DynaUser? dynaUser = null, string clientInfo = "")
+        {
+            MethodInfo methodInfo = GetMethodInfo(null, typeName, methodName);
+            return Invoke(methodInfo, inputParams, dynaUser, clientInfo);
+        }
+        public static CodeInvokeResult CodeInvode(string methodFullPath, object[]? inputParams = null, DynaUser? dynaUser = null, string clientInfo = "")
+        {
+            MethodInfo methodInfo = GetMethodInfo(methodFullPath);
+            return Invoke(methodInfo, inputParams, dynaUser, clientInfo);
+        }
+        public static CodeInvokeResult CodeInvode(string? nameSpaceName, string typeName, string methodName, object[]? inputParams=null, DynaUser? dynaUser = null, string clientInfo = "")
+        {
+            MethodInfo methodInfo = GetMethodInfo(nameSpaceName, typeName, methodName);
+            return Invoke(methodInfo, inputParams, dynaUser);
+        }
+
+        private static CodeInvokeResult Invoke(MethodInfo methodInfo, object[]? inputParams = null, DynaUser? dynaUser = null, string clientInfo = "")
+        {
+            MethodSettings methodSettings = ReadMethodSettings(methodInfo.GetFullName());
+            if (methodSettings.CachePolicy != null && methodSettings.CachePolicy.CacheLevel == CacheLevel.PerUser && (dynaUser is null || dynaUser.UserName.Trim() == ""))
+                throw new ArgumentNullException($"CachePolicy.CacheLevel for {methodInfo.GetFullName()} is set to PerUser but the current user is null");
+
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+
+            CheckAccess(methodInfo, methodSettings, dynaUser);
+
+            CodeInvokeResult codeInvokeResult;
+            string cacheKey = CalculateCacheKey(methodInfo, methodSettings, inputParams, dynaUser);
+            object? result;
+            if (methodSettings.CachePolicy?.CacheLevel != CacheLevel.None && memoryCache.TryGetValue(cacheKey, out result))
+            {
+                stopwatch.Stop();
+                codeInvokeResult = new() { Result = result, FromCache = true, IsSucceeded = true, Duration = stopwatch.ElapsedMilliseconds };
+            }
+            else
+            {
+                try
+                {
+                    result = methodInfo.Invoke(null, inputParams);
+                    if (methodSettings.CachePolicy?.CacheLevel != CacheLevel.None)
+                    {
+                        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions() { AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(methodSettings.CachePolicy.AbsoluteExpirationSeconds) };
+                        memoryCache.Set(cacheKey, result, cacheEntryOptions);
+                    }
+                    stopwatch.Stop();
+                    codeInvokeResult = new() { Result = result, FromCache = false, IsSucceeded = true, Duration = stopwatch.ElapsedMilliseconds };
+                }
+                catch(Exception ex)
+                {
+                    stopwatch.Stop();
+                    codeInvokeResult = new() { Result = ex, FromCache = null, IsSucceeded = false, Duration = stopwatch.ElapsedMilliseconds };
+                }
+            }
+
+            LogMethodInvoke(methodInfo, methodSettings, codeInvokeResult, inputParams, dynaUser, clientInfo);
+            return codeInvokeResult;
+        }
+
+        private static void CheckAccess(MethodInfo methodInfo,MethodSettings methodSettings, DynaUser? dynaUser)
+        {
+            if (dynaUser is null) return;
+            if (dynaUser.UserName.ToLower() == invokeOptions.PublicKeyUser.ToLower()) return;
+            if (dynaUser.Roles.Contains(invokeOptions.PublicKeyRole)) return;
+            if (dynaUser.Roles.ToList().Exists(i => methodSettings.AccessRules.AllowedRoles.Contains(i))) return;
+            throw new Exception($"Access denied, The user [ {dynaUser.UserName} ] doesn't have enough access to execute [ {methodInfo.GetFullName()} ]");
+        }
+        private static void LogMethodInvoke(MethodInfo methodInfo, MethodSettings methodSettings, CodeInvokeResult codeInvokeResult, object[]? inputParams,DynaUser? dynaUser,string clientInfo = "")
+        {
+            string logMethod;
+            if (codeInvokeResult.IsSucceeded)
+            {
+                if (methodSettings.LogPolicy.OnSuccessLogMethod == "") return;
+                logMethod = methodSettings.LogPolicy.OnSuccessLogMethod;
+            }
+            else
+            {
+                if (methodSettings.LogPolicy.OnFailLogMethod == "") return;
+                logMethod = methodSettings.LogPolicy.OnFailLogMethod;
+            }
+
+            if (methodInfo.GetFullName().ToLower() == logMethod.ToLower()) return;
+
+            List<object> list = new List<object>
+            {
+                methodInfo,
+                dynaUser is null ? "" : dynaUser.UserName,
+                methodInfo.GetFullName(),
+                inputParams,
+                codeInvokeResult,
+                clientInfo
+            };
+
+            CodeInvode(logMethod, list.ToArray());
+
+            // do the log
+        }
+        private static string CalculateCacheKey(MethodInfo methodInfo, MethodSettings methodSettings, object[]? inputParams, DynaUser dynaUser)
+        {
+            string paramKey = inputParams is null ? "" : $".{inputParams.GetHashCode()}";
+            string levelName = methodSettings.CachePolicy.CacheLevel == CacheLevel.PerUser ? $".{dynaUser.UserName}" : "";
+            return $"{methodInfo.GetFullName}{levelName}{paramKey}";
+        }
+
+        public static void WriteMethodSettings(string methodFullName, MethodSettings methodSettings)
+        {
+            CodeMap? codeMap = CodeMaps.FirstOrDefault(cm => cm.MethodFullName == methodFullName);
+            if (codeMap is null) throw new Exception($"{methodFullName} is not exist");
+            string settingsFileName = codeMap.FilePath + ".settings.json";
+            string settingsRaw = File.Exists(settingsFileName) ? File.ReadAllText(settingsFileName) : "{}";
+            JsonNode? jsonNode = JsonNode.Parse(settingsRaw);
+            if (jsonNode is null) throw new Exception("Unknow Error");
+            jsonNode[codeMap.MethodFullName] = JsonNode.Parse(methodSettings.Serialize());
+            File.WriteAllText(settingsFileName, jsonNode.ToString());
+        }
+
+        public static MethodSettings ReadMethodSettings(string methodFullName)
+        {
+            CodeMap? codeMap = CodeMaps.FirstOrDefault(cm => cm.MethodFullName == methodFullName);
+            if (codeMap is null) throw new Exception($"{methodFullName} is not exist");
+            string settingsFileName = codeMap.FilePath + ".settings.json";
+            string settingsRaw = File.Exists(settingsFileName) ? File.ReadAllText(settingsFileName) : "{}";
+            try
+            {
+                var jsonNode = JsonNode.Parse(settingsRaw);
+                if (jsonNode is null) throw new Exception("Unknow Error");
+                if (jsonNode[codeMap.MethodFullName] == null) return new();
+                MethodSettings? methodSettings = jsonNode[codeMap.MethodFullName].Deserialize<MethodSettings>(options: new() { IncludeFields = true });
+                if (methodSettings is null) return new();
+                return methodSettings;
+            }
+            catch
+            {
+                throw new InvalidCastException($"Settings for [ {codeMap.MethodFullName} ] stored in the file [ {codeMap.FilePath} ] is not valid");
+            }
+        }
+
+        private static void Build()
         {
             using var peStream = new MemoryStream();
-            List<string> sourceCodes = GetAllSourceCodes();
-            var result = GenerateCSharpCompilation(sourceCodes).Emit(peStream);
+
+            var compileRefs = GetCompilationReferences();
+            var compilerOptions = new CSharpCompilationOptions(outputKind: OutputKind.DynamicallyLinkedLibrary, optimizationLevel: OptimizationLevel.Release, assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default);
+            CSharpCompilation cSharpCompilation = CSharpCompilation.Create(AsmPath, EntierCodeSyntaxes, compileRefs, compilerOptions);
+
+            var result = cSharpCompilation.Emit(peStream);
 
             if (!result.Success)
             {
@@ -123,31 +280,23 @@ namespace AppEnd
             byte[] dllBytes = peStream.ToArray();
 
             File.WriteAllBytes(AsmPath, dllBytes);
-
-            return true;
         }
-        private static List<string> GetAllSourceCodes()
+
+        private static List<SourceCode> GetAllSourceCodes()
         {
-            string[] scriptFiles = GetFiles(StartPath, "*.cs").ToArray();
-            List<string> sourceCodes = new List<string>();
-            foreach (string f in scriptFiles)
+            List<SourceCode> sourceCodes = new List<SourceCode>();
+            foreach (string f in ScriptFiles)
             {
-                string s = File.ReadAllText(f);
-                sourceCodes.Add(s);
+                sourceCodes.Add(new() { FilePath = f, RawCode = File.ReadAllText(f) });
             }
             return sourceCodes;
-        }
-        private static CSharpCompilation GenerateCSharpCompilation(List<string> sourceFiles)
-        {
-            var options = CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp10);
-            var parsedSyntaxTrees = sourceFiles.Select(f => SyntaxFactory.ParseSyntaxTree(f, options));
-            var compileRefs = GetCompilationReferences();
-            var compilerOptions = new CSharpCompilationOptions(outputKind: OutputKind.DynamicallyLinkedLibrary, optimizationLevel: OptimizationLevel.Release, assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default);
-            return CSharpCompilation.Create(AsmPath, parsedSyntaxTrees, compileRefs, compilerOptions);
         }
         private static List<MetadataReference> GetCompilationReferences()
         {
             var refs = new List<MetadataReference>();
+
+            refs.Add(MetadataReference.CreateFromFile(Assembly.GetExecutingAssembly().Location));
+
             var executingReferences = Assembly.GetExecutingAssembly().GetReferencedAssemblies();
             refs.AddRange(executingReferences.Select(a => MetadataReference.CreateFromFile(Assembly.Load(a).Location)));
 
@@ -161,17 +310,40 @@ namespace AppEnd
             refs.Add(MetadataReference.CreateFromFile(typeof(object).Assembly.Location));
             refs.Add(MetadataReference.CreateFromFile(typeof(TypeConverter).Assembly.Location));
             refs.Add(MetadataReference.CreateFromFile(Assembly.Load("netstandard, Version=2.1.0.0").Location));
-            refs.Add(MetadataReference.CreateFromFile(typeof(System.Data.Common.DbConnection).Assembly.Location));
             refs.Add(MetadataReference.CreateFromFile(typeof(System.Linq.Expressions.Expression).Assembly.Location));
 
             return refs;
         }
-
-        private static object[] ExtractParams(MethodInfo methodInfo, JsonElement jsonElement)
+       
+        private static List<CodeMap> GenerateSourceCodeMap()
         {
+            List<CodeMap> codeMaps = new List<CodeMap>();
+            foreach (var st in EntierCodeSyntaxes)
+            {
+                var members = st.GetRoot().DescendantNodes().OfType<MemberDeclarationSyntax>();
+                foreach (var member in members)
+                {
+                    if (member is MethodDeclarationSyntax method)
+                    {
+                        string nsn = "";
+                        SyntaxNode? parentNameSpace = ((ClassDeclarationSyntax)method.Parent).Parent;
+                        if (parentNameSpace is not null) nsn = ((NamespaceDeclarationSyntax)parentNameSpace).Name.ToString() + ".";
+                        string tn = ((ClassDeclarationSyntax)method.Parent).Identifier.ValueText + ".";
+                        string mn = method.Identifier.ValueText;
+                        codeMaps.Add(new() { FilePath = st.FilePath, MethodFullName = nsn + tn + mn });
+                    }
+                }
+
+            }
+            return codeMaps;
+        }
+
+        private static object[]? ExtractParams(MethodInfo methodInfo, JsonElement? jsonElement)
+        {
+            if (jsonElement is null) return null;
             List<object> methodInputs = new List<object>();
             ParameterInfo[] methodParams = methodInfo.GetParameters();
-            ObjectEnumerator objects = jsonElement.EnumerateObject();
+            ObjectEnumerator objects = ((JsonElement)jsonElement).EnumerateObject();
 
             foreach (var paramInfo in methodParams)
             {
@@ -223,7 +395,7 @@ namespace AppEnd
                 nsName = typeFullName.Split('.')[0];
                 tName = typeFullName.Split(".")[1];
             }
-            if (IsDevelopment || CodeIncluded)
+            if (invokeOptions.IsDevelopment || invokeOptions.CompiledIn)
             {
                 dynamicType = Assembly.GetEntryAssembly()?.GetTypes().FirstOrDefault(i => i.Name == tName && (nsName == "" || i.Namespace == nsName));
                 if (dynamicType == null)
@@ -272,7 +444,7 @@ namespace AppEnd
         }
         public static void AddExampleCode()
         {
-            File.WriteAllText(StartPath + "/Example.cs", @"
+            File.WriteAllText(invokeOptions.StartPath + "/Example.cs", @"
 namespace Example
 {
     public static class ExampleT
@@ -288,8 +460,60 @@ namespace Example
         }
         public static void RemoveExampleCode()
         {
-            if (File.Exists(StartPath + "/Example.cs"))
-                File.Delete(StartPath + "/Example.cs");
+            if (File.Exists(invokeOptions.StartPath + "/Example.cs"))
+                File.Delete(invokeOptions.StartPath + "/Example.cs");
         }
+
+        public static void LogImmed(string content, string subFolder = "", string filePreFix = "DynaLog-")
+        {
+            string fn = $"{filePreFix}{DateTime.Now.Year}-{DateTime.Now.Month}-{DateTime.Now.Day}-{DateTime.Now.Hour}-{DateTime.Now.Minute}-{DateTime.Now.Second}-{DateTime.Now.Millisecond}-{+(new Random()).Next(100)}.txt";
+            File.WriteAllText(Path.Combine($"{invokeOptions.LogFolderPath}{(subFolder == "" ? "" : $"/{subFolder}")}", fn), content);
+        }
+
+        private static void EnsureLogFolders()
+        {
+            if(!Directory.Exists(invokeOptions.LogFolderPath))
+            {
+                Directory.CreateDirectory(invokeOptions.LogFolderPath);
+            }
+
+            if (!Directory.Exists(invokeOptions.LogFolderPath + "/success"))
+            {
+                Directory.CreateDirectory(invokeOptions.LogFolderPath + "/success");
+            }
+
+            if (!Directory.Exists(invokeOptions.LogFolderPath + "/error"))
+            {
+                Directory.CreateDirectory(invokeOptions.LogFolderPath + "/error");
+            }
+        }
+
+        public static string SerializeObjects(this object[]? inputParams, MethodInfo methodInfo)
+        {
+            if (inputParams is null) return "";
+            ParameterInfo[] parameterInfos = methodInfo.GetParameters();
+            string content = "";
+            int i = 0;
+            foreach (object o in inputParams)
+            {
+                content += parameterInfos[i].Name + ":" + o.SerializeO() + Environment.NewLine;
+                i++;
+            }
+            content += Environment.NewLine;
+            return content;
+        }
+
+        public static string SerializeO(this object? o)
+        {
+            if (o is null) return "";
+            return JsonSerializer.Serialize(o, options: new()
+            {
+                IncludeFields = true,
+                WriteIndented = false,
+                IgnoreReadOnlyProperties = true,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault
+            });
+        }
+
     }
 }

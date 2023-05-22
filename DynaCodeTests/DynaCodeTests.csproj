@@ -36,4 +36,10 @@
     <ProjectReference Include="..\DynaCode\DynaCode.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="DynaCodeRoot\DynaCodeBuiltin.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+  </ItemGroup>
+
 </Project>
