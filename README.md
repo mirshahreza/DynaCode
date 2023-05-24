@@ -5,7 +5,7 @@ The **NuGet** package is ready to use. search it in visual studio by "**DynaCode
 
 # Features & Benefits
  - Execute methods as text files at runtime
- - It has method setting section to set three important and general scenarios:
+ - It has method setting section to set three important and general scenarios:<br />
 	1- AccessRule settings
 	2- CachingPolicy
 	3- LogPolicy
