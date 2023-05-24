@@ -10,14 +10,10 @@
 
   <ItemGroup>
     <Compile Remove="DynaCodeRoot\NoneRootFolder\Sandbox2.cs" />
-    <Compile Remove="DynaCodeRoot\Sandbox1.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="DynaCodeRoot\NoneRootFolder\Sandbox2.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="DynaCodeRoot\Sandbox1.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -37,7 +33,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="DynaCodeRoot\DynaCodeBuiltin.cs">
+    <Compile Update="DynaCodeRoot\DynaCodeBuiltInLogMethods.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Update="DynaCodeRoot\Sandbox1.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
   </ItemGroup>

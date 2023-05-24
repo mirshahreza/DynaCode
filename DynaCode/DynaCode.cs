@@ -49,7 +49,7 @@ namespace AppEnd
             {
                 if(scriptFiles is null)
                 {
-                    scriptFiles = GetFiles(invokeOptions.StartPath, "*.cs").ToArray();
+                    scriptFiles = Utils.GetFiles(invokeOptions.StartPath, "*.cs").ToArray();
                 }
                 return scriptFiles;
             }
@@ -109,33 +109,14 @@ namespace AppEnd
         public static CodeInvokeResult CodeInvode(string methodFullPath, JsonElement? inputParams = null, DynaUser? dynaUser = null, string clientInfo = "")
         {
             MethodInfo methodInfo = GetMethodInfo(methodFullPath);
-            return Invoke(methodInfo, ExtractParams(methodInfo, inputParams), dynaUser, clientInfo);
-        }
-        public static CodeInvokeResult CodeInvode(string typeName, string methodName, JsonElement? inputParams = null, DynaUser? dynaUser = null, string clientInfo = "")
-        {
-            MethodInfo methodInfo = GetMethodInfo(null, typeName, methodName);
-            return Invoke(methodInfo, ExtractParams(methodInfo, inputParams), dynaUser, clientInfo);
-        }
-        public static CodeInvokeResult CodeInvode(string nameSpaceName, string typeName, string methodName, JsonElement? inputParams = null, DynaUser? dynaUser = null, string clientInfo = "")
-        {
-            MethodInfo methodInfo = GetMethodInfo(nameSpaceName, typeName, methodName);
-            return Invoke(methodInfo, ExtractParams(methodInfo, inputParams), dynaUser, clientInfo);
-        }
-
-        public static CodeInvokeResult CodeInvode(string typeName, string methodName, object[]? inputParams=null, DynaUser? dynaUser = null, string clientInfo = "")
-        {
-            MethodInfo methodInfo = GetMethodInfo(null, typeName, methodName);
-            return Invoke(methodInfo, inputParams, dynaUser, clientInfo);
+            object[]? objects = ExtractParams(methodInfo, inputParams);
+            CodeInvokeResult codeInvokeResult = Invoke(methodInfo, objects, dynaUser, clientInfo);
+            return codeInvokeResult;
         }
         public static CodeInvokeResult CodeInvode(string methodFullPath, object[]? inputParams = null, DynaUser? dynaUser = null, string clientInfo = "")
         {
             MethodInfo methodInfo = GetMethodInfo(methodFullPath);
             return Invoke(methodInfo, inputParams, dynaUser, clientInfo);
-        }
-        public static CodeInvokeResult CodeInvode(string? nameSpaceName, string typeName, string methodName, object[]? inputParams=null, DynaUser? dynaUser = null, string clientInfo = "")
-        {
-            MethodInfo methodInfo = GetMethodInfo(nameSpaceName, typeName, methodName);
-            return Invoke(methodInfo, inputParams, dynaUser);
         }
 
         private static CodeInvokeResult Invoke(MethodInfo methodInfo, object[]? inputParams = null, DynaUser? dynaUser = null, string clientInfo = "")
@@ -144,38 +125,46 @@ namespace AppEnd
             if (methodSettings.CachePolicy != null && methodSettings.CachePolicy.CacheLevel == CacheLevel.PerUser && (dynaUser is null || dynaUser.UserName.Trim() == ""))
                 throw new ArgumentNullException($"CachePolicy.CacheLevel for {methodInfo.GetFullName()} is set to PerUser but the current user is null");
 
+            CodeInvokeResult codeInvokeResult;
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            CheckAccess(methodInfo, methodSettings, dynaUser);
-
-            CodeInvokeResult codeInvokeResult;
-            string cacheKey = CalculateCacheKey(methodInfo, methodSettings, inputParams, dynaUser);
-            object? result;
-            if (methodSettings.CachePolicy?.CacheLevel != CacheLevel.None && memoryCache.TryGetValue(cacheKey, out result))
+            try
+            {
+                CheckAccess(methodInfo, methodSettings, dynaUser);
+                string cacheKey = CalculateCacheKey(methodInfo, methodSettings, inputParams, dynaUser);
+                object? result;
+                if (methodSettings.CachePolicy?.CacheLevel != CacheLevel.None && memoryCache.TryGetValue(cacheKey, out result))
+                {
+                    stopwatch.Stop();
+                    codeInvokeResult = new() { Result = result, FromCache = true, IsSucceeded = true, Duration = stopwatch.ElapsedMilliseconds };
+                }
+                else
+                {
+                    try
+                    {
+                        result = methodInfo.Invoke(null, inputParams);
+                        if (methodSettings.CachePolicy?.CacheLevel != CacheLevel.None)
+                        {
+                            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions() { AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(methodSettings.CachePolicy.AbsoluteExpirationSeconds) };
+                            memoryCache.Set(cacheKey, result, cacheEntryOptions);
+                        }
+                        stopwatch.Stop();
+                        codeInvokeResult = new() { Result = result, FromCache = false, IsSucceeded = true, Duration = stopwatch.ElapsedMilliseconds };
+                    }
+                    catch (Exception ex)
+                    {
+                        stopwatch.Stop();
+                        codeInvokeResult = new() { Result = ex, FromCache = null, IsSucceeded = false, Duration = stopwatch.ElapsedMilliseconds };
+                    }
+                }
+            }
+            catch (Exception ex)
             {
                 stopwatch.Stop();
-                codeInvokeResult = new() { Result = result, FromCache = true, IsSucceeded = true, Duration = stopwatch.ElapsedMilliseconds };
+                codeInvokeResult = new() { Result = ex, FromCache = null, IsSucceeded = false, Duration = stopwatch.ElapsedMilliseconds };
             }
-            else
-            {
-                try
-                {
-                    result = methodInfo.Invoke(null, inputParams);
-                    if (methodSettings.CachePolicy?.CacheLevel != CacheLevel.None)
-                    {
-                        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions() { AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(methodSettings.CachePolicy.AbsoluteExpirationSeconds) };
-                        memoryCache.Set(cacheKey, result, cacheEntryOptions);
-                    }
-                    stopwatch.Stop();
-                    codeInvokeResult = new() { Result = result, FromCache = false, IsSucceeded = true, Duration = stopwatch.ElapsedMilliseconds };
-                }
-                catch(Exception ex)
-                {
-                    stopwatch.Stop();
-                    codeInvokeResult = new() { Result = ex, FromCache = null, IsSucceeded = false, Duration = stopwatch.ElapsedMilliseconds };
-                }
-            }
+
 
             LogMethodInvoke(methodInfo, methodSettings, codeInvokeResult, inputParams, dynaUser, clientInfo);
             return codeInvokeResult;
@@ -187,6 +176,7 @@ namespace AppEnd
             if (dynaUser.UserName.ToLower() == invokeOptions.PublicKeyUser.ToLower()) return;
             if (dynaUser.Roles.Contains(invokeOptions.PublicKeyRole)) return;
             if (dynaUser.Roles.ToList().Exists(i => methodSettings.AccessRules.AllowedRoles.Contains(i))) return;
+            if (methodSettings.AccessRules.AllowedUsers.Contains(dynaUser.UserName)) return;
             throw new Exception($"Access denied, The user [ {dynaUser.UserName} ] doesn't have enough access to execute [ {methodInfo.GetFullName()} ]");
         }
         private static void LogMethodInvoke(MethodInfo methodInfo, MethodSettings methodSettings, CodeInvokeResult codeInvokeResult, object[]? inputParams,DynaUser? dynaUser,string clientInfo = "")
@@ -199,8 +189,8 @@ namespace AppEnd
             }
             else
             {
-                if (methodSettings.LogPolicy.OnFailLogMethod == "") return;
-                logMethod = methodSettings.LogPolicy.OnFailLogMethod;
+                if (methodSettings.LogPolicy.OnErrorLogMethod == "") return;
+                logMethod = methodSettings.LogPolicy.OnErrorLogMethod;
             }
 
             if (methodInfo.GetFullName().ToLower() == logMethod.ToLower()) return;
@@ -208,22 +198,15 @@ namespace AppEnd
             List<object> list = new List<object>
             {
                 methodInfo,
+                invokeOptions.LogFolderPath,
                 dynaUser is null ? "" : dynaUser.UserName,
                 methodInfo.GetFullName(),
                 inputParams,
                 codeInvokeResult,
                 clientInfo
             };
-
-            CodeInvode(logMethod, list.ToArray());
-
-            // do the log
-        }
-        private static string CalculateCacheKey(MethodInfo methodInfo, MethodSettings methodSettings, object[]? inputParams, DynaUser dynaUser)
-        {
-            string paramKey = inputParams is null ? "" : $".{inputParams.GetHashCode()}";
-            string levelName = methodSettings.CachePolicy.CacheLevel == CacheLevel.PerUser ? $".{dynaUser.UserName}" : "";
-            return $"{methodInfo.GetFullName}{levelName}{paramKey}";
+            GetMethodInfo(logMethod).Invoke(null, list.ToArray());
+            //CodeInvode(logMethod, list.ToArray());
         }
 
         public static void WriteMethodSettings(string methodFullName, MethodSettings methodSettings)
@@ -237,7 +220,6 @@ namespace AppEnd
             jsonNode[codeMap.MethodFullName] = JsonNode.Parse(methodSettings.Serialize());
             File.WriteAllText(settingsFileName, jsonNode.ToString());
         }
-
         public static MethodSettings ReadMethodSettings(string methodFullName)
         {
             CodeMap? codeMap = CodeMaps.FirstOrDefault(cm => cm.MethodFullName == methodFullName);
@@ -351,30 +333,15 @@ namespace AppEnd
                 if (l.Count() == 0) throw new Exception($"Input params for [ {methodInfo.GetFullName()} ] does not contains parameter named [ {paramInfo.Name} ]");
                 JsonProperty p = l.First();
                 methodInputs.Add(p.Value.ToOrigType(paramInfo));
+                //methodInputs.Add(p.Value);
             }
-
             return methodInputs.ToArray();
-        }
-        private static object ToOrigType(this JsonElement s, ParameterInfo parameterInfo)
-        {
-            if (parameterInfo.ParameterType == typeof(string)) return s.ToString();
-            if (parameterInfo.ParameterType == typeof(int)) return int.Parse(s.ToString());
-            if (parameterInfo.ParameterType == typeof(Int16)) return Int16.Parse(s.ToString());
-            if (parameterInfo.ParameterType == typeof(Int32)) return Int32.Parse(s.ToString());
-            if (parameterInfo.ParameterType == typeof(Int64)) return Int64.Parse(s.ToString());
-            if (parameterInfo.ParameterType == typeof(bool)) return bool.Parse(s.ToString());
-            if (parameterInfo.ParameterType == typeof(DateTime)) return DateTime.Parse(s.ToString());
-            if (parameterInfo.ParameterType == typeof(Guid)) return Guid.Parse(s.ToString());
-            if (parameterInfo.ParameterType == typeof(float)) return float.Parse(s.ToString());
-            if (parameterInfo.ParameterType == typeof(Decimal)) return Decimal.Parse(s.ToString());
-            if (parameterInfo.ParameterType == typeof(byte[])) return Encoding.UTF8.GetBytes(s.ToString());
-            return s;
         }
         private static MethodInfo GetMethodInfo(string methodFullPath)
         {
             if (methodFullPath.Trim() == "") throw new Exception($"{methodFullPath} can not be empty");
             string[] parts = methodFullPath.Trim().Split('.');
-            if (parts.Length < 2 || parts.Length > 3) throw new Exception($"Requested method [{methodFullPath}] does not exist.");
+            if (parts.Length < 2 || parts.Length > 3) throw new Exception($"Requested method [{methodFullPath}] must contains at least 2 parts separated by dot[.] symbol.");
             return parts.Length == 3 ? GetMethodInfo(parts[0], parts[1], parts[2]) : GetMethodInfo(null, parts[0], parts[1]);
         }
         private static MethodInfo GetMethodInfo(string? nameSpaceName, string typeName, string methodName)
@@ -414,34 +381,6 @@ namespace AppEnd
             if (dynamicType == null) throw new Exception($"Requested type [ {typeFullName} ] does not exist.");
             return dynamicType;
         }
-        private static IEnumerable<string> GetFiles(string path, string searchPattern)
-        {
-            Queue<string> queue = new Queue<string>();
-            queue.Enqueue(path);
-            while (queue.Count > 0)
-            {
-                path = queue.Dequeue();
-                foreach (string subDir in Directory.GetDirectories(path))
-                {
-                    queue.Enqueue(subDir);
-                }
-                string[] files = Directory.GetFiles(path, searchPattern);
-                if (files != null)
-                {
-                    for (int i = 0; i < files.Length; i++)
-                    {
-                        yield return files[i];
-                    }
-                }
-            }
-        }
-        private static string GetFullName(this MethodInfo methodInfo)
-        {
-            if (methodInfo.DeclaringType is not null)
-                return methodInfo.DeclaringType.Namespace + "." + methodInfo.DeclaringType.Name + "." + methodInfo.Name;
-            else
-                return methodInfo.Name;
-        }
         public static void AddExampleCode()
         {
             File.WriteAllText(invokeOptions.StartPath + "/Example.cs", @"
@@ -464,10 +403,9 @@ namespace Example
                 File.Delete(invokeOptions.StartPath + "/Example.cs");
         }
 
-        public static void LogImmed(string content, string subFolder = "", string filePreFix = "DynaLog-")
+        public static void AddBuiltinLogMethods()
         {
-            string fn = $"{filePreFix}{DateTime.Now.Year}-{DateTime.Now.Month}-{DateTime.Now.Day}-{DateTime.Now.Hour}-{DateTime.Now.Minute}-{DateTime.Now.Second}-{DateTime.Now.Millisecond}-{+(new Random()).Next(100)}.txt";
-            File.WriteAllText(Path.Combine($"{invokeOptions.LogFolderPath}{(subFolder == "" ? "" : $"/{subFolder}")}", fn), content);
+
         }
 
         private static void EnsureLogFolders()
@@ -487,32 +425,11 @@ namespace Example
                 Directory.CreateDirectory(invokeOptions.LogFolderPath + "/error");
             }
         }
-
-        public static string SerializeObjects(this object[]? inputParams, MethodInfo methodInfo)
+        private static string CalculateCacheKey(MethodInfo methodInfo, MethodSettings methodSettings, object[]? inputParams, DynaUser dynaUser)
         {
-            if (inputParams is null) return "";
-            ParameterInfo[] parameterInfos = methodInfo.GetParameters();
-            string content = "";
-            int i = 0;
-            foreach (object o in inputParams)
-            {
-                content += parameterInfos[i].Name + ":" + o.SerializeO() + Environment.NewLine;
-                i++;
-            }
-            content += Environment.NewLine;
-            return content;
-        }
-
-        public static string SerializeO(this object? o)
-        {
-            if (o is null) return "";
-            return JsonSerializer.Serialize(o, options: new()
-            {
-                IncludeFields = true,
-                WriteIndented = false,
-                IgnoreReadOnlyProperties = true,
-                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault
-            });
+            string paramKey = inputParams is null ? "" : $".{inputParams.SerializeO().GetHashCode()}";
+            string levelName = methodSettings.CachePolicy.CacheLevel == CacheLevel.PerUser ? $".{dynaUser.UserName}" : "";
+            return $"{methodInfo.GetFullName()}{levelName}{paramKey}";
         }
 
     }

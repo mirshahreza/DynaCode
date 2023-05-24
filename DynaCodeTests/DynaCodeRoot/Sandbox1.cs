@@ -1,3 +1,6 @@
+using System.Text.Json;
+using System.Text.Json.Nodes;
+
 namespace SandboxNS
 {
     public static class SandboxT
@@ -11,6 +14,12 @@ namespace SandboxNS
         {
             return a + b + s.Length;
         }
+
+        public static string SandboxM3(JsonElement p1, JsonNode jsonNode)
+        {
+            return p1.ToString() + " --- " + jsonNode.ToString();
+        }
+
     }
 }
 

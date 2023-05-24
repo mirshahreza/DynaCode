@@ -13,7 +13,7 @@ namespace AppEnd
     {
         public CachePolicy CachePolicy = new CachePolicy() { CacheLevel = CacheLevel.None };
         public AccessRules AccessRules = new AccessRules() { AllowedUsers = new string[] { }, AllowedRoles = new string[] { }, DeniedUsers = new string[] { } };
-        public LogPolicy LogPolicy = new LogPolicy() { OnFailLogMethod = "", OnSuccessLogMethod = "", TruncateTo10K = true };
+        public LogPolicy LogPolicy = new LogPolicy() { OnErrorLogMethod = "", OnSuccessLogMethod = "", TruncateTo10K = true };
         public string Serialize()
         {
             return JsonSerializer.Serialize(this, options: new()
@@ -28,7 +28,7 @@ namespace AppEnd
     public class LogPolicy
     {
         public string OnSuccessLogMethod = "";
-        public string OnFailLogMethod = "";
+        public string OnErrorLogMethod = "";
         public bool TruncateTo10K = true;
     }
     public class CachePolicy
@@ -38,9 +38,9 @@ namespace AppEnd
     }
     public class AccessRules
     {
-        public string[] AllowedRoles { init; get; }
-        public string[] AllowedUsers { init; get; }
-        public string[] DeniedUsers { init; get; }
+        public string[] AllowedRoles { set; get; }
+        public string[] AllowedUsers { set; get; }
+        public string[] DeniedUsers { set; get; }
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
@@ -53,8 +53,8 @@ namespace AppEnd
 
     public class DynaUser
     {
-        public string UserName { init; get; }
-        public string[] Roles { init; get; }
+        public string UserName { set; get; } = "";
+        public string[] Roles { set; get; } = new string[] {};
     }
 
     public class CodeMap
