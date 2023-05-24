@@ -176,7 +176,9 @@ namespace AppEnd
             if (dynaUser.UserName.ToLower() == invokeOptions.PublicKeyUser.ToLower()) return;
             if (dynaUser.Roles.Contains(invokeOptions.PublicKeyRole)) return;
             if (dynaUser.Roles.ToList().Exists(i => methodSettings.AccessRules.AllowedRoles.Contains(i))) return;
+            if (methodSettings.AccessRules.AllowedRoles.Contains("*")) return;
             if (methodSettings.AccessRules.AllowedUsers.Contains(dynaUser.UserName)) return;
+            if (methodSettings.AccessRules.AllowedUsers.Contains("*")) return;
             throw new Exception($"Access denied, The user [ {dynaUser.UserName} ] doesn't have enough access to execute [ {methodInfo.GetFullName()} ]");
         }
         private static void LogMethodInvoke(MethodInfo methodInfo, MethodSettings methodSettings, CodeInvokeResult codeInvokeResult, object[]? inputParams,DynaUser? dynaUser,string clientInfo = "")
@@ -239,6 +241,14 @@ namespace AppEnd
             {
                 throw new InvalidCastException($"Settings for [ {codeMap.MethodFullName} ] stored in the file [ {codeMap.FilePath} ] is not valid");
             }
+        }
+        public static void RemoveMethodSettings(string methodFullName)
+        {
+            CodeMap? codeMap = CodeMaps.FirstOrDefault(cm => cm.MethodFullName == methodFullName);
+            if (codeMap is null) throw new Exception($"{methodFullName} is not exist");
+            string settingsFileName = codeMap.FilePath + ".settings.json";
+            if (!File.Exists(settingsFileName)) return;
+            File.Delete(settingsFileName);
         }
 
         private static void Build()
