@@ -7,8 +7,8 @@
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageProjectUrl></PackageProjectUrl>
     <FileVersion>2.1</FileVersion>
-    <AssemblyVersion>2.1</AssemblyVersion>
-    <Version>2.1</Version>
+    <AssemblyVersion>2.2</AssemblyVersion>
+    <Version>2.2</Version>
     <Authors>Mohsen Mirshahreza</Authors>
     <Description>Small helper to run c# code at runtime</Description>
     <PackageIcon>csharp.png</PackageIcon>
