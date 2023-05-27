@@ -17,7 +17,7 @@ namespace DynaCodeTests
             string methodFullName = "SandboxNS.SandboxT.SandboxM1";
             DynaCode.WriteMethodSettings(methodFullName, new MethodSettings());
  
-            CodeInvokeResult r = DynaCode.CodeInvode("SandboxNS.SandboxT.SandboxM1", new object[] { 4, 6 });
+            CodeInvokeResult r = DynaCode.InvokeMethodByParamsArrayInputs("SandboxNS.SandboxT.SandboxM1", new object[] { 4, 6 });
             Assert.AreEqual(r.Result, 10);
         }
 
@@ -32,7 +32,7 @@ namespace DynaCodeTests
             using JsonDocument doc = JsonDocument.Parse(data);
             JsonElement root = doc.RootElement;
 
-            CodeInvokeResult r1 = DynaCode.CodeInvode(methodFullName, root);
+            CodeInvokeResult r1 = DynaCode.InvodeMethodByJsonElementInputs(methodFullName, root);
             Assert.AreEqual(r1.Result, 5);
         }
 
@@ -43,7 +43,7 @@ namespace DynaCodeTests
             string methodFullName = "SandboxNS.SandboxTNew.SandboxM1";
             DynaCode.WriteMethodSettings(methodFullName, new MethodSettings());
 
-            CodeInvokeResult r = DynaCode.CodeInvode(methodFullName, new object[] { 7, 6 });
+            CodeInvokeResult r = DynaCode.InvokeMethodByParamsArrayInputs(methodFullName, new object[] { 7, 6 });
             Assert.AreEqual(r.Result, 13);
         }
 
@@ -59,10 +59,10 @@ namespace DynaCodeTests
             DynaUser aliActor = new DynaUser() { UserName = "Ali" };
             DynaUser mohsenActor = new DynaUser() { UserName = "Mohsen" };
 
-            CodeInvokeResult r1 = DynaCode.CodeInvode(methodFullName, new object[] { 4, 6 }, aliActor);
+            CodeInvokeResult r1 = DynaCode.InvokeMethodByParamsArrayInputs(methodFullName, new object[] { 4, 6 }, aliActor);
             Assert.IsTrue(r1.IsSucceeded);
 
-            CodeInvokeResult r2 = DynaCode.CodeInvode(methodFullName, new object[] { 4, 6 }, mohsenActor);
+            CodeInvokeResult r2 = DynaCode.InvokeMethodByParamsArrayInputs(methodFullName, new object[] { 4, 6 }, mohsenActor);
             Assert.IsFalse(r2.IsSucceeded);
         }
 
@@ -76,7 +76,7 @@ namespace DynaCodeTests
             methodSettings.LogPolicy.OnErrorLogMethod = "AppEnd.DynaCodeBuiltInLogMethods.FileErrorLogger";
             DynaCode.WriteMethodSettings(methodFullName, methodSettings);
 
-            CodeInvokeResult r1 = DynaCode.CodeInvode(methodFullName, new object[] { 4, 6, "Ali" });
+            CodeInvokeResult r1 = DynaCode.InvokeMethodByParamsArrayInputs(methodFullName, new object[] { 4, 6, "Ali" });
             Assert.IsTrue(r1.IsSucceeded);
         }
 
@@ -98,7 +98,7 @@ namespace DynaCodeTests
             JsonNode jsonNode = JsonNode.Parse("{}");
             jsonNode["Test"] = "This is a value for Test property";
 
-            CodeInvokeResult r1 = DynaCode.CodeInvode(methodFullName, new object[] { root, jsonNode });
+            CodeInvokeResult r1 = DynaCode.InvokeMethodByParamsArrayInputs(methodFullName, new object[] { root, jsonNode });
             Assert.IsTrue(r1.IsSucceeded);
         }
 
@@ -140,7 +140,7 @@ namespace DynaCodeTests
             {
                 try
                 {
-                    CodeInvokeResult r1 = DynaCode.CodeInvode("Example.ExampleT.ExampleM", new object[] { 4, 6 });
+                    CodeInvokeResult r1 = DynaCode.InvokeMethodByParamsArrayInputs("Example.ExampleT.ExampleM", new object[] { 4, 6 });
                 }
                 catch (Exception ex)
                 {
@@ -150,7 +150,7 @@ namespace DynaCodeTests
                 DynaCode.AddExampleCode();
                 DynaCode.Refresh();
 
-                CodeInvokeResult r2 = DynaCode.CodeInvode("Example.ExampleT.ExampleM", new object[] { 4, 6 });
+                CodeInvokeResult r2 = DynaCode.InvokeMethodByParamsArrayInputs("Example.ExampleT.ExampleM", new object[] { 4, 6 });
                 Assert.AreEqual(r2.Result, 10);
 
                 DynaCode.RemoveExampleCode();
@@ -158,7 +158,7 @@ namespace DynaCodeTests
 
                 try
                 {
-                    CodeInvokeResult r3 = DynaCode.CodeInvode("Example.ExampleT.ExampleM", new object[] { 4, 6 });
+                    CodeInvokeResult r3 = DynaCode.InvokeMethodByParamsArrayInputs("Example.ExampleT.ExampleM", new object[] { 4, 6 });
                 }
                 catch (Exception ex)
                 {

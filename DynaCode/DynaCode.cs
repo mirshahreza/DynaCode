@@ -106,14 +106,14 @@ namespace AppEnd
             dynaAsm = null;
         }
         
-        public static CodeInvokeResult CodeInvode(string methodFullPath, JsonElement? inputParams = null, DynaUser? dynaUser = null, string clientInfo = "")
+        public static CodeInvokeResult InvodeMethodByJsonElementInputs(string methodFullPath, JsonElement? inputParams = null, DynaUser? dynaUser = null, string clientInfo = "")
         {
             MethodInfo methodInfo = GetMethodInfo(methodFullPath);
             object[]? objects = ExtractParams(methodInfo, inputParams);
             CodeInvokeResult codeInvokeResult = Invoke(methodInfo, objects, dynaUser, clientInfo);
             return codeInvokeResult;
         }
-        public static CodeInvokeResult CodeInvode(string methodFullPath, object[]? inputParams = null, DynaUser? dynaUser = null, string clientInfo = "")
+        public static CodeInvokeResult InvokeMethodByParamsArrayInputs(string methodFullPath, object[]? inputParams = null, DynaUser? dynaUser = null, string clientInfo = "")
         {
             MethodInfo methodInfo = GetMethodInfo(methodFullPath);
             return Invoke(methodInfo, inputParams, dynaUser, clientInfo);
