@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageProjectUrl></PackageProjectUrl>
-    <FileVersion>2.1</FileVersion>
+    <FileVersion>2.2</FileVersion>
     <AssemblyVersion>2.2</AssemblyVersion>
     <Version>2.2</Version>
     <Authors>Mohsen Mirshahreza</Authors>
