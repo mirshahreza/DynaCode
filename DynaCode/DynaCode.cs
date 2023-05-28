@@ -100,6 +100,15 @@ namespace AppEnd
         }
         public static void Refresh()
         {
+            string[] oldAsmFiles =  Directory.GetFiles(".", "DynaAsm*");
+            foreach(string oldAsmFile in oldAsmFiles)
+            {
+                try
+                {
+                    File.Delete(oldAsmFile);
+                }
+                catch { }
+            }
             entierCodeSyntaxes = null;
             scriptFiles = null;
             asmPath = null;
