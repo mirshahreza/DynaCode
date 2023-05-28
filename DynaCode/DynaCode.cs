@@ -294,28 +294,28 @@ namespace AppEnd
         }
         private static List<MetadataReference> GetCompilationReferences()
         {
-            var refs = new List<MetadataReference>();
+            var references = new List<MetadataReference>();
 
-            refs.Add(MetadataReference.CreateFromFile(Assembly.GetExecutingAssembly().Location));
+            AddReferencesFor(Assembly.GetExecutingAssembly(), references);
+            AddReferencesFor(Assembly.GetEntryAssembly(), references);
+            AddReferencesFor(typeof(object).Assembly, references);
+            AddReferencesFor(typeof(TypeConverter).Assembly, references);
+            AddReferencesFor(Assembly.Load("netstandard, Version=2.1.0.0"), references);
+            AddReferencesFor(typeof(System.Linq.Expressions.Expression).Assembly, references);
 
-            var executingReferences = Assembly.GetExecutingAssembly().GetReferencedAssemblies();
-            refs.AddRange(executingReferences.Select(a => MetadataReference.CreateFromFile(Assembly.Load(a).Location)));
-
-            var entryAsm = Assembly.GetEntryAssembly();
-            if (entryAsm != null)
-            {
-                var entryReferences = entryAsm.GetReferencedAssemblies();
-                refs.AddRange(entryReferences.Select(a => MetadataReference.CreateFromFile(Assembly.Load(a).Location)));
-            }
-
-            refs.Add(MetadataReference.CreateFromFile(typeof(object).Assembly.Location));
-            refs.Add(MetadataReference.CreateFromFile(typeof(TypeConverter).Assembly.Location));
-            refs.Add(MetadataReference.CreateFromFile(Assembly.Load("netstandard, Version=2.1.0.0").Location));
-            refs.Add(MetadataReference.CreateFromFile(typeof(System.Linq.Expressions.Expression).Assembly.Location));
-
-            return refs;
+            return references;
         }
-       
+        private static void AddReferencesFor(Assembly? asm, List<MetadataReference> references)
+        {
+            if (asm is not null)
+            {
+                references.Add(MetadataReference.CreateFromFile(asm.Location));
+                var entryReferences = asm.GetReferencedAssemblies();
+                references.AddRange(entryReferences.Select(a => MetadataReference.CreateFromFile(Assembly.Load(a).Location)));
+            }
+        }
+
+
         private static List<CodeMap> GenerateSourceCodeMap()
         {
             List<CodeMap> codeMaps = new List<CodeMap>();
