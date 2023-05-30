@@ -115,20 +115,20 @@ namespace AppEnd
             dynaAsm = null;
         }
         
-        public static CodeInvokeResult InvodeMethodByJsonElementInputs(string methodFullPath, JsonElement? inputParams = null, DynaUser? dynaUser = null, string clientInfo = "")
+        public static CodeInvokeResult InvodeMethodByJsonElementInputs(string methodFullPath, JsonElement? inputParams = null, DynaUser? dynaUser = null, string clientInfo = "", bool ignoreCaching = false)
         {
             MethodInfo methodInfo = GetMethodInfo(methodFullPath);
             object[]? objects = ExtractParams(methodInfo, inputParams);
             CodeInvokeResult codeInvokeResult = Invoke(methodInfo, objects, dynaUser, clientInfo);
             return codeInvokeResult;
         }
-        public static CodeInvokeResult InvokeMethodByParamsArrayInputs(string methodFullPath, object[]? inputParams = null, DynaUser? dynaUser = null, string clientInfo = "")
+        public static CodeInvokeResult InvokeMethodByParamsArrayInputs(string methodFullPath, object[]? inputParams = null, DynaUser? dynaUser = null, string clientInfo = "", bool ignoreCaching = false)
         {
             MethodInfo methodInfo = GetMethodInfo(methodFullPath);
             return Invoke(methodInfo, inputParams, dynaUser, clientInfo);
         }
 
-        private static CodeInvokeResult Invoke(MethodInfo methodInfo, object[]? inputParams = null, DynaUser? dynaUser = null, string clientInfo = "")
+        private static CodeInvokeResult Invoke(MethodInfo methodInfo, object[]? inputParams = null, DynaUser? dynaUser = null, string clientInfo = "", bool ignoreCaching = false)
         {
             MethodSettings methodSettings = ReadMethodSettings(methodInfo.GetFullName());
             if (methodSettings.CachePolicy != null && methodSettings.CachePolicy.CacheLevel == CacheLevel.PerUser && (dynaUser is null || dynaUser.UserName.Trim() == ""))
@@ -143,7 +143,7 @@ namespace AppEnd
                 CheckAccess(methodInfo, methodSettings, dynaUser);
                 string cacheKey = CalculateCacheKey(methodInfo, methodSettings, inputParams, dynaUser);
                 object? result;
-                if (methodSettings.CachePolicy?.CacheLevel != CacheLevel.None && memoryCache.TryGetValue(cacheKey, out result))
+                if (methodSettings.CachePolicy?.CacheLevel != CacheLevel.None && memoryCache.TryGetValue(cacheKey, out result) && ignoreCaching == false)
                 {
                     stopwatch.Stop();
                     codeInvokeResult = new() { Result = result, FromCache = true, IsSucceeded = true, Duration = stopwatch.ElapsedMilliseconds };
