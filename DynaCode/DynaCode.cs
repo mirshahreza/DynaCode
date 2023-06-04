@@ -115,14 +115,12 @@ namespace AppEnd
             dynaAsm = null;
         }
         
-        public static CodeInvokeResult InvodeMethodByJsonElementInputs(string methodFullPath, JsonElement? inputParams = null, DynaUser? dynaUser = null, string clientInfo = "", bool ignoreCaching = false)
+        public static CodeInvokeResult InvokeByJsonInputs(string methodFullPath, JsonElement? inputParams = null, DynaUser? dynaUser = null, string clientInfo = "", bool ignoreCaching = false)
         {
             MethodInfo methodInfo = GetMethodInfo(methodFullPath);
-            object[]? objects = ExtractParams(methodInfo, inputParams);
-            CodeInvokeResult codeInvokeResult = Invoke(methodInfo, objects, dynaUser, clientInfo);
-            return codeInvokeResult;
+            return Invoke(methodInfo, ExtractParams(methodInfo, inputParams), dynaUser, clientInfo);
         }
-        public static CodeInvokeResult InvokeMethodByParamsArrayInputs(string methodFullPath, object[]? inputParams = null, DynaUser? dynaUser = null, string clientInfo = "", bool ignoreCaching = false)
+        public static CodeInvokeResult InvokeByParamsInputs(string methodFullPath, object[]? inputParams = null, DynaUser? dynaUser = null, string clientInfo = "", bool ignoreCaching = false)
         {
             MethodInfo methodInfo = GetMethodInfo(methodFullPath);
             return Invoke(methodInfo, inputParams, dynaUser, clientInfo);
@@ -217,7 +215,6 @@ namespace AppEnd
                 clientInfo
             };
             GetMethodInfo(logMethod).Invoke(null, list.ToArray());
-            //CodeInvode(logMethod, list.ToArray());
         }
 
         public static void WriteMethodSettings(string methodFullName, MethodSettings methodSettings)

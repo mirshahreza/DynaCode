@@ -54,7 +54,8 @@ namespace AppEnd
     public class DynaUser
     {
         public string UserName { set; get; } = "";
-        public string[] Roles { set; get; } = new string[] {};
+        public string[] Roles { set; get; } = new string[] { };
+        public object? ContextInfo { set; get; }
     }
 
     public class CodeMap
