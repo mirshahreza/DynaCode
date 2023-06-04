@@ -6,9 +6,9 @@
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageProjectUrl></PackageProjectUrl>
-    <FileVersion>2.3.2</FileVersion>
-    <AssemblyVersion>2.3.2</AssemblyVersion>
-    <Version>2.3.2</Version>
+    <FileVersion>2.4</FileVersion>
+    <AssemblyVersion>2.4</AssemblyVersion>
+    <Version>2.4</Version>
     <Authors>Mohsen Mirshahreza</Authors>
     <Description>Small helper to run c# code at runtime</Description>
     <PackageIcon>csharp.png</PackageIcon>
