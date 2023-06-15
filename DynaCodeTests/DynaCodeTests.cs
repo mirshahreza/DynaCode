@@ -15,7 +15,9 @@ namespace DynaCodeTests
         {
             DynaCode.Init(GetSampleInvokeOptions());
             string methodFullName = "SandboxNS.SandboxT.SandboxM1";
-            DynaCode.WriteMethodSettings(methodFullName, new MethodSettings());
+            string methodFilePath = DynaCode.GetMethodFilePath(methodFullName);
+
+            DynaCode.WriteMethodSettings(methodFullName, methodFilePath, new MethodSettings());
  
             CodeInvokeResult r = DynaCode.InvokeByParamsInputs("SandboxNS.SandboxT.SandboxM1", new object[] { 4, 6 });
             Assert.AreEqual(r.Result, 10);
@@ -26,7 +28,9 @@ namespace DynaCodeTests
         {
             DynaCode.Init(GetSampleInvokeOptions());
             string methodFullName = "SandboxNS.SandboxT.SandboxM2";
-            DynaCode.WriteMethodSettings(methodFullName, new MethodSettings());
+            string methodFilePath = DynaCode.GetMethodFilePath(methodFullName);
+
+            DynaCode.WriteMethodSettings(methodFullName, methodFilePath, new MethodSettings());
 
             string data = @"{""a"": 1,""b"": 1,""s"": ""ali""}";
             using JsonDocument doc = JsonDocument.Parse(data);
@@ -41,7 +45,9 @@ namespace DynaCodeTests
         {
             DynaCode.Init(GetSampleInvokeOptions());
             string methodFullName = "SandboxNS.SandboxTNew.SandboxM1";
-            DynaCode.WriteMethodSettings(methodFullName, new MethodSettings());
+            string methodFilePath = DynaCode.GetMethodFilePath(methodFullName);
+
+            DynaCode.WriteMethodSettings(methodFullName, methodFilePath, new MethodSettings());
 
             CodeInvokeResult r = DynaCode.InvokeByParamsInputs(methodFullName, new object[] { 7, 6 });
             Assert.AreEqual(r.Result, 13);
@@ -52,9 +58,11 @@ namespace DynaCodeTests
         {
             DynaCode.Init(GetSampleInvokeOptions());
             string methodFullName = "SandboxNS.SandboxT.SandboxM1";
+            string methodFilePath = DynaCode.GetMethodFilePath(methodFullName);
+
             MethodSettings methodSettings = new MethodSettings();
             methodSettings.AccessRules.AllowedUsers = new string[] { "Ali" };
-            DynaCode.WriteMethodSettings(methodFullName, methodSettings);
+            DynaCode.WriteMethodSettings(methodFullName, methodFilePath, methodSettings);
 
             DynaUser aliActor = new DynaUser() { UserName = "Ali" };
             DynaUser mohsenActor = new DynaUser() { UserName = "Mohsen" };
@@ -71,9 +79,11 @@ namespace DynaCodeTests
         {
             DynaCode.Init(GetSampleInvokeOptions());
             string methodFullName = "SandboxNS.SandboxT.SandboxM4";
+            string methodFilePath = DynaCode.GetMethodFilePath(methodFullName);
+
             MethodSettings methodSettings = new MethodSettings();
             methodSettings.AccessRules.AllowedUsers = new string[] { "Ali" };
-            DynaCode.WriteMethodSettings(methodFullName, methodSettings);
+            DynaCode.WriteMethodSettings(methodFullName, methodFilePath, methodSettings);
 
             DynaUser aliActor = new DynaUser() { UserName = "Ali" };
 
@@ -87,10 +97,12 @@ namespace DynaCodeTests
         {
             DynaCode.Init(GetSampleInvokeOptions());
             string methodFullName = "SandboxNS.SandboxT.SandboxM2";
+            string methodFilePath = DynaCode.GetMethodFilePath(methodFullName);
+
             MethodSettings methodSettings = new MethodSettings();
             methodSettings.LogPolicy.OnSuccessLogMethod = "AppEnd.DynaCodeBuiltInLogMethods.FileSuccessLogger";
             methodSettings.LogPolicy.OnErrorLogMethod = "AppEnd.DynaCodeBuiltInLogMethods.FileErrorLogger";
-            DynaCode.WriteMethodSettings(methodFullName, methodSettings);
+            DynaCode.WriteMethodSettings(methodFullName, methodFilePath, methodSettings);
 
             CodeInvokeResult r1 = DynaCode.InvokeByParamsInputs(methodFullName, new object[] { 4, 6, "Ali" });
             Assert.IsTrue(r1.IsSucceeded);
@@ -101,11 +113,12 @@ namespace DynaCodeTests
         {
             DynaCode.Init(GetSampleInvokeOptions());
             string methodFullName = "SandboxNS.SandboxT.SandboxM3";
+            string methodFilePath = DynaCode.GetMethodFilePath(methodFullName);
 
             MethodSettings methodSettings = new MethodSettings();
             methodSettings.LogPolicy.OnSuccessLogMethod = "AppEnd.DynaCodeBuiltInLogMethods.FileSuccessLogger";
             methodSettings.LogPolicy.OnErrorLogMethod = "AppEnd.DynaCodeBuiltInLogMethods.FileErrorLogger";
-            DynaCode.WriteMethodSettings(methodFullName, methodSettings);
+            DynaCode.WriteMethodSettings(methodFullName, methodFilePath, methodSettings);
 
             string data = @"{""a"": 1,""b"": 1,""c"": ""ali"",""d"":{""p1"":321,""p2"":""this is a test""}}";
             using JsonDocument doc = JsonDocument.Parse(data);
@@ -123,13 +136,14 @@ namespace DynaCodeTests
         {
             DynaCode.Init(GetSampleInvokeOptions()); 
             string methodFullName = "SandboxNS.SandboxT.SandboxM1";
+            string methodFilePath = DynaCode.GetMethodFilePath(methodFullName);
 
             MethodSettings methodSettings = GetSampleMethodSettings();
-            DynaCode.WriteMethodSettings(methodFullName, methodSettings);
+            DynaCode.WriteMethodSettings(methodFullName, methodFilePath, methodSettings);
 
             methodSettings.LogPolicy.OnSuccessLogMethod = "AppEnd.DynaCodeBuiltInLogMethods.FileSuccessLogger";
             methodSettings.LogPolicy.OnErrorLogMethod = "AppEnd.DynaCodeBuiltInLogMethods.FileErrorLogger";
-            DynaCode.WriteMethodSettings(methodFullName, methodSettings);
+            DynaCode.WriteMethodSettings(methodFullName, methodFilePath, methodSettings);
 
             Assert.IsTrue(1 == 1);
         }
@@ -141,9 +155,10 @@ namespace DynaCodeTests
             string methodFullName = "SandboxNS.SandboxT.SandboxM2";
 
             MethodSettings methodSettings1 = GetSampleMethodSettings();
-            DynaCode.WriteMethodSettings(methodFullName, methodSettings1);
+            string methodFilePath = DynaCode.GetMethodFilePath(methodFullName);
+            DynaCode.WriteMethodSettings(methodFullName, methodFilePath, methodSettings1);
 
-            MethodSettings methodSettings2 = DynaCode.ReadMethodSettings(methodFullName);
+            MethodSettings methodSettings2 = DynaCode.ReadMethodSettings(methodFullName, methodFilePath);
 
             Assert.IsTrue(methodSettings1.Serialize() == methodSettings2.Serialize());
         }
@@ -187,10 +202,29 @@ namespace DynaCodeTests
             }
 
         }
+        
         [TestMethod()]
         public void CacheTest()
         {
-            throw new NotImplementedException();
+            DynaCode.Init(GetSampleInvokeOptions());
+            string methodFullName = "SandboxNS.SandboxT.SandboxM5";
+
+            MethodSettings methodSettings1 = GetSampleMethodSettings();
+            string methodFilePath = DynaCode.GetMethodFilePath(methodFullName);
+            methodSettings1.CachePolicy = new CachePolicy() { CacheLevel = CacheLevel.AllUsers, AbsoluteExpirationSeconds = 60 };
+            DynaCode.WriteMethodSettings(methodFullName, methodFilePath, methodSettings1);
+
+            DynaCode.Refresh();
+
+            CodeInvokeResult r1 = DynaCode.InvokeByParamsInputs(methodFullName, new object[] { 4, 6, "Ali" });
+            Console.WriteLine(r1.SerializeO());
+
+            System.Threading.Thread.Sleep(3000);
+
+            CodeInvokeResult r2 = DynaCode.InvokeByParamsInputs(methodFullName, new object[] { 4, 6, "Ali" });
+            Console.WriteLine(r2.SerializeO());
+
+
         }
 
         private CodeInvokeOptions GetSampleInvokeOptions()

@@ -1,6 +1,7 @@
 using AppEnd;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System;
 
 namespace SandboxNS
 {
@@ -24,6 +25,11 @@ namespace SandboxNS
         public static string SandboxM4(DynaUser dynaUser)
         {
             return dynaUser.UserName;
+        }
+
+        public static string SandboxM5(int a, int b, string s)
+        {
+            return DateTime.Now.ToString();
         }
 
     }

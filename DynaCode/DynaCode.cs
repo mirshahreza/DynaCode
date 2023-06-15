@@ -128,9 +128,11 @@ namespace AppEnd
 
         private static CodeInvokeResult Invoke(MethodInfo methodInfo, object[]? inputParams = null, DynaUser? dynaUser = null, string clientInfo = "", bool ignoreCaching = false)
         {
-            MethodSettings methodSettings = ReadMethodSettings(methodInfo.GetFullName());
+            string methodFullName = methodInfo.GetFullName();
+            string methodFilePath = GetMethodFilePath(methodFullName);
+            MethodSettings methodSettings = ReadMethodSettings(methodFullName, methodFilePath);
             if (methodSettings.CachePolicy != null && methodSettings.CachePolicy.CacheLevel == CacheLevel.PerUser && (dynaUser is null || dynaUser.UserName.Trim() == ""))
-                throw new ArgumentNullException($"CachePolicy.CacheLevel for {methodInfo.GetFullName()} is set to PerUser but the current user is null");
+                throw new ArgumentNullException($"CachePolicy.CacheLevel for {methodFullName} is set to PerUser but the current user is null");
 
             CodeInvokeResult codeInvokeResult;
             var stopwatch = new Stopwatch();
@@ -177,6 +179,13 @@ namespace AppEnd
             return codeInvokeResult;
         }
 
+        public static string GetMethodFilePath(string methodFullName)
+        {
+            CodeMap? codeMap = CodeMaps.FirstOrDefault(cm => cm.MethodFullName == methodFullName);
+            if (codeMap is null) throw new Exception($"{methodFullName} is not exist");
+            return codeMap.FilePath;
+        }
+
         private static void CheckAccess(MethodInfo methodInfo,MethodSettings methodSettings, DynaUser? dynaUser)
         {
             if (dynaUser is null) return;
@@ -217,35 +226,31 @@ namespace AppEnd
             GetMethodInfo(logMethod).Invoke(null, list.ToArray());
         }
 
-        public static void WriteMethodSettings(string methodFullName, MethodSettings methodSettings)
+        public static void WriteMethodSettings(string methodFullName, string methodFilePath, MethodSettings methodSettings)
         {
-            CodeMap? codeMap = CodeMaps.FirstOrDefault(cm => cm.MethodFullName == methodFullName);
-            if (codeMap is null) throw new Exception($"{methodFullName} is not exist");
-            string settingsFileName = codeMap.FilePath + ".settings.json";
+            string settingsFileName = methodFilePath + ".settings.json";
             string settingsRaw = File.Exists(settingsFileName) ? File.ReadAllText(settingsFileName) : "{}";
             JsonNode? jsonNode = JsonNode.Parse(settingsRaw);
             if (jsonNode is null) throw new Exception("Unknow Error");
-            jsonNode[codeMap.MethodFullName] = JsonNode.Parse(methodSettings.Serialize());
+            jsonNode[methodFullName] = JsonNode.Parse(methodSettings.Serialize());
             File.WriteAllText(settingsFileName, jsonNode.ToString());
         }
-        public static MethodSettings ReadMethodSettings(string methodFullName)
-        {
-            CodeMap? codeMap = CodeMaps.FirstOrDefault(cm => cm.MethodFullName == methodFullName);
-            if (codeMap is null) throw new Exception($"{methodFullName} is not exist");
-            string settingsFileName = codeMap.FilePath + ".settings.json";
+        public static MethodSettings ReadMethodSettings(string methodFullName, string methodFilePath)
+        {            
+            string settingsFileName = methodFilePath + ".settings.json";
             string settingsRaw = File.Exists(settingsFileName) ? File.ReadAllText(settingsFileName) : "{}";
             try
             {
                 var jsonNode = JsonNode.Parse(settingsRaw);
                 if (jsonNode is null) throw new Exception("Unknow Error");
-                if (jsonNode[codeMap.MethodFullName] == null) return new();
-                MethodSettings? methodSettings = jsonNode[codeMap.MethodFullName].Deserialize<MethodSettings>(options: new() { IncludeFields = true });
+                if (jsonNode[methodFullName] == null) return new();
+                MethodSettings? methodSettings = jsonNode[methodFullName].Deserialize<MethodSettings>(options: new() { IncludeFields = true });
                 if (methodSettings is null) return new();
                 return methodSettings;
             }
             catch
             {
-                throw new InvalidCastException($"Settings for [ {codeMap.MethodFullName} ] stored in the file [ {codeMap.FilePath} ] is not valid");
+                throw new InvalidCastException($"Stored settings for [ {methodFullName} ] in the file [ {methodFilePath} ] is not valid");
             }
         }
         public static void RemoveMethodSettings(string methodFullName)
@@ -444,9 +449,7 @@ namespace Example
         private static string CalculateCacheKey(MethodInfo methodInfo, MethodSettings methodSettings, object[]? inputParams, DynaUser? dynaUser)
         {
             string paramKey = inputParams is null ? "" : $".{inputParams.SerializeO().GetHashCode()}";
-            if (dynaUser is null && methodSettings.CachePolicy.CacheLevel == CacheLevel.PerUser)
-                throw new Exception($"CacheLevel for a method [{methodInfo.GetFullName()}] is PerUser so DynaUser can not be null.");
-            string levelName = methodSettings.CachePolicy.CacheLevel == CacheLevel.PerUser ? $".{dynaUser.UserName}" : "";
+            string levelName = methodSettings.CachePolicy.CacheLevel == CacheLevel.PerUser ? $".{dynaUser?.UserName}" : "";
             return $"{methodInfo.GetFullName()}{levelName}{paramKey}";
         }
 
