@@ -441,9 +441,11 @@ namespace Example
                 Directory.CreateDirectory(invokeOptions.LogFolderPath + "/error");
             }
         }
-        private static string CalculateCacheKey(MethodInfo methodInfo, MethodSettings methodSettings, object[]? inputParams, DynaUser dynaUser)
+        private static string CalculateCacheKey(MethodInfo methodInfo, MethodSettings methodSettings, object[]? inputParams, DynaUser? dynaUser)
         {
             string paramKey = inputParams is null ? "" : $".{inputParams.SerializeO().GetHashCode()}";
+            if (dynaUser is null && methodSettings.CachePolicy.CacheLevel == CacheLevel.PerUser)
+                throw new Exception($"CacheLevel for a method [{methodInfo.GetFullName()}] is PerUser so DynaUser can not be null.");
             string levelName = methodSettings.CachePolicy.CacheLevel == CacheLevel.PerUser ? $".{dynaUser.UserName}" : "";
             return $"{methodInfo.GetFullName()}{levelName}{paramKey}";
         }
