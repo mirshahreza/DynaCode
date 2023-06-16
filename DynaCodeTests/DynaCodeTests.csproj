@@ -33,12 +33,55 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="AppEndDbIO">
+      <HintPath>..\..\AppEndDbIO\AppEndDbIO\bin\Release\net8.0\AppEndDbIO.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="DynaCodeRoot\ClientQueryHandler.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Update="DynaCodeRoot\DynaCodeBuiltInLogMethods.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Update="DynaCodeRoot\Sandbox1.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="bin\Debug\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="References\AppEndDbIO.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="References\Microsoft.Win32.SystemEvents.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="References\Newtonsoft.Json.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="References\System.Configuration.ConfigurationManager.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="References\System.Data.SqlClient.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="References\System.Diagnostics.EventLog.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="References\System.Drawing.Common.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="References\System.Security.Cryptography.ProtectedData.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

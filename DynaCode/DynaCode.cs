@@ -17,7 +17,7 @@ namespace AppEnd
 {
     public static class DynaCode
     {
-        private static CodeInvokeOptions invokeOptions;
+        private static CodeInvokeOptions invokeOptions = new();
 
         private static IMemoryCache memoryCache = new MemoryCache(new MemoryCacheOptions());
         public static IMemoryCache MemoryCache
@@ -92,9 +92,9 @@ namespace AppEnd
             }
         }
 
-        public static void Init(CodeInvokeOptions codeInvokeOptions)
+        public static void Init(CodeInvokeOptions? codeInvokeOptions = null)
         {
-            invokeOptions = codeInvokeOptions;
+            if (codeInvokeOptions is not null) invokeOptions = codeInvokeOptions;
             EnsureLogFolders();
             Refresh();
         }
@@ -118,12 +118,12 @@ namespace AppEnd
         public static CodeInvokeResult InvokeByJsonInputs(string methodFullPath, JsonElement? inputParams = null, DynaUser? dynaUser = null, string clientInfo = "", bool ignoreCaching = false)
         {
             MethodInfo methodInfo = GetMethodInfo(methodFullPath);
-            return Invoke(methodInfo, ExtractParams(methodInfo, inputParams), dynaUser, clientInfo);
+            return Invoke(methodInfo, ExtractParams(methodInfo, inputParams), dynaUser, clientInfo, ignoreCaching);
         }
         public static CodeInvokeResult InvokeByParamsInputs(string methodFullPath, object[]? inputParams = null, DynaUser? dynaUser = null, string clientInfo = "", bool ignoreCaching = false)
         {
             MethodInfo methodInfo = GetMethodInfo(methodFullPath);
-            return Invoke(methodInfo, inputParams, dynaUser, clientInfo);
+            return Invoke(methodInfo, inputParams, dynaUser, clientInfo, ignoreCaching);
         }
 
         private static CodeInvokeResult Invoke(MethodInfo methodInfo, object[]? inputParams = null, DynaUser? dynaUser = null, string clientInfo = "", bool ignoreCaching = false)
@@ -131,6 +131,9 @@ namespace AppEnd
             string methodFullName = methodInfo.GetFullName();
             string methodFilePath = GetMethodFilePath(methodFullName);
             MethodSettings methodSettings = ReadMethodSettings(methodFullName, methodFilePath);
+            
+
+            
             if (methodSettings.CachePolicy != null && methodSettings.CachePolicy.CacheLevel == CacheLevel.PerUser && (dynaUser is null || dynaUser.UserName.Trim() == ""))
                 throw new ArgumentNullException($"CachePolicy.CacheLevel for {methodFullName} is set to PerUser but the current user is null");
 
@@ -164,7 +167,14 @@ namespace AppEnd
                     catch (Exception ex)
                     {
                         stopwatch.Stop();
-                        codeInvokeResult = new() { Result = ex, FromCache = null, IsSucceeded = false, Duration = stopwatch.ElapsedMilliseconds };
+                        Exception exToReturn = ex.InnerException is not null ? ex.InnerException : ex;
+                        codeInvokeResult = new()
+                        {
+                            Result = new DynaEx() { Message = exToReturn.Message, StackTrace = exToReturn.StackTrace?.Replace("\r\n", "\n").Split('\n').ToList() },
+                            FromCache = null,
+                            IsSucceeded = false,
+                            Duration = stopwatch.ElapsedMilliseconds
+                        };
                     }
                 }
             }
@@ -300,21 +310,29 @@ namespace AppEnd
 
             AddReferencesFor(Assembly.GetExecutingAssembly(), references);
             AddReferencesFor(Assembly.GetEntryAssembly(), references);
+            AddReferencesFor(Assembly.GetCallingAssembly(), references);
+
             AddReferencesFor(typeof(object).Assembly, references);
             AddReferencesFor(typeof(TypeConverter).Assembly, references);
             AddReferencesFor(Assembly.Load("netstandard, Version=2.1.0.0"), references);
             AddReferencesFor(typeof(System.Linq.Expressions.Expression).Assembly, references);
+            AddReferencesFor(typeof(System.Text.Encodings.Web.JavaScriptEncoder).Assembly, references);
+            AddReferencesFor(typeof(Exception).Assembly, references);
+            AddReferencesFor(typeof(ArgumentNullException).Assembly, references);
+
+            foreach(string f in Directory.GetFiles("References"))
+            {
+                AddReferencesFor(Assembly.LoadFrom(f), references);
+            }
 
             return references;
         }
         private static void AddReferencesFor(Assembly? asm, List<MetadataReference> references)
         {
-            if (asm is not null)
-            {
-                references.Add(MetadataReference.CreateFromFile(asm.Location));
-                var entryReferences = asm.GetReferencedAssemblies();
-                references.AddRange(entryReferences.Select(a => MetadataReference.CreateFromFile(Assembly.Load(a).Location)));
-            }
+            if (asm is null) return;
+            references.Add(MetadataReference.CreateFromFile(asm.Location));
+            var entryReferences = asm.GetReferencedAssemblies();
+            references.AddRange(entryReferences.Select(a => MetadataReference.CreateFromFile(Assembly.Load(a).Location)));
         }
 
 

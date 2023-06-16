@@ -43,15 +43,7 @@ namespace AppEnd
         public string[] DeniedUsers { set; get; }
     }
 
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum CacheLevel
-    {
-        None,
-        PerUser,
-        AllUsers
-    }
-
-    public class DynaUser
+public class DynaUser
     {
         public string UserName { set; get; } = "";
         public string[] Roles { set; get; } = new string[] { };
@@ -86,7 +78,21 @@ namespace AppEnd
         public bool IsDevelopment { get; init; } = false;
         public string PublicKeyUser { get; init; } = "";
         public string PublicKeyRole { get; init; } = "";
-
+        public string AlternativeMethodFullName { get; init; } = "";
     }
 
+    public class DynaEx
+    {
+        public string Message { get; init; }
+        public List<string>? StackTrace { get; init; }
+    
+    }
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum CacheLevel
+    {
+        None,
+        PerUser,
+        AllUsers
+    }
 }

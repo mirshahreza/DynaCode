@@ -3,6 +3,8 @@ using System.Text.Json;
 using AppEnd;
 using System.Diagnostics;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
+using System.Text.Encodings.Web;
 
 namespace DynaCodeTests
 {
@@ -124,7 +126,7 @@ namespace DynaCodeTests
             using JsonDocument doc = JsonDocument.Parse(data);
             JsonElement root = doc.RootElement;
 
-            JsonNode jsonNode = JsonNode.Parse("{}");
+            JsonNode? jsonNode = JsonNode.Parse("{}");
             jsonNode["Test"] = "This is a value for Test property";
 
             CodeInvokeResult r1 = DynaCode.InvokeByParamsInputs(methodFullName, new object[] { root, jsonNode });
@@ -226,6 +228,78 @@ namespace DynaCodeTests
 
 
         }
+
+        [TestMethod()]
+        public void AppEndDbIOTest()
+        {
+            CodeInvokeOptions codeInvokeOptions = new CodeInvokeOptions() 
+            { 
+                IsDevelopment = true, 
+                CompiledIn = true,
+                StartPath = "DynaCodeRoot",
+                PublicKeyUser = "admin",
+                PublicKeyRole = "Admin"
+            };
+
+            DynaCode.Init(codeInvokeOptions);
+            string methodFullName = "AppEndDbIO.ClientQueryHandler.Exec";
+
+            string data = @"
+{
+""ClientQueryJson"":{
+        ""QueryFullName"": ""DefaultDb.Sample_Persons.ReadList"",
+        ""Where"": {
+          ""WhereCompareClauses"": [
+            {
+              ""Name"": ""LastName"",
+              ""Value"": ""شاه"",
+              ""ClauseOperator"": ""Contains""
+            }
+          ]
+        },
+        ""OrderClauses"": [
+          {
+            ""Name"": ""FirstName"",
+            ""OrderDirection"": ""DESC""
+          }
+        ],
+        ""Pagination"": {
+          ""PageNumber"": 1,
+          ""PageSize"": 2
+        },
+        ""ExceptColumns"": [
+          ""Picture_FileBody_xs""
+        ],
+        ""ExceptAggregations"": [
+          ""Count""
+        ],
+        ""ExceptOneToManies"": [
+          ""DefaultDb.Sample_Persons_R_Persons"",
+          ""DefaultDb.Sample_Persons_Addresses"",
+          ""DefaultDb.Sample_Persons_MoreDocuments""
+        ],
+        ""IncludeSubQueries"": true
+      }
+}
+";
+            using JsonDocument doc = JsonDocument.Parse(data);
+            JsonElement root = doc.RootElement;
+
+            CodeInvokeResult r1 = DynaCode.InvokeByJsonInputs(methodFullName, root);
+
+            string s = JsonSerializer.Serialize(r1, options: new()
+            {
+                IncludeFields = true,
+                WriteIndented = true,
+                IgnoreReadOnlyProperties = true,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault
+            });
+
+            Console.WriteLine(s);
+        }
+
+
+
 
         private CodeInvokeOptions GetSampleInvokeOptions()
         {
