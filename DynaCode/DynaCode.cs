@@ -308,6 +308,11 @@ namespace AppEnd
         {
             var references = new List<MetadataReference>();
 
+            foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                AddReferencesFor(a, references);
+            }
+
             AddReferencesFor(Assembly.GetExecutingAssembly(), references);
             AddReferencesFor(Assembly.GetEntryAssembly(), references);
             AddReferencesFor(Assembly.GetCallingAssembly(), references);
@@ -320,11 +325,9 @@ namespace AppEnd
             AddReferencesFor(typeof(Exception).Assembly, references);
             AddReferencesFor(typeof(ArgumentNullException).Assembly, references);
 
-            //System.Security.Cryptography.ProtectedData
-
             if (Directory.Exists(invokeOptions.ReferencesPath))
             {
-                foreach (string f in Directory.GetFiles(invokeOptions.ReferencesPath))
+                foreach (string f in Directory.GetFiles(invokeOptions.ReferencesPath, "*.dll"))
                 {
                     AddReferencesFor(Assembly.LoadFrom(f), references);
                 }

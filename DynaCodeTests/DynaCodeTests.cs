@@ -237,7 +237,7 @@ namespace DynaCodeTests
                 IsDevelopment = true,
                 CompiledIn = true,
                 StartPath = "DynaCodeRoot",
-                ReferencesPath = "References",
+                ReferencesPath = "-",
                 PublicKeyUser = "admin",
                 PublicKeyRole = "Admin"
             };
@@ -288,13 +288,9 @@ namespace DynaCodeTests
 
             CodeInvokeResult r1 = DynaCode.InvokeByJsonInputs(methodFullName, root);
 
-            string s = JsonSerializer.Serialize(r1, options: new()
-            {
-                IncludeFields = true,
-                WriteIndented = true,
-                IgnoreReadOnlyProperties = true,
-                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault
-            });
+
+
+            string s = Newtonsoft.Json.JsonConvert.SerializeObject(r1, Newtonsoft.Json.Formatting.Indented);
 
             Console.WriteLine(s);
         }
