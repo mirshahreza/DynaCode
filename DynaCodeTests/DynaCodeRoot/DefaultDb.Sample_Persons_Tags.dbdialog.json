@@ -1,0 +1,159 @@
+{
+  "DbConfName": "DefaultDb",
+  "ObjectName": "Sample_Persons_Tags",
+  "Columns": [
+    {
+      "Name": "Id",
+      "IsPrimaryKey": true,
+      "DbType": "UNIQUEIDENTIFIER",
+      "DbDefault": "(newid())",
+      "ViewOrder": 1
+    },
+    {
+      "Name": "PersonId",
+      "DbType": "BIGINT",
+      "ViewOrder": 2,
+      "Fk": {
+        "TargetTable": "Sample_Persons",
+        "TargetColumn": "Id"
+      }
+    },
+    {
+      "Name": "TagId",
+      "DbType": "INT",
+      "ViewOrder": 3,
+      "Fk": {
+        "TargetTable": "AppEnd_BaseInfo",
+        "TargetColumn": "Id"
+      }
+    }
+  ],
+  "DbQueries": [
+    {
+      "QueryName": "Create",
+      "QueryType": "Create",
+      "Columns": [
+        {
+          "Name": "PersonId"
+        },
+        {
+          "Name": "TagId"
+        }
+      ],
+      "Params": []
+    },
+    {
+      "QueryName": "ReadByKey",
+      "QueryType": "ReadByKey",
+      "Columns": [
+        {
+          "Name": "Id"
+        },
+        {
+          "Name": "PersonId"
+        },
+        {
+          "Name": "TagId"
+        }
+      ],
+      "Where": {
+        "SimpleClauses": [
+          "[Sample_Persons_Tags].[Id]=@Id"
+        ]
+      }
+    },
+    {
+      "QueryName": "ReadList",
+      "QueryType": "ReadList",
+      "Columns": [
+        {
+          "Name": "Id"
+        },
+        {
+          "Name": "PersonId",
+          "DbLeftTo": {
+            "TargetTable": "Sample_Persons",
+            "TargetColumn": "Id",
+            "Columns": [
+              {
+                "Name": "FirstName",
+                "As": "PersonId_FirstName"
+              },
+              {
+                "Name": "LastName",
+                "As": "PersonId_LastName"
+              },
+              {
+                "Name": "Title",
+                "As": "PersonId_Title"
+              },
+              {
+                "Name": "Picture_FileName",
+                "As": "PersonId_Picture_FileName"
+              },
+              {
+                "Name": "ResumeFile_FileName",
+                "As": "PersonId_ResumeFile_FileName"
+              }
+            ]
+          }
+        },
+        {
+          "Name": "TagId",
+          "DbLeftTo": {
+            "TargetTable": "AppEnd_BaseInfo",
+            "TargetColumn": "Id",
+            "Columns": [
+              {
+                "Name": "Title",
+                "As": "TagId_Title"
+              }
+            ]
+          }
+        }
+      ],
+      "PaginationMaxSize": 100,
+      "Aggregations": [
+        {
+          "Name": "Count",
+          "Phrase": "COUNT(*)"
+        }
+      ]
+    },
+    {
+      "QueryName": "UpdateByKey",
+      "QueryType": "UpdateByKey",
+      "Columns": [
+        {
+          "Name": "Id"
+        },
+        {
+          "Name": "PersonId"
+        },
+        {
+          "Name": "TagId"
+        }
+      ],
+      "Params": [],
+      "Where": {
+        "SimpleClauses": [
+          "[Sample_Persons_Tags].[Id]=@Id"
+        ]
+      }
+    },
+    {
+      "QueryName": "DeleteByKey",
+      "QueryType": "DeleteByKey",
+      "Columns": [
+        {
+          "Name": "Id"
+        }
+      ],
+      "Where": {
+        "SimpleClauses": [
+          "[Sample_Persons_Tags].[Id]=@Id"
+        ]
+      }
+    }
+  ]
+}

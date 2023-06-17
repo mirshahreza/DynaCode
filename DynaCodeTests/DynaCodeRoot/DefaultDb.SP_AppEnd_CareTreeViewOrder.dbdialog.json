@@ -1,0 +1,37 @@
+{
+  "DbConfName": "DefaultDb",
+  "ObjectName": "SP_AppEnd_CareTreeViewOrder",
+  "Columns": [],
+  "DbQueries": [
+    {
+      "QueryName": "Exec",
+      "QueryType": "Procedure",
+      "Params": [
+        {
+          "Name": "UpdatedRowId",
+          "DbType": "INT"
+        },
+        {
+          "Name": "TableName",
+          "DbType": "NVARCHAR",
+          "Size": "128"
+        },
+        {
+          "Name": "IdFieldName",
+          "DbType": "NVARCHAR",
+          "Size": "128"
+        },
+        {
+          "Name": "ParentIdFieldName",
+          "DbType": "NVARCHAR",
+          "Size": "128"
+        },
+        {
+          "Name": "ViewOrderFieldName",
+          "DbType": "NVARCHAR",
+          "Size": "128"
+        }
+      ]
+    }
+  ]
+}

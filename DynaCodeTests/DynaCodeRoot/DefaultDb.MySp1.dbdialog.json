@@ -1,0 +1,24 @@
+{
+  "DbConfName": "DefaultDb",
+  "ObjectName": "MySp1",
+  "Columns": [],
+  "DbQueries": [
+    {
+      "QueryName": "Exec",
+      "QueryType": "Procedure",
+      "Params": [
+        {
+          "Name": "PackageName",
+          "DbType": "VARCHAR",
+          "Size": "512"
+        },
+        {
+          "Name": "UserName",
+          "DbType": "NVARCHAR",
+          "Size": "64",
+          "ValueSharp": "#Context:UserName"
+        }
+      ]
+    }
+  ]
+}

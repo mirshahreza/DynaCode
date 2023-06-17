@@ -1,0 +1,23 @@
+{
+  "DbConfName": "DefaultDb",
+  "ObjectName": "Zz_FormatBytes",
+  "Columns": [],
+  "DbQueries": [
+    {
+      "QueryName": "Select",
+      "QueryType": "ScalarFunction",
+      "Params": [
+        {
+          "Name": "InputNumber",
+          "DbType": "DECIMAL",
+          "Size": "(38, 7)"
+        },
+        {
+          "Name": "InputUOM",
+          "DbType": "VARCHAR",
+          "Size": "5"
+        }
+      ]
+    }
+  ]
+}

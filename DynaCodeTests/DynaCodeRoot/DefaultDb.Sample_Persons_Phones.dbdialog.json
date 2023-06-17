@@ -1,0 +1,226 @@
+{
+  "DbConfName": "DefaultDb",
+  "ObjectName": "Sample_Persons_Phones",
+  "Columns": [
+    {
+      "Name": "Id",
+      "IsPrimaryKey": true,
+      "DbType": "BIGINT",
+      "IsIdentity": true,
+      "IdentityStart": "100000",
+      "IdentityStep": "1",
+      "ViewOrder": 1
+    },
+    {
+      "Name": "PersonId",
+      "DbType": "BIGINT",
+      "ViewOrder": 2,
+      "Fk": {
+        "TargetTable": "Sample_Persons",
+        "TargetColumn": "Id"
+      }
+    },
+    {
+      "Name": "TypeId",
+      "DbType": "INT",
+      "ViewOrder": 3,
+      "Fk": {
+        "TargetTable": "AppEnd_BaseInfo",
+        "TargetColumn": "Id"
+      }
+    },
+    {
+      "Name": "Phone",
+      "DbType": "VARCHAR",
+      "Size": "16",
+      "ViewOrder": 4
+    },
+    {
+      "Name": "IsDefault",
+      "DbType": "BIT",
+      "DbDefault": "((0))",
+      "ViewOrder": 5
+    },
+    {
+      "Name": "RelatedAddressId",
+      "DbType": "BIGINT",
+      "AllowNull": true,
+      "ViewOrder": 6,
+      "Fk": {
+        "TargetTable": "Sample_Persons_Addresses",
+        "TargetColumn": "Id"
+      }
+    }
+  ],
+  "DbQueries": [
+    {
+      "QueryName": "Create",
+      "QueryType": "Create",
+      "Columns": [
+        {
+          "Name": "PersonId"
+        },
+        {
+          "Name": "TypeId"
+        },
+        {
+          "Name": "Phone"
+        },
+        {
+          "Name": "RelatedAddressId"
+        }
+      ],
+      "Params": []
+    },
+    {
+      "QueryName": "ReadByKey",
+      "QueryType": "ReadByKey",
+      "Columns": [
+        {
+          "Name": "Id"
+        },
+        {
+          "Name": "PersonId"
+        },
+        {
+          "Name": "TypeId"
+        },
+        {
+          "Name": "Phone"
+        },
+        {
+          "Name": "IsDefault"
+        },
+        {
+          "Name": "RelatedAddressId"
+        }
+      ],
+      "Where": {
+        "SimpleClauses": [
+          "[Sample_Persons_Phones].[Id]=@Id"
+        ]
+      }
+    },
+    {
+      "QueryName": "ReadList",
+      "QueryType": "ReadList",
+      "Columns": [
+        {
+          "Name": "Id"
+        },
+        {
+          "Name": "PersonId",
+          "DbLeftTo": {
+            "TargetTable": "Sample_Persons",
+            "TargetColumn": "Id",
+            "Columns": [
+              {
+                "Name": "FirstName",
+                "As": "PersonId_FirstName"
+              },
+              {
+                "Name": "LastName",
+                "As": "PersonId_LastName"
+              },
+              {
+                "Name": "Title",
+                "As": "PersonId_Title"
+              },
+              {
+                "Name": "Picture_FileName",
+                "As": "PersonId_Picture_FileName"
+              },
+              {
+                "Name": "ResumeFile_FileName",
+                "As": "PersonId_ResumeFile_FileName"
+              }
+            ]
+          }
+        },
+        {
+          "Name": "TypeId",
+          "DbLeftTo": {
+            "TargetTable": "AppEnd_BaseInfo",
+            "TargetColumn": "Id",
+            "Columns": [
+              {
+                "Name": "Title",
+                "As": "TypeId_Title"
+              }
+            ]
+          }
+        },
+        {
+          "Name": "Phone"
+        },
+        {
+          "Name": "IsDefault"
+        },
+        {
+          "Name": "RelatedAddressId",
+          "DbLeftTo": {
+            "TargetTable": "Sample_Persons_Addresses",
+            "TargetColumn": "Id",
+            "Columns": [
+              {
+                "Name": "PersonId",
+                "As": "RelatedAddressId_PersonId"
+              }
+            ]
+          }
+        }
+      ],
+      "PaginationMaxSize": 100,
+      "Aggregations": [
+        {
+          "Name": "Count",
+          "Phrase": "COUNT(*)"
+        }
+      ]
+    },
+    {
+      "QueryName": "UpdateByKey",
+      "QueryType": "UpdateByKey",
+      "Columns": [
+        {
+          "Name": "Id"
+        },
+        {
+          "Name": "PersonId"
+        },
+        {
+          "Name": "TypeId"
+        },
+        {
+          "Name": "Phone"
+        },
+        {
+          "Name": "IsDefault"
+        },
+        {
+          "Name": "RelatedAddressId"
+        }
+      ],
+      "Params": [],
+      "Where": {
+        "SimpleClauses": [
+          "[Sample_Persons_Phones].[Id]=@Id"
+        ]
+      }
+    },
+    {
+      "QueryName": "DeleteByKey",
+      "QueryType": "DeleteByKey",
+      "Columns": [
+        {
+          "Name": "Id"
+        }
+      ],
+      "Where": {
+        "SimpleClauses": [
+          "[Sample_Persons_Phones].[Id]=@Id"
+        ]
+      }
+    }
+  ]
+}

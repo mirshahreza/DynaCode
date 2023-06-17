@@ -1,0 +1,424 @@
+{
+  "DbConfName": "DefaultDb",
+  "ObjectName": "AppEnd_BaseInfo",
+  "Columns": [
+    {
+      "Name": "Id",
+      "IsPrimaryKey": true,
+      "DbType": "INT",
+      "IsIdentity": true,
+      "IdentityStart": "10000",
+      "IdentityStep": "10",
+      "ViewOrder": 1
+    },
+    {
+      "Name": "ParentId",
+      "DbType": "INT",
+      "AllowNull": true,
+      "ViewOrder": 2
+    },
+    {
+      "Name": "Title",
+      "DbType": "NVARCHAR",
+      "Size": "128",
+      "ViewOrder": 3
+    },
+    {
+      "Name": "ViewOrder",
+      "DbType": "INT",
+      "AllowNull": true,
+      "DbDefault": "((1))",
+      "ViewOrder": 4
+    },
+    {
+      "Name": "UiColor",
+      "DbType": "VARCHAR",
+      "Size": "32",
+      "AllowNull": true,
+      "ViewOrder": 5
+    },
+    {
+      "Name": "Icon",
+      "DbType": "VARCHAR",
+      "Size": "128",
+      "AllowNull": true,
+      "ViewOrder": 6
+    },
+    {
+      "Name": "Note",
+      "DbType": "NVARCHAR",
+      "Size": "512",
+      "AllowNull": true,
+      "ViewOrder": 7
+    },
+    {
+      "Name": "MoreVariables",
+      "DbType": "NVARCHAR",
+      "Size": "0",
+      "AllowNull": true,
+      "ViewOrder": 8
+    },
+    {
+      "Name": "IsActive",
+      "DbType": "BIT",
+      "AllowNull": true,
+      "DbDefault": "((1))",
+      "ViewOrder": 9
+    },
+    {
+      "Name": "CreatedBy",
+      "DbType": "NVARCHAR",
+      "Size": "64",
+      "ViewOrder": 10
+    },
+    {
+      "Name": "CreatedOn",
+      "DbType": "DATETIME",
+      "ViewOrder": 11
+    },
+    {
+      "Name": "UpdatedBy",
+      "DbType": "NVARCHAR",
+      "Size": "64",
+      "AllowNull": true,
+      "ViewOrder": 12
+    },
+    {
+      "Name": "UpdatedOn",
+      "DbType": "DATETIME",
+      "AllowNull": true,
+      "ViewOrder": 13
+    }
+  ],
+  "DbQueries": [
+    {
+      "QueryName": "Create",
+      "QueryType": "Create",
+      "Columns": [
+        {
+          "Name": "ParentId"
+        },
+        {
+          "Name": "Title"
+        },
+        {
+          "Name": "UiColor"
+        },
+        {
+          "Name": "Icon"
+        },
+        {
+          "Name": "Note"
+        },
+        {
+          "Name": "MoreVariables"
+        },
+        {
+          "Name": "CreatedBy"
+        },
+        {
+          "Name": "CreatedOn"
+        }
+      ],
+      "Params": [
+        {
+          "Name": "CreatedBy",
+          "DbType": "NVARCHAR",
+          "Size": "64",
+          "ValueSharp": "#Context:UserName"
+        },
+        {
+          "Name": "CreatedOn",
+          "DbType": "DATETIME",
+          "ValueSharp": "#Now"
+        }
+      ]
+    },
+    {
+      "QueryName": "ReadByKey",
+      "QueryType": "ReadByKey",
+      "Columns": [
+        {
+          "Name": "Id"
+        },
+        {
+          "Name": "ParentId"
+        },
+        {
+          "Name": "Title"
+        },
+        {
+          "Name": "ViewOrder"
+        },
+        {
+          "Name": "UiColor"
+        },
+        {
+          "Name": "Icon"
+        },
+        {
+          "Name": "Note"
+        },
+        {
+          "Name": "MoreVariables"
+        },
+        {
+          "Name": "IsActive"
+        },
+        {
+          "Name": "CreatedBy"
+        },
+        {
+          "Name": "CreatedOn"
+        },
+        {
+          "Name": "UpdatedBy"
+        },
+        {
+          "Name": "UpdatedOn"
+        }
+      ],
+      "Where": {
+        "SimpleClauses": [
+          "[AppEnd_BaseInfo].[Id]=@Id"
+        ]
+      },
+      "OneToManies": [
+        {
+          "RelationDbDialog": "DefaultDb.MyTestTable",
+          "RelationFkColumn": "Gender",
+          "RelationPkColumn": "Id",
+          "CreateQuery": "Create",
+          "ReadListQuery": "ReadList",
+          "UpdateByKeyQuery": "UpdateByKey",
+          "DeleteByKeyQuery": "DeleteByKey"
+        },
+        {
+          "RelationDbDialog": "DefaultDb.Sample_Persons",
+          "RelationFkColumn": "TypeId",
+          "RelationPkColumn": "Id",
+          "CreateQuery": "Create",
+          "ReadListQuery": "ReadList",
+          "UpdateByKeyQuery": "UpdateByKey",
+          "DeleteByKeyQuery": "DeleteByKey"
+        },
+        {
+          "RelationDbDialog": "DefaultDb.Sample_Persons_Abilities",
+          "RelationFkColumn": "AbilityId",
+          "RelationPkColumn": "Id",
+          "ForMultiSelectOf": "PersonId",
+          "CreateQuery": "Create",
+          "ReadListQuery": "ReadList",
+          "UpdateByKeyQuery": "UpdateByKey",
+          "DeleteByKeyQuery": "DeleteByKey"
+        },
+        {
+          "RelationDbDialog": "DefaultDb.Sample_Persons_R_Persons",
+          "RelationFkColumn": "RelationTypeId",
+          "RelationPkColumn": "Id",
+          "CreateQuery": "Create",
+          "ReadListQuery": "ReadList",
+          "UpdateByKeyQuery": "UpdateByKey",
+          "DeleteByKeyQuery": "DeleteByKey"
+        },
+        {
+          "RelationDbDialog": "DefaultDb.Sample_Persons_Tags",
+          "RelationFkColumn": "TagId",
+          "RelationPkColumn": "Id",
+          "CreateQuery": "Create",
+          "ReadListQuery": "ReadList",
+          "UpdateByKeyQuery": "UpdateByKey",
+          "DeleteByKeyQuery": "DeleteByKey"
+        },
+        {
+          "RelationDbDialog": "DefaultDb.Sample_Persons_Phones",
+          "RelationFkColumn": "TypeId",
+          "RelationPkColumn": "Id",
+          "CreateQuery": "Create",
+          "ReadListQuery": "ReadList",
+          "UpdateByKeyQuery": "UpdateByKey",
+          "DeleteByKeyQuery": "DeleteByKey"
+        }
+      ]
+    },
+    {
+      "QueryName": "ReadList",
+      "QueryType": "ReadList",
+      "Columns": [
+        {
+          "Name": "Id"
+        },
+        {
+          "Name": "ParentId"
+        },
+        {
+          "Name": "Title"
+        },
+        {
+          "Name": "ViewOrder"
+        },
+        {
+          "Name": "UiColor"
+        },
+        {
+          "Name": "Icon"
+        },
+        {
+          "Name": "MoreVariables"
+        },
+        {
+          "Name": "IsActive"
+        },
+        {
+          "Name": "CreatedBy"
+        },
+        {
+          "Name": "CreatedOn"
+        },
+        {
+          "Name": "UpdatedBy"
+        },
+        {
+          "Name": "UpdatedOn"
+        }
+      ],
+      "PaginationMaxSize": 100,
+      "OneToManies": [
+        {
+          "RelationDbDialog": "DefaultDb.MyTestTable",
+          "RelationFkColumn": "Gender",
+          "RelationPkColumn": "Id",
+          "CreateQuery": "Create",
+          "ReadListQuery": "ReadList",
+          "UpdateByKeyQuery": "UpdateByKey",
+          "DeleteByKeyQuery": "DeleteByKey"
+        },
+        {
+          "RelationDbDialog": "DefaultDb.Sample_Persons",
+          "RelationFkColumn": "TypeId",
+          "RelationPkColumn": "Id",
+          "CreateQuery": "Create",
+          "ReadListQuery": "ReadList",
+          "UpdateByKeyQuery": "UpdateByKey",
+          "DeleteByKeyQuery": "DeleteByKey"
+        },
+        {
+          "RelationDbDialog": "DefaultDb.Sample_Persons_Abilities",
+          "RelationFkColumn": "AbilityId",
+          "RelationPkColumn": "Id",
+          "ForMultiSelectOf": "PersonId",
+          "CreateQuery": "Create",
+          "ReadListQuery": "ReadList",
+          "UpdateByKeyQuery": "UpdateByKey",
+          "DeleteByKeyQuery": "DeleteByKey"
+        },
+        {
+          "RelationDbDialog": "DefaultDb.Sample_Persons_R_Persons",
+          "RelationFkColumn": "RelationTypeId",
+          "RelationPkColumn": "Id",
+          "CreateQuery": "Create",
+          "ReadListQuery": "ReadList",
+          "UpdateByKeyQuery": "UpdateByKey",
+          "DeleteByKeyQuery": "DeleteByKey"
+        },
+        {
+          "RelationDbDialog": "DefaultDb.Sample_Persons_Tags",
+          "RelationFkColumn": "TagId",
+          "RelationPkColumn": "Id",
+          "CreateQuery": "Create",
+          "ReadListQuery": "ReadList",
+          "UpdateByKeyQuery": "UpdateByKey",
+          "DeleteByKeyQuery": "DeleteByKey"
+        },
+        {
+          "RelationDbDialog": "DefaultDb.Sample_Persons_Phones",
+          "RelationFkColumn": "TypeId",
+          "RelationPkColumn": "Id",
+          "CreateQuery": "Create",
+          "ReadListQuery": "ReadList",
+          "UpdateByKeyQuery": "UpdateByKey",
+          "DeleteByKeyQuery": "DeleteByKey"
+        }
+      ],
+      "Aggregations": [
+        {
+          "Name": "Count",
+          "Phrase": "COUNT(*)"
+        }
+      ]
+    },
+    {
+      "QueryName": "UpdateByKey",
+      "QueryType": "UpdateByKey",
+      "Columns": [
+        {
+          "Name": "Id"
+        },
+        {
+          "Name": "ParentId"
+        },
+        {
+          "Name": "Title"
+        },
+        {
+          "Name": "ViewOrder"
+        },
+        {
+          "Name": "UiColor"
+        },
+        {
+          "Name": "Icon"
+        },
+        {
+          "Name": "Note"
+        },
+        {
+          "Name": "MoreVariables"
+        },
+        {
+          "Name": "IsActive"
+        },
+        {
+          "Name": "UpdatedBy"
+        },
+        {
+          "Name": "UpdatedOn"
+        }
+      ],
+      "Params": [
+        {
+          "Name": "UpdatedBy",
+          "DbType": "NVARCHAR",
+          "Size": "64",
+          "AllowNull": true,
+          "ValueSharp": "#Context:UserName"
+        },
+        {
+          "Name": "UpdatedOn",
+          "DbType": "DATETIME",
+          "AllowNull": true,
+          "ValueSharp": "#Now"
+        }
+      ],
+      "Where": {
+        "SimpleClauses": [
+          "[AppEnd_BaseInfo].[Id]=@Id"
+        ]
+      }
+    },
+    {
+      "QueryName": "DeleteByKey",
+      "QueryType": "DeleteByKey",
+      "Columns": [
+        {
+          "Name": "Id"
+        }
+      ],
+      "Where": {
+        "SimpleClauses": [
+          "[AppEnd_BaseInfo].[Id]=@Id"
+        ]
+      }
+    }
+  ]
+}

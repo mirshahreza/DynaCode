@@ -1,0 +1,76 @@
+{
+  "DbConfName": "DefaultDb",
+  "ObjectName": "Zz_UserTablesFks",
+  "ObjectType": "View",
+  "Columns": [
+    {
+      "Name": "FkName",
+      "DbType": "SYSNAME",
+      "ViewOrder": 1
+    },
+    {
+      "Name": "TableName",
+      "DbType": "NVARCHAR",
+      "Size": "128",
+      "AllowNull": true,
+      "ViewOrder": 2
+    },
+    {
+      "Name": "ColumnName",
+      "DbType": "NVARCHAR",
+      "Size": "128",
+      "AllowNull": true,
+      "ViewOrder": 3
+    },
+    {
+      "Name": "TargetTable",
+      "DbType": "SYSNAME",
+      "AllowNull": true,
+      "ViewOrder": 4
+    },
+    {
+      "Name": "TargetColumn",
+      "DbType": "SYSNAME",
+      "AllowNull": true,
+      "ViewOrder": 5
+    },
+    {
+      "Name": "EnforceRelation",
+      "DbType": "BIT",
+      "ViewOrder": 6
+    }
+  ],
+  "DbQueries": [
+    {
+      "QueryName": "ReadList",
+      "QueryType": "ReadList",
+      "Columns": [
+        {
+          "Name": "FkName"
+        },
+        {
+          "Name": "TableName"
+        },
+        {
+          "Name": "ColumnName"
+        },
+        {
+          "Name": "TargetTable"
+        },
+        {
+          "Name": "TargetColumn"
+        },
+        {
+          "Name": "EnforceRelation"
+        }
+      ],
+      "PaginationMaxSize": 100,
+      "Aggregations": [
+        {
+          "Name": "Count",
+          "Phrase": "COUNT(*)"
+        }
+      ]
+    }
+  ]
+}

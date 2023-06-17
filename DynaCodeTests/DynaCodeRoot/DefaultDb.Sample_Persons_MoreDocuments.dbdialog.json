@@ -1,0 +1,314 @@
+{
+  "DbConfName": "DefaultDb",
+  "ObjectName": "Sample_Persons_MoreDocuments",
+  "Columns": [
+    {
+      "Name": "Id",
+      "IsPrimaryKey": true,
+      "DbType": "BIGINT",
+      "IsIdentity": true,
+      "IdentityStart": "100000",
+      "IdentityStep": "1",
+      "ViewOrder": 1
+    },
+    {
+      "Name": "PersonId",
+      "DbType": "BIGINT",
+      "AllowNull": true,
+      "ViewOrder": 2,
+      "Fk": {
+        "TargetTable": "Sample_Persons",
+        "TargetColumn": "Id"
+      }
+    },
+    {
+      "Name": "File_FileBody",
+      "DbType": "IMAGE",
+      "AllowNull": true,
+      "ViewOrder": 3
+    },
+    {
+      "Name": "File_FileName",
+      "DbType": "NVARCHAR",
+      "Size": "128",
+      "AllowNull": true,
+      "ViewOrder": 4
+    },
+    {
+      "Name": "File_FileSize",
+      "DbType": "INT",
+      "AllowNull": true,
+      "ViewOrder": 5
+    },
+    {
+      "Name": "File_FileMime",
+      "DbType": "VARCHAR",
+      "Size": "32",
+      "AllowNull": true,
+      "ViewOrder": 6
+    },
+    {
+      "Name": "Note",
+      "DbType": "NVARCHAR",
+      "Size": "256",
+      "AllowNull": true,
+      "ViewOrder": 7
+    },
+    {
+      "Name": "ViewOrder",
+      "DbType": "INT",
+      "AllowNull": true,
+      "DbDefault": "((1))",
+      "ViewOrder": 8
+    },
+    {
+      "Name": "CreatedOn",
+      "DbType": "DATETIME",
+      "ViewOrder": 9
+    },
+    {
+      "Name": "CreatedBy",
+      "DbType": "NVARCHAR",
+      "Size": "32",
+      "ViewOrder": 10
+    },
+    {
+      "Name": "UpdatedOn",
+      "DbType": "DATETIME",
+      "AllowNull": true,
+      "ViewOrder": 11
+    },
+    {
+      "Name": "UpdatedBy",
+      "DbType": "NVARCHAR",
+      "Size": "32",
+      "AllowNull": true,
+      "ViewOrder": 12
+    }
+  ],
+  "DbQueries": [
+    {
+      "QueryName": "Create",
+      "QueryType": "Create",
+      "Columns": [
+        {
+          "Name": "PersonId"
+        },
+        {
+          "Name": "File_FileBody"
+        },
+        {
+          "Name": "File_FileName"
+        },
+        {
+          "Name": "File_FileSize"
+        },
+        {
+          "Name": "File_FileMime"
+        },
+        {
+          "Name": "Note"
+        },
+        {
+          "Name": "CreatedOn"
+        },
+        {
+          "Name": "CreatedBy"
+        }
+      ],
+      "Params": [
+        {
+          "Name": "CreatedOn",
+          "DbType": "DATETIME",
+          "ValueSharp": "#Now"
+        },
+        {
+          "Name": "CreatedBy",
+          "DbType": "NVARCHAR",
+          "Size": "32",
+          "ValueSharp": "#Context:UserName"
+        }
+      ]
+    },
+    {
+      "QueryName": "ReadByKey",
+      "QueryType": "ReadByKey",
+      "Columns": [
+        {
+          "Name": "Id"
+        },
+        {
+          "Name": "PersonId"
+        },
+        {
+          "Name": "File_FileBody"
+        },
+        {
+          "Name": "File_FileName"
+        },
+        {
+          "Name": "File_FileSize"
+        },
+        {
+          "Name": "File_FileMime"
+        },
+        {
+          "Name": "Note"
+        },
+        {
+          "Name": "ViewOrder"
+        },
+        {
+          "Name": "CreatedOn"
+        },
+        {
+          "Name": "CreatedBy"
+        },
+        {
+          "Name": "UpdatedOn"
+        },
+        {
+          "Name": "UpdatedBy"
+        }
+      ],
+      "Where": {
+        "SimpleClauses": [
+          "[Sample_Persons_MoreDocuments].[Id]=@Id"
+        ]
+      }
+    },
+    {
+      "QueryName": "ReadList",
+      "QueryType": "ReadList",
+      "Columns": [
+        {
+          "Name": "Id"
+        },
+        {
+          "Name": "PersonId",
+          "DbLeftTo": {
+            "TargetTable": "Sample_Persons",
+            "TargetColumn": "Id",
+            "Columns": [
+              {
+                "Name": "FirstName",
+                "As": "PersonId_FirstName"
+              },
+              {
+                "Name": "LastName",
+                "As": "PersonId_LastName"
+              },
+              {
+                "Name": "Title",
+                "As": "PersonId_Title"
+              },
+              {
+                "Name": "Picture_FileName",
+                "As": "PersonId_Picture_FileName"
+              },
+              {
+                "Name": "ResumeFile_FileName",
+                "As": "PersonId_ResumeFile_FileName"
+              }
+            ]
+          }
+        },
+        {
+          "Name": "Note"
+        },
+        {
+          "Name": "ViewOrder"
+        },
+        {
+          "Name": "CreatedOn"
+        },
+        {
+          "Name": "CreatedBy"
+        },
+        {
+          "Name": "UpdatedOn"
+        },
+        {
+          "Name": "UpdatedBy"
+        }
+      ],
+      "PaginationMaxSize": 100,
+      "Aggregations": [
+        {
+          "Name": "Count",
+          "Phrase": "COUNT(*)"
+        }
+      ]
+    },
+    {
+      "QueryName": "UpdateByKey",
+      "QueryType": "UpdateByKey",
+      "Columns": [
+        {
+          "Name": "Id"
+        },
+        {
+          "Name": "PersonId"
+        },
+        {
+          "Name": "File_FileBody"
+        },
+        {
+          "Name": "File_FileName"
+        },
+        {
+          "Name": "File_FileSize"
+        },
+        {
+          "Name": "File_FileMime"
+        },
+        {
+          "Name": "Note"
+        },
+        {
+          "Name": "ViewOrder"
+        },
+        {
+          "Name": "UpdatedOn"
+        },
+        {
+          "Name": "UpdatedBy"
+        }
+      ],
+      "Params": [
+        {
+          "Name": "UpdatedOn",
+          "DbType": "DATETIME",
+          "AllowNull": true,
+          "ValueSharp": "#Now"
+        },
+        {
+          "Name": "UpdatedBy",
+          "DbType": "NVARCHAR",
+          "Size": "32",
+          "AllowNull": true,
+          "ValueSharp": "#Context:UserName"
+        }
+      ],
+      "Where": {
+        "SimpleClauses": [
+          "[Sample_Persons_MoreDocuments].[Id]=@Id"
+        ]
+      }
+    },
+    {
+      "QueryName": "DeleteByKey",
+      "QueryType": "DeleteByKey",
+      "Columns": [
+        {
+          "Name": "Id"
+        }
+      ],
+      "Where": {
+        "SimpleClauses": [
+          "[Sample_Persons_MoreDocuments].[Id]=@Id"
+        ]
+      }
+    }
+  ]
+}

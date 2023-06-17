@@ -58,11 +58,119 @@
     <None Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="DynaCodeRoot\DefaultDb.AppEnd_BaseInfo.dbdialog.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DynaCodeRoot\DefaultDb.AppEnd_Roles.dbdialog.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DynaCodeRoot\DefaultDb.AppEnd_Users.dbdialog.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DynaCodeRoot\DefaultDb.AppEnd_Users_R_Roles.dbdialog.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DynaCodeRoot\DefaultDb.MySp1.dbdialog.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DynaCodeRoot\DefaultDb.MyTestTable.dbdialog.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DynaCodeRoot\DefaultDb.Sample_Persons.dbdialog.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DynaCodeRoot\DefaultDb.Sample_Persons_Abilities.dbdialog.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DynaCodeRoot\DefaultDb.Sample_Persons_Addresses.dbdialog.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DynaCodeRoot\DefaultDb.Sample_Persons_MoreDocuments.dbdialog.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DynaCodeRoot\DefaultDb.Sample_Persons_MorePictures.dbdialog.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DynaCodeRoot\DefaultDb.Sample_Persons_Phones.dbdialog.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DynaCodeRoot\DefaultDb.Sample_Persons_R_Persons.dbdialog.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DynaCodeRoot\DefaultDb.Sample_Persons_Tags.dbdialog.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DynaCodeRoot\DefaultDb.SP_AppEnd_CareTreeViewOrder.dbdialog.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DynaCodeRoot\DefaultDb.Zzz_Deploy.dbdialog.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DynaCodeRoot\DefaultDb.Zz_CountChar.dbdialog.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DynaCodeRoot\DefaultDb.Zz_CountWord.dbdialog.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DynaCodeRoot\DefaultDb.Zz_CreateColumn.dbdialog.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DynaCodeRoot\DefaultDb.Zz_CreateTableGuid.dbdialog.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DynaCodeRoot\DefaultDb.Zz_CreateTableIdentity.dbdialog.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DynaCodeRoot\DefaultDb.Zz_DropColumn.dbdialog.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DynaCodeRoot\DefaultDb.Zz_DropTable.dbdialog.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DynaCodeRoot\DefaultDb.Zz_Fix2Char.dbdialog.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DynaCodeRoot\DefaultDb.Zz_FormatBytes.dbdialog.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DynaCodeRoot\DefaultDb.Zz_HumanizeNumber.dbdialog.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DynaCodeRoot\DefaultDb.Zz_NthItem.dbdialog.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DynaCodeRoot\DefaultDb.Zz_SplitString.dbdialog.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DynaCodeRoot\DefaultDb.Zz_Trim.dbdialog.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DynaCodeRoot\DefaultDb.Zz_UserObjectsDetails.dbdialog.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DynaCodeRoot\DefaultDb.Zz_UserObjectsOverview.dbdialog.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DynaCodeRoot\DefaultDb.Zz_UserProceduresFunctionsParameters.dbdialog.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DynaCodeRoot\DefaultDb.Zz_UserTablesFks.dbdialog.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DynaCodeRoot\DefaultDb.Zz_UserTablesIndexes.dbdialog.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DynaCodeRoot\DefaultDb.Zz_UserTablesOverview.dbdialog.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DynaCodeRoot\DefaultDb.Zz_UserTablesViewsColumns.dbdialog.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="References\AppEndDbIO.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="References\Microsoft.Win32.SystemEvents.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
     <None Update="References\Newtonsoft.Json.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

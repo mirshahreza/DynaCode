@@ -1,0 +1,462 @@
+{
+  "DbConfName": "DefaultDb",
+  "ObjectName": "AppEnd_Users",
+  "Columns": [
+    {
+      "Name": "Id",
+      "IsPrimaryKey": true,
+      "DbType": "INT",
+      "IsIdentity": true,
+      "IdentityStart": "1000",
+      "IdentityStep": "1",
+      "ViewOrder": 1
+    },
+    {
+      "Name": "ProfileId",
+      "DbType": "INT",
+      "AllowNull": true,
+      "ViewOrder": 2
+    },
+    {
+      "Name": "UserName",
+      "DbType": "NVARCHAR",
+      "Size": "64",
+      "ViewOrder": 3
+    },
+    {
+      "Name": "Password",
+      "DbType": "VARCHAR",
+      "Size": "256",
+      "ViewOrder": 4
+    },
+    {
+      "Name": "Email",
+      "DbType": "VARCHAR",
+      "Size": "64",
+      "AllowNull": true,
+      "ViewOrder": 5
+    },
+    {
+      "Name": "Mobile",
+      "DbType": "VARCHAR",
+      "Size": "16",
+      "AllowNull": true,
+      "ViewOrder": 6
+    },
+    {
+      "Name": "LastSuccessLogin",
+      "DbType": "DATETIME",
+      "AllowNull": true,
+      "ViewOrder": 7
+    },
+    {
+      "Name": "LastFailedLogin",
+      "DbType": "DATETIME",
+      "AllowNull": true,
+      "ViewOrder": 8
+    },
+    {
+      "Name": "FailedCount",
+      "DbType": "INT",
+      "AllowNull": true,
+      "ViewOrder": 9
+    },
+    {
+      "Name": "IsLocked",
+      "DbType": "BIT",
+      "AllowNull": true,
+      "ViewOrder": 10
+    },
+    {
+      "Name": "Note",
+      "DbType": "NVARCHAR",
+      "Size": "256",
+      "AllowNull": true,
+      "ViewOrder": 11
+    },
+    {
+      "Name": "IsActive",
+      "DbType": "BIT",
+      "AllowNull": true,
+      "ViewOrder": 12
+    },
+    {
+      "Name": "Picture_FileBody",
+      "DbType": "IMAGE",
+      "AllowNull": true,
+      "ViewOrder": 13
+    },
+    {
+      "Name": "Picture_FileBody_xs",
+      "DbType": "IMAGE",
+      "AllowNull": true,
+      "ViewOrder": 14
+    },
+    {
+      "Name": "Picture_FileName",
+      "DbType": "NVARCHAR",
+      "Size": "128",
+      "AllowNull": true,
+      "ViewOrder": 15
+    },
+    {
+      "Name": "Picture_FileSize",
+      "DbType": "INT",
+      "AllowNull": true,
+      "ViewOrder": 16
+    },
+    {
+      "Name": "Picture_FileMime",
+      "DbType": "VARCHAR",
+      "Size": "32",
+      "AllowNull": true,
+      "ViewOrder": 17
+    },
+    {
+      "Name": "CreatedBy",
+      "DbType": "NVARCHAR",
+      "Size": "64",
+      "ViewOrder": 18
+    },
+    {
+      "Name": "CreatedOn",
+      "DbType": "DATETIME",
+      "ViewOrder": 19
+    },
+    {
+      "Name": "UpdatedBy",
+      "DbType": "NVARCHAR",
+      "Size": "64",
+      "AllowNull": true,
+      "ViewOrder": 20
+    },
+    {
+      "Name": "UpdatedOn",
+      "DbType": "DATETIME",
+      "AllowNull": true,
+      "ViewOrder": 21
+    }
+  ],
+  "DbQueries": [
+    {
+      "QueryName": "Create",
+      "QueryType": "Create",
+      "Columns": [
+        {
+          "Name": "ProfileId"
+        },
+        {
+          "Name": "UserName"
+        },
+        {
+          "Name": "Password"
+        },
+        {
+          "Name": "Email"
+        },
+        {
+          "Name": "Mobile"
+        },
+        {
+          "Name": "LastSuccessLogin"
+        },
+        {
+          "Name": "LastFailedLogin"
+        },
+        {
+          "Name": "FailedCount"
+        },
+        {
+          "Name": "IsLocked"
+        },
+        {
+          "Name": "Note"
+        },
+        {
+          "Name": "IsActive"
+        },
+        {
+          "Name": "Picture_FileBody"
+        },
+        {
+          "Name": "Picture_FileBody_xs"
+        },
+        {
+          "Name": "Picture_FileName"
+        },
+        {
+          "Name": "Picture_FileSize"
+        },
+        {
+          "Name": "Picture_FileMime"
+        },
+        {
+          "Name": "CreatedBy"
+        },
+        {
+          "Name": "CreatedOn"
+        }
+      ],
+      "Params": [
+        {
+          "Name": "Picture_FileBody_xs",
+          "DbType": "IMAGE",
+          "AllowNull": true,
+          "ValueSharp": "#Resize:Picture_FileBody,75"
+        },
+        {
+          "Name": "CreatedBy",
+          "DbType": "NVARCHAR",
+          "Size": "64",
+          "ValueSharp": "#Context:UserName"
+        },
+        {
+          "Name": "CreatedOn",
+          "DbType": "DATETIME",
+          "ValueSharp": "#Now"
+        }
+      ]
+    },
+    {
+      "QueryName": "ReadByKey",
+      "QueryType": "ReadByKey",
+      "Columns": [
+        {
+          "Name": "Id"
+        },
+        {
+          "Name": "ProfileId"
+        },
+        {
+          "Name": "UserName"
+        },
+        {
+          "Name": "Password"
+        },
+        {
+          "Name": "Email"
+        },
+        {
+          "Name": "Mobile"
+        },
+        {
+          "Name": "LastSuccessLogin"
+        },
+        {
+          "Name": "LastFailedLogin"
+        },
+        {
+          "Name": "FailedCount"
+        },
+        {
+          "Name": "IsLocked"
+        },
+        {
+          "Name": "Note"
+        },
+        {
+          "Name": "IsActive"
+        },
+        {
+          "Name": "Picture_FileBody"
+        },
+        {
+          "Name": "Picture_FileBody_xs"
+        },
+        {
+          "Name": "Picture_FileName"
+        },
+        {
+          "Name": "Picture_FileSize"
+        },
+        {
+          "Name": "Picture_FileMime"
+        },
+        {
+          "Name": "CreatedBy"
+        },
+        {
+          "Name": "CreatedOn"
+        },
+        {
+          "Name": "UpdatedBy"
+        },
+        {
+          "Name": "UpdatedOn"
+        }
+      ],
+      "Where": {
+        "SimpleClauses": [
+          "[AppEnd_Users].[Id]=@Id"
+        ]
+      }
+    },
+    {
+      "QueryName": "ReadList",
+      "QueryType": "ReadList",
+      "Columns": [
+        {
+          "Name": "Id"
+        },
+        {
+          "Name": "ProfileId"
+        },
+        {
+          "Name": "UserName"
+        },
+        {
+          "Name": "Password"
+        },
+        {
+          "Name": "Email"
+        },
+        {
+          "Name": "Mobile"
+        },
+        {
+          "Name": "LastSuccessLogin"
+        },
+        {
+          "Name": "LastFailedLogin"
+        },
+        {
+          "Name": "FailedCount"
+        },
+        {
+          "Name": "IsLocked"
+        },
+        {
+          "Name": "Note"
+        },
+        {
+          "Name": "IsActive"
+        },
+        {
+          "Name": "Picture_FileBody_xs"
+        },
+        {
+          "Name": "CreatedBy"
+        },
+        {
+          "Name": "CreatedOn"
+        },
+        {
+          "Name": "UpdatedBy"
+        },
+        {
+          "Name": "UpdatedOn"
+        }
+      ],
+      "PaginationMaxSize": 100,
+      "Aggregations": [
+        {
+          "Name": "Count",
+          "Phrase": "COUNT(*)"
+        }
+      ]
+    },
+    {
+      "QueryName": "UpdateByKey",
+      "QueryType": "UpdateByKey",
+      "Columns": [
+        {
+          "Name": "Id"
+        },
+        {
+          "Name": "ProfileId"
+        },
+        {
+          "Name": "UserName"
+        },
+        {
+          "Name": "Password"
+        },
+        {
+          "Name": "Email"
+        },
+        {
+          "Name": "Mobile"
+        },
+        {
+          "Name": "LastSuccessLogin"
+        },
+        {
+          "Name": "LastFailedLogin"
+        },
+        {
+          "Name": "FailedCount"
+        },
+        {
+          "Name": "IsLocked"
+        },
+        {
+          "Name": "Note"
+        },
+        {
+          "Name": "IsActive"
+        },
+        {
+          "Name": "Picture_FileBody"
+        },
+        {
+          "Name": "Picture_FileBody_xs"
+        },
+        {
+          "Name": "Picture_FileName"
+        },
+        {
+          "Name": "Picture_FileSize"
+        },
+        {
+          "Name": "Picture_FileMime"
+        },
+        {
+          "Name": "UpdatedBy"
+        },
+        {
+          "Name": "UpdatedOn"
+        }
+      ],
+      "Params": [
+        {
+          "Name": "Picture_FileBody_xs",
+          "DbType": "IMAGE",
+          "AllowNull": true,
+          "ValueSharp": "#Resize:Picture_FileBody,75"
+        },
+        {
+          "Name": "UpdatedBy",
+          "DbType": "NVARCHAR",
+          "Size": "64",
+          "AllowNull": true,
+          "ValueSharp": "#Context:UserName"
+        },
+        {
+          "Name": "UpdatedOn",
+          "DbType": "DATETIME",
+          "AllowNull": true,
+          "ValueSharp": "#Now"
+        }
+      ],
+      "Where": {
+        "SimpleClauses": [
+          "[AppEnd_Users].[Id]=@Id"
+        ]
+      }
+    },
+    {
+      "QueryName": "DeleteByKey",
+      "QueryType": "DeleteByKey",
+      "Columns": [
+        {
+          "Name": "Id"
+        }
+      ],
+      "Where": {
+        "SimpleClauses": [
+          "[AppEnd_Users].[Id]=@Id"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "DbConfName": "DefaultDb",
+  "ObjectName": "Zz_CountWord",
+  "Columns": [],
+  "DbQueries": [
+    {
+      "QueryName": "Select",
+      "QueryType": "ScalarFunction",
+      "Params": [
+        {
+          "Name": "InputPhrase",
+          "DbType": "NVARCHAR",
+          "Size": "4000"
+        },
+        {
+          "Name": "SearchWord",
+          "DbType": "NVARCHAR",
+          "Size": "64"
+        }
+      ]
+    }
+  ]
+}

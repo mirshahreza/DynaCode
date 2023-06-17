@@ -1,0 +1,18 @@
+{
+  "DbConfName": "DefaultDb",
+  "ObjectName": "Zz_Fix2Char",
+  "Columns": [],
+  "DbQueries": [
+    {
+      "QueryName": "Select",
+      "QueryType": "ScalarFunction",
+      "Params": [
+        {
+          "Name": "S",
+          "DbType": "VARCHAR",
+          "Size": "8"
+        }
+      ]
+    }
+  ]
+}

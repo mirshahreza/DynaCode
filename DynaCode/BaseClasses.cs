@@ -79,6 +79,7 @@ public class DynaUser
         public string PublicKeyUser { get; init; } = "";
         public string PublicKeyRole { get; init; } = "";
         public string AlternativeMethodFullName { get; init; } = "";
+        public string ReferencesPath { get; init; } = "";
     }
 
     public class DynaEx

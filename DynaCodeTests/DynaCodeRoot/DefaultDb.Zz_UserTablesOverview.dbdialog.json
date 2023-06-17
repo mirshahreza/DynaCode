@@ -1,0 +1,90 @@
+{
+  "DbConfName": "DefaultDb",
+  "ObjectName": "Zz_UserTablesOverview",
+  "ObjectType": "View",
+  "Columns": [
+    {
+      "Name": "ObjectId",
+      "DbType": "INT",
+      "ViewOrder": 1
+    },
+    {
+      "Name": "ObjectName",
+      "DbType": "SYSNAME",
+      "ViewOrder": 2
+    },
+    {
+      "Name": "FieldsCount",
+      "DbType": "INT",
+      "AllowNull": true,
+      "ViewOrder": 3
+    },
+    {
+      "Name": "RecordsCount",
+      "DbType": "INT",
+      "AllowNull": true,
+      "ViewOrder": 4
+    },
+    {
+      "Name": "TotalSpaceInBytes",
+      "DbType": "BIGINT",
+      "AllowNull": true,
+      "ViewOrder": 5
+    },
+    {
+      "Name": "IndexesCount",
+      "DbType": "INT",
+      "AllowNull": true,
+      "ViewOrder": 6
+    },
+    {
+      "Name": "CreatedOn",
+      "DbType": "DATETIME",
+      "ViewOrder": 7
+    },
+    {
+      "Name": "UpdatedOn",
+      "DbType": "DATETIME",
+      "ViewOrder": 8
+    }
+  ],
+  "DbQueries": [
+    {
+      "QueryName": "ReadList",
+      "QueryType": "ReadList",
+      "Columns": [
+        {
+          "Name": "ObjectId"
+        },
+        {
+          "Name": "ObjectName"
+        },
+        {
+          "Name": "FieldsCount"
+        },
+        {
+          "Name": "RecordsCount"
+        },
+        {
+          "Name": "TotalSpaceInBytes"
+        },
+        {
+          "Name": "IndexesCount"
+        },
+        {
+          "Name": "CreatedOn"
+        },
+        {
+          "Name": "UpdatedOn"
+        }
+      ],
+      "PaginationMaxSize": 100,
+      "Aggregations": [
+        {
+          "Name": "Count",
+          "Phrase": "COUNT(*)"
+        }
+      ]
+    }
+  ]
+}

@@ -15,12 +15,8 @@ namespace AppEndDbIO
 
             ClientQuery? clientQuery = JsonSerializer.Deserialize<ClientQuery>(ClientQueryJson);
             if (clientQuery == null) return false;
-            clientQuery = ClientQuery.Instance("workspace/server", clientQuery);
-
-            return "test2";
-
-            return clientQuery;
-            //return clientQuery.Exec();
+            clientQuery = ClientQuery.Instance("DynaCodeRoot", clientQuery);
+            return clientQuery.Exec();
         }
     }
 }

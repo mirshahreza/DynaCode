@@ -1,0 +1,344 @@
+{
+  "DbConfName": "DefaultDb",
+  "ObjectName": "Sample_Persons_R_Persons",
+  "Columns": [
+    {
+      "Name": "Id",
+      "IsPrimaryKey": true,
+      "DbType": "UNIQUEIDENTIFIER",
+      "DbDefault": "(newid())",
+      "ViewOrder": 1
+    },
+    {
+      "Name": "RelationTypeId",
+      "DbType": "INT",
+      "ViewOrder": 2,
+      "Fk": {
+        "TargetTable": "AppEnd_BaseInfo",
+        "TargetColumn": "Id"
+      }
+    },
+    {
+      "Name": "RelationIsTowWay",
+      "DbType": "BIT",
+      "DbDefault": "((1))",
+      "ViewOrder": 3
+    },
+    {
+      "Name": "PersonId_1",
+      "DbType": "BIGINT",
+      "ViewOrder": 4,
+      "Fk": {
+        "TargetTable": "Sample_Persons",
+        "TargetColumn": "Id"
+      }
+    },
+    {
+      "Name": "PersonId_2",
+      "DbType": "BIGINT",
+      "ViewOrder": 5,
+      "Fk": {
+        "TargetTable": "Sample_Persons",
+        "TargetColumn": "Id"
+      }
+    },
+    {
+      "Name": "Note",
+      "DbType": "NVARCHAR",
+      "Size": "128",
+      "AllowNull": true,
+      "ViewOrder": 6
+    },
+    {
+      "Name": "ViewOrder",
+      "DbType": "INT",
+      "AllowNull": true,
+      "ViewOrder": 7
+    },
+    {
+      "Name": "CreatedOn",
+      "DbType": "DATETIME",
+      "ViewOrder": 8
+    },
+    {
+      "Name": "CreatedBy",
+      "DbType": "NVARCHAR",
+      "Size": "32",
+      "ViewOrder": 9
+    },
+    {
+      "Name": "UpdatedOn",
+      "DbType": "DATETIME",
+      "AllowNull": true,
+      "ViewOrder": 10
+    },
+    {
+      "Name": "UpdatedBy",
+      "DbType": "NVARCHAR",
+      "Size": "32",
+      "AllowNull": true,
+      "ViewOrder": 11
+    }
+  ],
+  "DbQueries": [
+    {
+      "QueryName": "Create",
+      "QueryType": "Create",
+      "Columns": [
+        {
+          "Name": "RelationTypeId"
+        },
+        {
+          "Name": "PersonId_1"
+        },
+        {
+          "Name": "PersonId_2"
+        },
+        {
+          "Name": "Note"
+        },
+        {
+          "Name": "ViewOrder"
+        },
+        {
+          "Name": "CreatedOn"
+        },
+        {
+          "Name": "CreatedBy"
+        }
+      ],
+      "Params": [
+        {
+          "Name": "CreatedOn",
+          "DbType": "DATETIME",
+          "ValueSharp": "#Now"
+        },
+        {
+          "Name": "CreatedBy",
+          "DbType": "NVARCHAR",
+          "Size": "32",
+          "ValueSharp": "#Context:UserName"
+        }
+      ]
+    },
+    {
+      "QueryName": "ReadByKey",
+      "QueryType": "ReadByKey",
+      "Columns": [
+        {
+          "Name": "Id"
+        },
+        {
+          "Name": "RelationTypeId"
+        },
+        {
+          "Name": "RelationIsTowWay"
+        },
+        {
+          "Name": "PersonId_1"
+        },
+        {
+          "Name": "PersonId_2"
+        },
+        {
+          "Name": "Note"
+        },
+        {
+          "Name": "ViewOrder"
+        },
+        {
+          "Name": "CreatedOn"
+        },
+        {
+          "Name": "CreatedBy"
+        },
+        {
+          "Name": "UpdatedOn"
+        },
+        {
+          "Name": "UpdatedBy"
+        }
+      ],
+      "Where": {
+        "SimpleClauses": [
+          "[Sample_Persons_R_Persons].[Id]=@Id"
+        ]
+      }
+    },
+    {
+      "QueryName": "ReadList",
+      "QueryType": "ReadList",
+      "Columns": [
+        {
+          "Name": "Id"
+        },
+        {
+          "Name": "RelationTypeId",
+          "DbLeftTo": {
+            "TargetTable": "AppEnd_BaseInfo",
+            "TargetColumn": "Id",
+            "Columns": [
+              {
+                "Name": "Title",
+                "As": "RelationTypeId_Title"
+              }
+            ]
+          }
+        },
+        {
+          "Name": "RelationIsTowWay"
+        },
+        {
+          "Name": "PersonId_1",
+          "DbLeftTo": {
+            "TargetTable": "Sample_Persons",
+            "TargetColumn": "Id",
+            "Columns": [
+              {
+                "Name": "FirstName",
+                "As": "PersonId_1_FirstName"
+              },
+              {
+                "Name": "LastName",
+                "As": "PersonId_1_LastName"
+              },
+              {
+                "Name": "Title",
+                "As": "PersonId_1_Title"
+              },
+              {
+                "Name": "Picture_FileName",
+                "As": "PersonId_1_Picture_FileName"
+              },
+              {
+                "Name": "ResumeFile_FileName",
+                "As": "PersonId_1_ResumeFile_FileName"
+              }
+            ]
+          }
+        },
+        {
+          "Name": "PersonId_2",
+          "DbLeftTo": {
+            "TargetTable": "Sample_Persons",
+            "TargetColumn": "Id",
+            "Columns": [
+              {
+                "Name": "FirstName",
+                "As": "PersonId_2_FirstName"
+              },
+              {
+                "Name": "LastName",
+                "As": "PersonId_2_LastName"
+              },
+              {
+                "Name": "Title",
+                "As": "PersonId_2_Title"
+              },
+              {
+                "Name": "Picture_FileName",
+                "As": "PersonId_2_Picture_FileName"
+              },
+              {
+                "Name": "ResumeFile_FileName",
+                "As": "PersonId_2_ResumeFile_FileName"
+              }
+            ]
+          }
+        },
+        {
+          "Name": "Note"
+        },
+        {
+          "Name": "ViewOrder"
+        },
+        {
+          "Name": "CreatedOn"
+        },
+        {
+          "Name": "CreatedBy"
+        },
+        {
+          "Name": "UpdatedOn"
+        },
+        {
+          "Name": "UpdatedBy"
+        }
+      ],
+      "PaginationMaxSize": 100,
+      "Aggregations": [
+        {
+          "Name": "Count",
+          "Phrase": "COUNT(*)"
+        }
+      ]
+    },
+    {
+      "QueryName": "UpdateByKey",
+      "QueryType": "UpdateByKey",
+      "Columns": [
+        {
+          "Name": "Id"
+        },
+        {
+          "Name": "RelationTypeId"
+        },
+        {
+          "Name": "RelationIsTowWay"
+        },
+        {
+          "Name": "PersonId_1"
+        },
+        {
+          "Name": "PersonId_2"
+        },
+        {
+          "Name": "Note"
+        },
+        {
+          "Name": "ViewOrder"
+        },
+        {
+          "Name": "UpdatedOn"
+        },
+        {
+          "Name": "UpdatedBy"
+        }
+      ],
+      "Params": [
+        {
+          "Name": "UpdatedOn",
+          "DbType": "DATETIME",
+          "AllowNull": true,
+          "ValueSharp": "#Now"
+        },
+        {
+          "Name": "UpdatedBy",
+          "DbType": "NVARCHAR",
+          "Size": "32",
+          "AllowNull": true,
+          "ValueSharp": "#Context:UserName"
+        }
+      ],
+      "Where": {
+        "SimpleClauses": [
+          "[Sample_Persons_R_Persons].[Id]=@Id"
+        ]
+      }
+    },
+    {
+      "QueryName": "DeleteByKey",
+      "QueryType": "DeleteByKey",
+      "Columns": [
+        {
+          "Name": "Id"
+        }
+      ],
+      "Where": {
+        "SimpleClauses": [
+          "[Sample_Persons_R_Persons].[Id]=@Id"
+        ]
+      }
+    }
+  ]
+}

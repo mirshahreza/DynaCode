@@ -1,0 +1,23 @@
+{
+  "DbConfName": "DefaultDb",
+  "ObjectName": "Zz_CreateTableGuid",
+  "Columns": [],
+  "DbQueries": [
+    {
+      "QueryName": "Exec",
+      "QueryType": "Procedure",
+      "Params": [
+        {
+          "Name": "TableName",
+          "DbType": "VARCHAR",
+          "Size": "128"
+        },
+        {
+          "Name": "PkFieldName",
+          "DbType": "VARCHAR",
+          "Size": "64"
+        }
+      ]
+    }
+  ]
+}

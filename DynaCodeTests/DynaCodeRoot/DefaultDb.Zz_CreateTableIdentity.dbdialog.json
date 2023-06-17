@@ -1,0 +1,36 @@
+{
+  "DbConfName": "DefaultDb",
+  "ObjectName": "Zz_CreateTableIdentity",
+  "Columns": [],
+  "DbQueries": [
+    {
+      "QueryName": "Exec",
+      "QueryType": "Procedure",
+      "Params": [
+        {
+          "Name": "TableName",
+          "DbType": "VARCHAR",
+          "Size": "128"
+        },
+        {
+          "Name": "PkFieldName",
+          "DbType": "VARCHAR",
+          "Size": "64"
+        },
+        {
+          "Name": "PkFieldType",
+          "DbType": "VARCHAR",
+          "Size": "32"
+        },
+        {
+          "Name": "PkIdentityStart",
+          "DbType": "INT"
+        },
+        {
+          "Name": "PkIdentityStep",
+          "DbType": "INT"
+        }
+      ]
+    }
+  ]
+}

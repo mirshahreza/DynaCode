@@ -1,0 +1,18 @@
+{
+  "DbConfName": "DefaultDb",
+  "ObjectName": "Zzz_Deploy",
+  "Columns": [],
+  "DbQueries": [
+    {
+      "QueryName": "Exec",
+      "QueryType": "Procedure",
+      "Params": [
+        {
+          "Name": "PackageName",
+          "DbType": "VARCHAR",
+          "Size": "512"
+        }
+      ]
+    }
+  ]
+}

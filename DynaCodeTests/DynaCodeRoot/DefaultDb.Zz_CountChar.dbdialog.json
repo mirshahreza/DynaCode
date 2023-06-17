@@ -1,0 +1,23 @@
+{
+  "DbConfName": "DefaultDb",
+  "ObjectName": "Zz_CountChar",
+  "Columns": [],
+  "DbQueries": [
+    {
+      "QueryName": "Select",
+      "QueryType": "ScalarFunction",
+      "Params": [
+        {
+          "Name": "pInput",
+          "DbType": "VARCHAR",
+          "Size": "1000"
+        },
+        {
+          "Name": "pSearchChar",
+          "DbType": "CHAR",
+          "Size": "1"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "DbConfName": "DefaultDb",
+  "ObjectName": "Zz_Trim",
+  "Columns": [],
+  "DbQueries": [
+    {
+      "QueryName": "Select",
+      "QueryType": "ScalarFunction",
+      "Params": [
+        {
+          "Name": "String",
+          "DbType": "NVARCHAR",
+          "Size": "4000"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "DbConfName": "DefaultDb",
+  "ObjectName": "Zz_DropColumn",
+  "Columns": [],
+  "DbQueries": [
+    {
+      "QueryName": "Exec",
+      "QueryType": "Procedure",
+      "Params": [
+        {
+          "Name": "TableName",
+          "DbType": "VARCHAR",
+          "Size": "128"
+        },
+        {
+          "Name": "ColumnName",
+          "DbType": "VARCHAR",
+          "Size": "64"
+        }
+      ]
+    }
+  ]
+}

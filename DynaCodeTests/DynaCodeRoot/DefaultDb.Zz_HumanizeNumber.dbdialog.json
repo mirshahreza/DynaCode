@@ -1,0 +1,18 @@
+{
+  "DbConfName": "DefaultDb",
+  "ObjectName": "Zz_HumanizeNumber",
+  "Columns": [],
+  "DbQueries": [
+    {
+      "QueryName": "Select",
+      "QueryType": "ScalarFunction",
+      "Params": [
+        {
+          "Name": "InputNumber",
+          "DbType": "DECIMAL",
+          "Size": "(38, 7)"
+        }
+      ]
+    }
+  ]
+}

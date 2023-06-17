@@ -320,19 +320,33 @@ namespace AppEnd
             AddReferencesFor(typeof(Exception).Assembly, references);
             AddReferencesFor(typeof(ArgumentNullException).Assembly, references);
 
-            foreach(string f in Directory.GetFiles("References"))
+            //System.Security.Cryptography.ProtectedData
+
+            if (Directory.Exists(invokeOptions.ReferencesPath))
             {
-                AddReferencesFor(Assembly.LoadFrom(f), references);
+                foreach (string f in Directory.GetFiles(invokeOptions.ReferencesPath))
+                {
+                    AddReferencesFor(Assembly.LoadFrom(f), references);
+                }
             }
 
             return references;
         }
         private static void AddReferencesFor(Assembly? asm, List<MetadataReference> references)
         {
-            if (asm is null) return;
+            if (asm is null || !File.Exists(asm.Location)) return;
             references.Add(MetadataReference.CreateFromFile(asm.Location));
-            var entryReferences = asm.GetReferencedAssemblies();
-            references.AddRange(entryReferences.Select(a => MetadataReference.CreateFromFile(Assembly.Load(a).Location)));
+            var rfs = asm.GetReferencedAssemblies();
+            foreach(var a in rfs)
+            {
+                var asmF = Assembly.Load(a);
+                if(asmF is null) continue;
+                if(File.Exists( asmF.Location))
+                {
+                    references.Add(MetadataReference.CreateFromFile(asmF.Location));
+                }
+            }
+            //references.AddRange(rfs.Select(a => MetadataReference.CreateFromFile(Assembly.Load(a).Location)));
         }
 
 

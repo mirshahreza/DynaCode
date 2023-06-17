@@ -1,0 +1,40 @@
+{
+  "DbConfName": "DefaultDb",
+  "ObjectName": "Zz_UserObjectsOverview",
+  "ObjectType": "View",
+  "Columns": [
+    {
+      "Name": "ObjectType",
+      "DbType": "VARCHAR",
+      "Size": "14",
+      "ViewOrder": 1
+    },
+    {
+      "Name": "ObjectsCount",
+      "DbType": "INT",
+      "AllowNull": true,
+      "ViewOrder": 2
+    }
+  ],
+  "DbQueries": [
+    {
+      "QueryName": "ReadList",
+      "QueryType": "ReadList",
+      "Columns": [
+        {
+          "Name": "ObjectType"
+        },
+        {
+          "Name": "ObjectsCount"
+        }
+      ],
+      "PaginationMaxSize": 100,
+      "Aggregations": [
+        {
+          "Name": "Count",
+          "Phrase": "COUNT(*)"
+        }
+      ]
+    }
+  ]
+}

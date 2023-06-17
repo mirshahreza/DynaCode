@@ -1,0 +1,97 @@
+{
+  "DbConfName": "DefaultDb",
+  "ObjectName": "Zz_UserProceduresFunctionsParameters",
+  "ObjectType": "View",
+  "Columns": [
+    {
+      "Name": "Schema",
+      "DbType": "NVARCHAR",
+      "Size": "128",
+      "AllowNull": true,
+      "ViewOrder": 1
+    },
+    {
+      "Name": "ObjectName",
+      "DbType": "SYSNAME",
+      "ViewOrder": 2
+    },
+    {
+      "Name": "ObjectType",
+      "DbType": "NVARCHAR",
+      "Size": "60",
+      "AllowNull": true,
+      "ViewOrder": 3
+    },
+    {
+      "Name": "ViewOrder",
+      "DbType": "INT",
+      "ViewOrder": 4
+    },
+    {
+      "Name": "ParameterName",
+      "DbType": "NVARCHAR",
+      "Size": "128",
+      "AllowNull": true,
+      "ViewOrder": 5
+    },
+    {
+      "Name": "ParameterDataType",
+      "DbType": "NVARCHAR",
+      "Size": "128",
+      "AllowNull": true,
+      "ViewOrder": 6
+    },
+    {
+      "Name": "Size",
+      "DbType": "VARCHAR",
+      "Size": "12",
+      "AllowNull": true,
+      "ViewOrder": 7
+    },
+    {
+      "Name": "Direction",
+      "DbType": "VARCHAR",
+      "Size": "6",
+      "ViewOrder": 8
+    }
+  ],
+  "DbQueries": [
+    {
+      "QueryName": "ReadList",
+      "QueryType": "ReadList",
+      "Columns": [
+        {
+          "Name": "Schema"
+        },
+        {
+          "Name": "ObjectName"
+        },
+        {
+          "Name": "ObjectType"
+        },
+        {
+          "Name": "ViewOrder"
+        },
+        {
+          "Name": "ParameterName"
+        },
+        {
+          "Name": "ParameterDataType"
+        },
+        {
+          "Name": "Size"
+        },
+        {
+          "Name": "Direction"
+        }
+      ],
+      "PaginationMaxSize": 100,
+      "Aggregations": [
+        {
+          "Name": "Count",
+          "Phrase": "COUNT(*)"
+        }
+      ]
+    }
+  ]
+}

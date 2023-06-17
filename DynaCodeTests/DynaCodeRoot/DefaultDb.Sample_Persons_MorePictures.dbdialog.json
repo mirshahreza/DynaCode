@@ -1,0 +1,360 @@
+{
+  "DbConfName": "DefaultDb",
+  "ObjectName": "Sample_Persons_MorePictures",
+  "Columns": [
+    {
+      "Name": "Id",
+      "IsPrimaryKey": true,
+      "DbType": "BIGINT",
+      "IsIdentity": true,
+      "IdentityStart": "100000",
+      "IdentityStep": "1",
+      "ViewOrder": 1
+    },
+    {
+      "Name": "PersonId",
+      "DbType": "BIGINT",
+      "AllowNull": true,
+      "ViewOrder": 2,
+      "Fk": {
+        "TargetTable": "Sample_Persons",
+        "TargetColumn": "Id"
+      }
+    },
+    {
+      "Name": "Picture_FileBody",
+      "DbType": "IMAGE",
+      "AllowNull": true,
+      "ViewOrder": 3
+    },
+    {
+      "Name": "Picture_FileBody_xs",
+      "DbType": "IMAGE",
+      "AllowNull": true,
+      "ViewOrder": 4
+    },
+    {
+      "Name": "Picture_FileName",
+      "DbType": "NVARCHAR",
+      "Size": "128",
+      "AllowNull": true,
+      "ViewOrder": 5
+    },
+    {
+      "Name": "Picture_FileSize",
+      "DbType": "INT",
+      "AllowNull": true,
+      "ViewOrder": 6
+    },
+    {
+      "Name": "Picture_FileMime",
+      "DbType": "VARCHAR",
+      "Size": "32",
+      "AllowNull": true,
+      "ViewOrder": 7
+    },
+    {
+      "Name": "Title",
+      "DbType": "NVARCHAR",
+      "Size": "256",
+      "AllowNull": true,
+      "ViewOrder": 8
+    },
+    {
+      "Name": "Note",
+      "DbType": "NVARCHAR",
+      "Size": "4000",
+      "AllowNull": true,
+      "ViewOrder": 9
+    },
+    {
+      "Name": "ViewOrder",
+      "DbType": "INT",
+      "AllowNull": true,
+      "DbDefault": "((1))",
+      "ViewOrder": 10
+    },
+    {
+      "Name": "CreatedOn",
+      "DbType": "DATETIME",
+      "ViewOrder": 11
+    },
+    {
+      "Name": "CreatedBy",
+      "DbType": "NVARCHAR",
+      "Size": "32",
+      "ViewOrder": 12
+    },
+    {
+      "Name": "UpdatedOn",
+      "DbType": "DATETIME",
+      "AllowNull": true,
+      "ViewOrder": 13
+    },
+    {
+      "Name": "UpdatedBy",
+      "DbType": "NVARCHAR",
+      "Size": "32",
+      "AllowNull": true,
+      "ViewOrder": 14
+    }
+  ],
+  "DbQueries": [
+    {
+      "QueryName": "Create",
+      "QueryType": "Create",
+      "Columns": [
+        {
+          "Name": "PersonId"
+        },
+        {
+          "Name": "Picture_FileBody"
+        },
+        {
+          "Name": "Picture_FileBody_xs"
+        },
+        {
+          "Name": "Picture_FileName"
+        },
+        {
+          "Name": "Picture_FileSize"
+        },
+        {
+          "Name": "Picture_FileMime"
+        },
+        {
+          "Name": "Title"
+        },
+        {
+          "Name": "Note"
+        },
+        {
+          "Name": "CreatedOn"
+        },
+        {
+          "Name": "CreatedBy"
+        }
+      ],
+      "Params": [
+        {
+          "Name": "Picture_FileBody_xs",
+          "DbType": "IMAGE",
+          "AllowNull": true,
+          "ValueSharp": "#Resize:Picture_FileBody,75"
+        },
+        {
+          "Name": "CreatedOn",
+          "DbType": "DATETIME",
+          "ValueSharp": "#Now"
+        },
+        {
+          "Name": "CreatedBy",
+          "DbType": "NVARCHAR",
+          "Size": "32",
+          "ValueSharp": "#Context:UserName"
+        }
+      ]
+    },
+    {
+      "QueryName": "ReadByKey",
+      "QueryType": "ReadByKey",
+      "Columns": [
+        {
+          "Name": "Id"
+        },
+        {
+          "Name": "PersonId"
+        },
+        {
+          "Name": "Picture_FileBody"
+        },
+        {
+          "Name": "Picture_FileBody_xs"
+        },
+        {
+          "Name": "Picture_FileName"
+        },
+        {
+          "Name": "Picture_FileSize"
+        },
+        {
+          "Name": "Picture_FileMime"
+        },
+        {
+          "Name": "Title"
+        },
+        {
+          "Name": "Note"
+        },
+        {
+          "Name": "ViewOrder"
+        },
+        {
+          "Name": "CreatedOn"
+        },
+        {
+          "Name": "CreatedBy"
+        },
+        {
+          "Name": "UpdatedOn"
+        },
+        {
+          "Name": "UpdatedBy"
+        }
+      ],
+      "Where": {
+        "SimpleClauses": [
+          "[Sample_Persons_MorePictures].[Id]=@Id"
+        ]
+      }
+    },
+    {
+      "QueryName": "ReadList",
+      "QueryType": "ReadList",
+      "Columns": [
+        {
+          "Name": "Id"
+        },
+        {
+          "Name": "PersonId",
+          "DbLeftTo": {
+            "TargetTable": "Sample_Persons",
+            "TargetColumn": "Id",
+            "Columns": [
+              {
+                "Name": "FirstName",
+                "As": "PersonId_FirstName"
+              },
+              {
+                "Name": "LastName",
+                "As": "PersonId_LastName"
+              },
+              {
+                "Name": "Title",
+                "As": "PersonId_Title"
+              },
+              {
+                "Name": "Picture_FileName",
+                "As": "PersonId_Picture_FileName"
+              },
+              {
+                "Name": "ResumeFile_FileName",
+                "As": "PersonId_ResumeFile_FileName"
+              }
+            ]
+          }
+        },
+        {
+          "Name": "Picture_FileBody_xs"
+        },
+        {
+          "Name": "Title"
+        },
+        {
+          "Name": "ViewOrder"
+        },
+        {
+          "Name": "CreatedOn"
+        },
+        {
+          "Name": "CreatedBy"
+        },
+        {
+          "Name": "UpdatedOn"
+        },
+        {
+          "Name": "UpdatedBy"
+        }
+      ],
+      "PaginationMaxSize": 100,
+      "Aggregations": [
+        {
+          "Name": "Count",
+          "Phrase": "COUNT(*)"
+        }
+      ]
+    },
+    {
+      "QueryName": "UpdateByKey",
+      "QueryType": "UpdateByKey",
+      "Columns": [
+        {
+          "Name": "Id"
+        },
+        {
+          "Name": "PersonId"
+        },
+        {
+          "Name": "Picture_FileBody"
+        },
+        {
+          "Name": "Picture_FileBody_xs"
+        },
+        {
+          "Name": "Picture_FileName"
+        },
+        {
+          "Name": "Picture_FileSize"
+        },
+        {
+          "Name": "Picture_FileMime"
+        },
+        {
+          "Name": "Title"
+        },
+        {
+          "Name": "Note"
+        },
+        {
+          "Name": "ViewOrder"
+        },
+        {
+          "Name": "UpdatedOn"
+        },
+        {
+          "Name": "UpdatedBy"
+        }
+      ],
+      "Params": [
+        {
+          "Name": "Picture_FileBody_xs",
+          "DbType": "IMAGE",
+          "AllowNull": true,
+          "ValueSharp": "#Resize:Picture_FileBody,75"
+        },
+        {
+          "Name": "UpdatedOn",
+          "DbType": "DATETIME",
+          "AllowNull": true,
+          "ValueSharp": "#Now"
+        },
+        {
+          "Name": "UpdatedBy",
+          "DbType": "NVARCHAR",
+          "Size": "32",
+          "AllowNull": true,
+          "ValueSharp": "#Context:UserName"
+        }
+      ],
+      "Where": {
+        "SimpleClauses": [
+          "[Sample_Persons_MorePictures].[Id]=@Id"
+        ]
+      }
+    },
+    {
+      "QueryName": "DeleteByKey",
+      "QueryType": "DeleteByKey",
+      "Columns": [
+        {
+          "Name": "Id"
+        }
+      ],
+      "Where": {
+        "SimpleClauses": [
+          "[Sample_Persons_MorePictures].[Id]=@Id"
+        ]
+      }
+    }
+  ]
+}

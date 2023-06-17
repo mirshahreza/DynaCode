@@ -1,0 +1,32 @@
+{
+  "DbConfName": "DefaultDb",
+  "ObjectName": "Zz_CreateColumn",
+  "Columns": [],
+  "DbQueries": [
+    {
+      "QueryName": "Exec",
+      "QueryType": "Procedure",
+      "Params": [
+        {
+          "Name": "TableName",
+          "DbType": "VARCHAR",
+          "Size": "128"
+        },
+        {
+          "Name": "ColumnName",
+          "DbType": "VARCHAR",
+          "Size": "64"
+        },
+        {
+          "Name": "ColumnTypeSize",
+          "DbType": "VARCHAR",
+          "Size": "64"
+        },
+        {
+          "Name": "AllowNull",
+          "DbType": "BIT"
+        }
+      ]
+    }
+  ]
+}

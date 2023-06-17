@@ -1,0 +1,120 @@
+{
+  "DbConfName": "DefaultDb",
+  "ObjectName": "Zz_UserTablesViewsColumns",
+  "ObjectType": "View",
+  "Columns": [
+    {
+      "Name": "ParentObjectName",
+      "DbType": "SYSNAME",
+      "AllowNull": true,
+      "ViewOrder": 1
+    },
+    {
+      "Name": "ColumnName",
+      "DbType": "SYSNAME",
+      "AllowNull": true,
+      "ViewOrder": 2
+    },
+    {
+      "Name": "ColumnType",
+      "DbType": "NVARCHAR",
+      "Size": "128",
+      "AllowNull": true,
+      "ViewOrder": 3
+    },
+    {
+      "Name": "IsPrimaryKey",
+      "DbType": "BIT",
+      "ViewOrder": 4
+    },
+    {
+      "Name": "AllowNull",
+      "DbType": "BIT",
+      "AllowNull": true,
+      "ViewOrder": 5
+    },
+    {
+      "Name": "MaxLen",
+      "DbType": "INT",
+      "AllowNull": true,
+      "ViewOrder": 6
+    },
+    {
+      "Name": "IsIdentity",
+      "DbType": "BIT",
+      "ViewOrder": 7
+    },
+    {
+      "Name": "IdentityStart",
+      "DbType": "SQL_VARIANT",
+      "AllowNull": true,
+      "ViewOrder": 8
+    },
+    {
+      "Name": "IdentityStep",
+      "DbType": "SQL_VARIANT",
+      "AllowNull": true,
+      "ViewOrder": 9
+    },
+    {
+      "Name": "DbDefault",
+      "DbType": "NVARCHAR",
+      "Size": "0",
+      "AllowNull": true,
+      "ViewOrder": 10
+    },
+    {
+      "Name": "ViewOrder",
+      "DbType": "INT",
+      "ViewOrder": 11
+    }
+  ],
+  "DbQueries": [
+    {
+      "QueryName": "ReadList",
+      "QueryType": "ReadList",
+      "Columns": [
+        {
+          "Name": "ParentObjectName"
+        },
+        {
+          "Name": "ColumnName"
+        },
+        {
+          "Name": "ColumnType"
+        },
+        {
+          "Name": "IsPrimaryKey"
+        },
+        {
+          "Name": "AllowNull"
+        },
+        {
+          "Name": "MaxLen"
+        },
+        {
+          "Name": "IsIdentity"
+        },
+        {
+          "Name": "IdentityStart"
+        },
+        {
+          "Name": "IdentityStep"
+        },
+        {
+          "Name": "DbDefault"
+        },
+        {
+          "Name": "ViewOrder"
+        }
+      ],
+      "PaginationMaxSize": 100,
+      "Aggregations": [
+        {
+          "Name": "Count",
+          "Phrase": "COUNT(*)"
+        }
+      ]
+    }
+  ]
+}

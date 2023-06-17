@@ -1,0 +1,156 @@
+{
+  "DbConfName": "DefaultDb",
+  "ObjectName": "AppEnd_Users_R_Roles",
+  "Columns": [
+    {
+      "Name": "Id",
+      "IsPrimaryKey": true,
+      "DbType": "UNIQUEIDENTIFIER",
+      "DbDefault": "(newid())",
+      "ViewOrder": 1
+    },
+    {
+      "Name": "UserId",
+      "DbType": "INT",
+      "ViewOrder": 2
+    },
+    {
+      "Name": "RoleId",
+      "DbType": "INT",
+      "ViewOrder": 3
+    },
+    {
+      "Name": "CreatedBy",
+      "DbType": "NVARCHAR",
+      "Size": "64",
+      "ViewOrder": 4
+    },
+    {
+      "Name": "CreatedOn",
+      "DbType": "DATETIME",
+      "ViewOrder": 5
+    }
+  ],
+  "DbQueries": [
+    {
+      "QueryName": "Create",
+      "QueryType": "Create",
+      "Columns": [
+        {
+          "Name": "UserId"
+        },
+        {
+          "Name": "RoleId"
+        },
+        {
+          "Name": "CreatedBy"
+        },
+        {
+          "Name": "CreatedOn"
+        }
+      ],
+      "Params": [
+        {
+          "Name": "CreatedBy",
+          "DbType": "NVARCHAR",
+          "Size": "64",
+          "ValueSharp": "#Context:UserName"
+        },
+        {
+          "Name": "CreatedOn",
+          "DbType": "DATETIME",
+          "ValueSharp": "#Now"
+        }
+      ]
+    },
+    {
+      "QueryName": "ReadByKey",
+      "QueryType": "ReadByKey",
+      "Columns": [
+        {
+          "Name": "Id"
+        },
+        {
+          "Name": "UserId"
+        },
+        {
+          "Name": "RoleId"
+        },
+        {
+          "Name": "CreatedBy"
+        },
+        {
+          "Name": "CreatedOn"
+        }
+      ],
+      "Where": {
+        "SimpleClauses": [
+          "[AppEnd_Users_R_Roles].[Id]=@Id"
+        ]
+      }
+    },
+    {
+      "QueryName": "ReadList",
+      "QueryType": "ReadList",
+      "Columns": [
+        {
+          "Name": "Id"
+        },
+        {
+          "Name": "UserId"
+        },
+        {
+          "Name": "RoleId"
+        },
+        {
+          "Name": "CreatedBy"
+        },
+        {
+          "Name": "CreatedOn"
+        }
+      ],
+      "PaginationMaxSize": 100,
+      "Aggregations": [
+        {
+          "Name": "Count",
+          "Phrase": "COUNT(*)"
+        }
+      ]
+    },
+    {
+      "QueryName": "UpdateByKey",
+      "QueryType": "UpdateByKey",
+      "Columns": [
+        {
+          "Name": "Id"
+        },
+        {
+          "Name": "UserId"
+        },
+        {
+          "Name": "RoleId"
+        }
+      ],
+      "Params": [],
+      "Where": {
+        "SimpleClauses": [
+          "[AppEnd_Users_R_Roles].[Id]=@Id"
+        ]
+      }
+    },
+    {
+      "QueryName": "DeleteByKey",
+      "QueryType": "DeleteByKey",
+      "Columns": [
+        {
+          "Name": "Id"
+        }
+      ],
+      "Where": {
+        "SimpleClauses": [
+          "[AppEnd_Users_R_Roles].[Id]=@Id"
+        ]
+      }
+    }
+  ]
+}

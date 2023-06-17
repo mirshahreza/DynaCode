@@ -1,0 +1,66 @@
+{
+  "DbConfName": "DefaultDb",
+  "ObjectName": "Zz_UserTablesIndexes",
+  "ObjectType": "View",
+  "Columns": [
+    {
+      "Name": "ObjectId",
+      "DbType": "INT",
+      "ViewOrder": 1
+    },
+    {
+      "Name": "TableName",
+      "DbType": "SYSNAME",
+      "ViewOrder": 2
+    },
+    {
+      "Name": "IndexName",
+      "DbType": "SYSNAME",
+      "AllowNull": true,
+      "ViewOrder": 3
+    },
+    {
+      "Name": "IndexType",
+      "DbType": "NVARCHAR",
+      "Size": "60",
+      "AllowNull": true,
+      "ViewOrder": 4
+    },
+    {
+      "Name": "IsUnique",
+      "DbType": "BIT",
+      "AllowNull": true,
+      "ViewOrder": 5
+    }
+  ],
+  "DbQueries": [
+    {
+      "QueryName": "ReadList",
+      "QueryType": "ReadList",
+      "Columns": [
+        {
+          "Name": "ObjectId"
+        },
+        {
+          "Name": "TableName"
+        },
+        {
+          "Name": "IndexName"
+        },
+        {
+          "Name": "IndexType"
+        },
+        {
+          "Name": "IsUnique"
+        }
+      ],
+      "PaginationMaxSize": 100,
+      "Aggregations": [
+        {
+          "Name": "Count",
+          "Phrase": "COUNT(*)"
+        }
+      ]
+    }
+  ]
+}

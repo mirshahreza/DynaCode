@@ -1,0 +1,27 @@
+{
+  "DbConfName": "DefaultDb",
+  "ObjectName": "Zz_NthItem",
+  "Columns": [],
+  "DbQueries": [
+    {
+      "QueryName": "Select",
+      "QueryType": "ScalarFunction",
+      "Params": [
+        {
+          "Name": "String",
+          "DbType": "NVARCHAR",
+          "Size": "4000"
+        },
+        {
+          "Name": "Splitter",
+          "DbType": "CHAR",
+          "Size": "1"
+        },
+        {
+          "Name": "N",
+          "DbType": "INT"
+        }
+      ]
+    }
+  ]
+}

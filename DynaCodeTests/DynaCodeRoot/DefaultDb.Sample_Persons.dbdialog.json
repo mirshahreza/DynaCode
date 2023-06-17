@@ -1,0 +1,683 @@
+{
+  "DbConfName": "DefaultDb",
+  "ObjectName": "Sample_Persons",
+  "Columns": [
+    {
+      "Name": "Id",
+      "IsPrimaryKey": true,
+      "DbType": "BIGINT",
+      "IsIdentity": true,
+      "IdentityStart": "100000",
+      "IdentityStep": "1",
+      "ViewOrder": 1
+    },
+    {
+      "Name": "TypeId",
+      "DbType": "INT",
+      "AllowNull": true,
+      "ViewOrder": 2,
+      "Fk": {
+        "TargetTable": "AppEnd_BaseInfo",
+        "TargetColumn": "Id"
+      }
+    },
+    {
+      "Name": "GenderId",
+      "DbType": "INT",
+      "AllowNull": true,
+      "ViewOrder": 3,
+      "Fk": {
+        "TargetTable": "AppEnd_BaseInfo",
+        "TargetColumn": "Id"
+      }
+    },
+    {
+      "Name": "FirstName",
+      "DbType": "NVARCHAR",
+      "Size": "64",
+      "AllowNull": true,
+      "ViewOrder": 4
+    },
+    {
+      "Name": "LastName",
+      "DbType": "NVARCHAR",
+      "Size": "64",
+      "AllowNull": true,
+      "ViewOrder": 5
+    },
+    {
+      "Name": "Title",
+      "DbType": "NVARCHAR",
+      "Size": "64",
+      "ViewOrder": 6
+    },
+    {
+      "Name": "RegistrationCode",
+      "DbType": "VARCHAR",
+      "Size": "10",
+      "AllowNull": true,
+      "ViewOrder": 7
+    },
+    {
+      "Name": "RegistrationDateTime",
+      "DbType": "DATE",
+      "AllowNull": true,
+      "ViewOrder": 8
+    },
+    {
+      "Name": "Picture_FileBody",
+      "DbType": "IMAGE",
+      "AllowNull": true,
+      "ViewOrder": 9
+    },
+    {
+      "Name": "Picture_FileBody_xs",
+      "DbType": "IMAGE",
+      "AllowNull": true,
+      "ViewOrder": 10
+    },
+    {
+      "Name": "Picture_FileName",
+      "DbType": "NVARCHAR",
+      "Size": "128",
+      "AllowNull": true,
+      "ViewOrder": 11
+    },
+    {
+      "Name": "Picture_FileSize",
+      "DbType": "INT",
+      "AllowNull": true,
+      "ViewOrder": 12
+    },
+    {
+      "Name": "Picture_FileMime",
+      "DbType": "VARCHAR",
+      "Size": "32",
+      "AllowNull": true,
+      "ViewOrder": 13
+    },
+    {
+      "Name": "ResumeFile_FileBody",
+      "DbType": "IMAGE",
+      "AllowNull": true,
+      "ViewOrder": 14
+    },
+    {
+      "Name": "ResumeFile_FileName",
+      "DbType": "NVARCHAR",
+      "Size": "128",
+      "AllowNull": true,
+      "ViewOrder": 15
+    },
+    {
+      "Name": "ResumeFile_FileSize",
+      "DbType": "INT",
+      "AllowNull": true,
+      "ViewOrder": 16
+    },
+    {
+      "Name": "ResumeFile_FileMime",
+      "DbType": "VARCHAR",
+      "Size": "32",
+      "AllowNull": true,
+      "ViewOrder": 17
+    },
+    {
+      "Name": "HtmlNote",
+      "DbType": "NVARCHAR",
+      "Size": "512",
+      "AllowNull": true,
+      "ViewOrder": 18
+    },
+    {
+      "Name": "RecordIsActive",
+      "DbType": "BIT",
+      "AllowNull": true,
+      "ViewOrder": 19
+    },
+    {
+      "Name": "RecordIsActive_UpdatedBy",
+      "DbType": "NVARCHAR",
+      "Size": "32",
+      "AllowNull": true,
+      "ViewOrder": 20
+    },
+    {
+      "Name": "RecordIsActive_UpdatedOn",
+      "DbType": "DATETIME",
+      "AllowNull": true,
+      "ViewOrder": 21
+    },
+    {
+      "Name": "CreatedBy",
+      "DbType": "NVARCHAR",
+      "Size": "32",
+      "ViewOrder": 22
+    },
+    {
+      "Name": "CreatedOn",
+      "DbType": "DATETIME",
+      "ViewOrder": 23
+    },
+    {
+      "Name": "UpdatedBy",
+      "DbType": "NVARCHAR",
+      "Size": "32",
+      "AllowNull": true,
+      "ViewOrder": 24
+    },
+    {
+      "Name": "UpdatedOn",
+      "DbType": "DATETIME",
+      "AllowNull": true,
+      "ViewOrder": 25
+    }
+  ],
+  "DbQueries": [
+    {
+      "QueryName": "Create",
+      "QueryType": "Create",
+      "Columns": [
+        {
+          "Name": "TypeId"
+        },
+        {
+          "Name": "GenderId"
+        },
+        {
+          "Name": "FirstName"
+        },
+        {
+          "Name": "LastName"
+        },
+        {
+          "Name": "Title"
+        },
+        {
+          "Name": "RegistrationCode"
+        },
+        {
+          "Name": "RegistrationDateTime"
+        },
+        {
+          "Name": "Picture_FileBody"
+        },
+        {
+          "Name": "Picture_FileBody_xs"
+        },
+        {
+          "Name": "Picture_FileName"
+        },
+        {
+          "Name": "Picture_FileSize"
+        },
+        {
+          "Name": "Picture_FileMime"
+        },
+        {
+          "Name": "ResumeFile_FileBody"
+        },
+        {
+          "Name": "ResumeFile_FileName"
+        },
+        {
+          "Name": "ResumeFile_FileSize"
+        },
+        {
+          "Name": "ResumeFile_FileMime"
+        },
+        {
+          "Name": "HtmlNote"
+        },
+        {
+          "Name": "RecordIsActive"
+        },
+        {
+          "Name": "RecordIsActive_UpdatedBy"
+        },
+        {
+          "Name": "RecordIsActive_UpdatedOn"
+        },
+        {
+          "Name": "CreatedBy"
+        },
+        {
+          "Name": "CreatedOn"
+        }
+      ],
+      "Params": [
+        {
+          "Name": "Picture_FileBody_xs",
+          "DbType": "IMAGE",
+          "AllowNull": true,
+          "ValueSharp": "#Resize:Picture_FileBody,75"
+        },
+        {
+          "Name": "CreatedBy",
+          "DbType": "NVARCHAR",
+          "Size": "32",
+          "ValueSharp": "#Context:UserName"
+        },
+        {
+          "Name": "CreatedOn",
+          "DbType": "DATETIME",
+          "ValueSharp": "#Now"
+        }
+      ]
+    },
+    {
+      "QueryName": "ReadByKey",
+      "QueryType": "ReadByKey",
+      "Columns": [
+        {
+          "Name": "Id"
+        },
+        {
+          "Name": "TypeId"
+        },
+        {
+          "Name": "GenderId"
+        },
+        {
+          "Name": "FirstName"
+        },
+        {
+          "Name": "LastName"
+        },
+        {
+          "Name": "Title"
+        },
+        {
+          "Name": "RegistrationCode"
+        },
+        {
+          "Name": "RegistrationDateTime"
+        },
+        {
+          "Name": "Picture_FileBody"
+        },
+        {
+          "Name": "Picture_FileBody_xs"
+        },
+        {
+          "Name": "Picture_FileName"
+        },
+        {
+          "Name": "Picture_FileSize"
+        },
+        {
+          "Name": "Picture_FileMime"
+        },
+        {
+          "Name": "ResumeFile_FileBody"
+        },
+        {
+          "Name": "ResumeFile_FileName"
+        },
+        {
+          "Name": "ResumeFile_FileSize"
+        },
+        {
+          "Name": "ResumeFile_FileMime"
+        },
+        {
+          "Name": "HtmlNote"
+        },
+        {
+          "Name": "RecordIsActive"
+        },
+        {
+          "Name": "RecordIsActive_UpdatedBy"
+        },
+        {
+          "Name": "RecordIsActive_UpdatedOn"
+        },
+        {
+          "Name": "CreatedBy"
+        },
+        {
+          "Name": "CreatedOn"
+        },
+        {
+          "Name": "UpdatedBy"
+        },
+        {
+          "Name": "UpdatedOn"
+        }
+      ],
+      "Where": {
+        "SimpleClauses": [
+          "[Sample_Persons].[Id]=@Id"
+        ]
+      },
+      "OneToManies": [
+        {
+          "RelationDbDialog": "DefaultDb.Sample_Persons_MorePictures",
+          "RelationFkColumn": "PersonId",
+          "RelationPkColumn": "Id",
+          "CreateQuery": "Create",
+          "ReadListQuery": "ReadList",
+          "UpdateByKeyQuery": "UpdateByKey",
+          "DeleteByKeyQuery": "DeleteByKey"
+        },
+        {
+          "RelationDbDialog": "DefaultDb.Sample_Persons_Abilities",
+          "RelationFkColumn": "PersonId",
+          "RelationPkColumn": "Id",
+          "ForMultiSelectOf": "AbilityId",
+          "CreateQuery": "Create",
+          "ReadListQuery": "ReadList",
+          "UpdateByKeyQuery": "UpdateByKey",
+          "DeleteByKeyQuery": "DeleteByKey"
+        },
+        {
+          "RelationDbDialog": "DefaultDb.Sample_Persons_R_Persons",
+          "RelationFkColumn": "PersonId_1",
+          "RelationPkColumn": "Id",
+          "CreateQuery": "Create",
+          "ReadListQuery": "ReadList",
+          "UpdateByKeyQuery": "UpdateByKey",
+          "DeleteByKeyQuery": "DeleteByKey"
+        },
+        {
+          "RelationDbDialog": "DefaultDb.Sample_Persons_MoreDocuments",
+          "RelationFkColumn": "PersonId",
+          "RelationPkColumn": "Id",
+          "CreateQuery": "Create",
+          "ReadListQuery": "ReadList",
+          "UpdateByKeyQuery": "UpdateByKey",
+          "DeleteByKeyQuery": "DeleteByKey"
+        },
+        {
+          "RelationDbDialog": "DefaultDb.Sample_Persons_Tags",
+          "RelationFkColumn": "PersonId",
+          "RelationPkColumn": "Id",
+          "CreateQuery": "Create",
+          "ReadListQuery": "ReadList",
+          "UpdateByKeyQuery": "UpdateByKey",
+          "DeleteByKeyQuery": "DeleteByKey"
+        },
+        {
+          "RelationDbDialog": "DefaultDb.Sample_Persons_Addresses",
+          "RelationFkColumn": "PersonId",
+          "RelationPkColumn": "Id",
+          "CreateQuery": "Create",
+          "ReadListQuery": "ReadList",
+          "UpdateByKeyQuery": "UpdateByKey",
+          "DeleteByKeyQuery": "DeleteByKey"
+        },
+        {
+          "RelationDbDialog": "DefaultDb.Sample_Persons_Phones",
+          "RelationFkColumn": "PersonId",
+          "RelationPkColumn": "Id",
+          "CreateQuery": "Create",
+          "ReadListQuery": "ReadList",
+          "UpdateByKeyQuery": "UpdateByKey",
+          "DeleteByKeyQuery": "DeleteByKey"
+        }
+      ]
+    },
+    {
+      "QueryName": "ReadList",
+      "QueryType": "ReadList",
+      "Columns": [
+        {
+          "Name": "Id"
+        },
+        {
+          "Name": "TypeId",
+          "DbLeftTo": {
+            "TargetTable": "AppEnd_BaseInfo",
+            "TargetColumn": "Id",
+            "Columns": [
+              {
+                "Name": "Title",
+                "As": "TypeId_Title"
+              }
+            ]
+          }
+        },
+        {
+          "Name": "GenderId",
+          "DbLeftTo": {
+            "TargetTable": "AppEnd_BaseInfo",
+            "TargetColumn": "Id",
+            "Columns": [
+              {
+                "Name": "Title",
+                "As": "GenderId_Title"
+              }
+            ]
+          }
+        },
+        {
+          "Name": "FirstName"
+        },
+        {
+          "Name": "LastName"
+        },
+        {
+          "Name": "Title"
+        },
+        {
+          "Name": "RegistrationCode"
+        },
+        {
+          "Name": "RegistrationDateTime"
+        },
+        {
+          "Name": "Picture_FileBody_xs"
+        },
+        {
+          "Name": "RecordIsActive"
+        },
+        {
+          "Name": "RecordIsActive_UpdatedBy"
+        },
+        {
+          "Name": "RecordIsActive_UpdatedOn"
+        },
+        {
+          "Name": "CreatedBy"
+        },
+        {
+          "Name": "CreatedOn"
+        },
+        {
+          "Name": "UpdatedBy"
+        },
+        {
+          "Name": "UpdatedOn"
+        }
+      ],
+      "PaginationMaxSize": 100,
+      "OneToManies": [
+        {
+          "RelationDbDialog": "DefaultDb.Sample_Persons_MorePictures",
+          "RelationFkColumn": "PersonId",
+          "RelationPkColumn": "Id",
+          "CreateQuery": "Create",
+          "ReadListQuery": "ReadList",
+          "UpdateByKeyQuery": "UpdateByKey",
+          "DeleteByKeyQuery": "DeleteByKey"
+        },
+        {
+          "RelationDbDialog": "DefaultDb.Sample_Persons_Abilities",
+          "RelationFkColumn": "PersonId",
+          "RelationPkColumn": "Id",
+          "ForMultiSelectOf": "AbilityId",
+          "CreateQuery": "Create",
+          "ReadListQuery": "ReadList",
+          "UpdateByKeyQuery": "UpdateByKey",
+          "DeleteByKeyQuery": "DeleteByKey"
+        },
+        {
+          "RelationDbDialog": "DefaultDb.Sample_Persons_R_Persons",
+          "RelationFkColumn": "PersonId_1",
+          "RelationPkColumn": "Id",
+          "CreateQuery": "Create",
+          "ReadListQuery": "ReadList",
+          "UpdateByKeyQuery": "UpdateByKey",
+          "DeleteByKeyQuery": "DeleteByKey"
+        },
+        {
+          "RelationDbDialog": "DefaultDb.Sample_Persons_MoreDocuments",
+          "RelationFkColumn": "PersonId",
+          "RelationPkColumn": "Id",
+          "CreateQuery": "Create",
+          "ReadListQuery": "ReadList",
+          "UpdateByKeyQuery": "UpdateByKey",
+          "DeleteByKeyQuery": "DeleteByKey"
+        },
+        {
+          "RelationDbDialog": "DefaultDb.Sample_Persons_Tags",
+          "RelationFkColumn": "PersonId",
+          "RelationPkColumn": "Id",
+          "CreateQuery": "Create",
+          "ReadListQuery": "ReadList",
+          "UpdateByKeyQuery": "UpdateByKey",
+          "DeleteByKeyQuery": "DeleteByKey"
+        },
+        {
+          "RelationDbDialog": "DefaultDb.Sample_Persons_Addresses",
+          "RelationFkColumn": "PersonId",
+          "RelationPkColumn": "Id",
+          "CreateQuery": "Create",
+          "ReadListQuery": "ReadList",
+          "UpdateByKeyQuery": "UpdateByKey",
+          "DeleteByKeyQuery": "DeleteByKey"
+        },
+        {
+          "RelationDbDialog": "DefaultDb.Sample_Persons_Phones",
+          "RelationFkColumn": "PersonId",
+          "RelationPkColumn": "Id",
+          "CreateQuery": "Create",
+          "ReadListQuery": "ReadList",
+          "UpdateByKeyQuery": "UpdateByKey",
+          "DeleteByKeyQuery": "DeleteByKey"
+        }
+      ],
+      "Aggregations": [
+        {
+          "Name": "Count",
+          "Phrase": "COUNT(*)"
+        }
+      ]
+    },
+    {
+      "QueryName": "UpdateByKey",
+      "QueryType": "UpdateByKey",
+      "Columns": [
+        {
+          "Name": "Id"
+        },
+        {
+          "Name": "TypeId"
+        },
+        {
+          "Name": "GenderId"
+        },
+        {
+          "Name": "FirstName"
+        },
+        {
+          "Name": "LastName"
+        },
+        {
+          "Name": "Title"
+        },
+        {
+          "Name": "RegistrationCode"
+        },
+        {
+          "Name": "RegistrationDateTime"
+        },
+        {
+          "Name": "Picture_FileBody"
+        },
+        {
+          "Name": "Picture_FileBody_xs"
+        },
+        {
+          "Name": "Picture_FileName"
+        },
+        {
+          "Name": "Picture_FileSize"
+        },
+        {
+          "Name": "Picture_FileMime"
+        },
+        {
+          "Name": "ResumeFile_FileBody"
+        },
+        {
+          "Name": "ResumeFile_FileName"
+        },
+        {
+          "Name": "ResumeFile_FileSize"
+        },
+        {
+          "Name": "ResumeFile_FileMime"
+        },
+        {
+          "Name": "HtmlNote"
+        },
+        {
+          "Name": "RecordIsActive"
+        },
+        {
+          "Name": "RecordIsActive_UpdatedBy"
+        },
+        {
+          "Name": "RecordIsActive_UpdatedOn"
+        },
+        {
+          "Name": "UpdatedBy"
+        },
+        {
+          "Name": "UpdatedOn"
+        }
+      ],
+      "Params": [
+        {
+          "Name": "Picture_FileBody_xs",
+          "DbType": "IMAGE",
+          "AllowNull": true,
+          "ValueSharp": "#Resize:Picture_FileBody,75"
+        },
+        {
+          "Name": "UpdatedBy",
+          "DbType": "NVARCHAR",
+          "Size": "32",
+          "AllowNull": true,
+          "ValueSharp": "#Context:UserName"
+        },
+        {
+          "Name": "UpdatedOn",
+          "DbType": "DATETIME",
+          "AllowNull": true,
+          "ValueSharp": "#Now"
+        }
+      ],
+      "Where": {
+        "SimpleClauses": [
+          "[Sample_Persons].[Id]=@Id"
+        ]
+      }
+    },
+    {
+      "QueryName": "DeleteByKey",
+      "QueryType": "DeleteByKey",
+      "Columns": [
+        {
+          "Name": "Id"
+        }
+      ],
+      "Where": {
+        "SimpleClauses": [
+          "[Sample_Persons].[Id]=@Id"
+        ]
+      }
+    }
+  ]
+}

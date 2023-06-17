@@ -232,11 +232,12 @@ namespace DynaCodeTests
         [TestMethod()]
         public void AppEndDbIOTest()
         {
-            CodeInvokeOptions codeInvokeOptions = new CodeInvokeOptions() 
-            { 
-                IsDevelopment = true, 
+            CodeInvokeOptions codeInvokeOptions = new CodeInvokeOptions()
+            {
+                IsDevelopment = true,
                 CompiledIn = true,
                 StartPath = "DynaCodeRoot",
+                ReferencesPath = "References",
                 PublicKeyUser = "admin",
                 PublicKeyRole = "Admin"
             };
