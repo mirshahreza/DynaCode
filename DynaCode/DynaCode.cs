@@ -113,6 +113,8 @@ namespace AppEnd
             scriptFiles = null;
             asmPath = null;
             dynaAsm = null;
+
+            Assembly asm = DynaAsm;
         }
         
         public static CodeInvokeResult InvokeByJsonInputs(string methodFullPath, JsonElement? inputParams = null, DynaUser? dynaUser = null, string clientInfo = "", bool ignoreCaching = false)
@@ -131,9 +133,7 @@ namespace AppEnd
             string methodFullName = methodInfo.GetFullName();
             string methodFilePath = GetMethodFilePath(methodFullName);
             MethodSettings methodSettings = ReadMethodSettings(methodFullName, methodFilePath);
-            
 
-            
             if (methodSettings.CachePolicy != null && methodSettings.CachePolicy.CacheLevel == CacheLevel.PerUser && (dynaUser is null || dynaUser.UserName.Trim() == ""))
                 throw new ArgumentNullException($"CachePolicy.CacheLevel for {methodFullName} is set to PerUser but the current user is null");
 
