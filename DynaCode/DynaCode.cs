@@ -12,6 +12,7 @@ using System.Text.Json.Serialization;
 using Microsoft.Extensions.Caching.Memory;
 using System.Security.AccessControl;
 using System.Diagnostics;
+using Microsoft.CodeAnalysis.Text;
 
 namespace AppEnd
 {
@@ -47,7 +48,7 @@ namespace AppEnd
         {
             get
             {
-                if(scriptFiles is null)
+                if (scriptFiles is null)
                 {
                     scriptFiles = Utils.GetFiles(invokeOptions.StartPath, "*.cs").ToArray();
                 }
@@ -100,8 +101,8 @@ namespace AppEnd
         }
         public static void Refresh()
         {
-            string[] oldAsmFiles =  Directory.GetFiles(".", "DynaAsm*");
-            foreach(string oldAsmFile in oldAsmFiles)
+            string[] oldAsmFiles = Directory.GetFiles(".", "DynaAsm*");
+            foreach (string oldAsmFile in oldAsmFiles)
             {
                 try
                 {
@@ -116,7 +117,7 @@ namespace AppEnd
 
             Assembly asm = DynaAsm;
         }
-        
+
         public static CodeInvokeResult InvokeByJsonInputs(string methodFullPath, JsonElement? inputParams = null, DynaUser? dynaUser = null, string clientInfo = "", bool ignoreCaching = false)
         {
             MethodInfo methodInfo = GetMethodInfo(methodFullPath);
@@ -196,7 +197,7 @@ namespace AppEnd
             return codeMap.FilePath;
         }
 
-        private static void CheckAccess(MethodInfo methodInfo,MethodSettings methodSettings, DynaUser? dynaUser)
+        private static void CheckAccess(MethodInfo methodInfo, MethodSettings methodSettings, DynaUser? dynaUser)
         {
             if (dynaUser is null) return;
             if (dynaUser.UserName.ToLower() == invokeOptions.PublicKeyUser.ToLower()) return;
@@ -207,7 +208,7 @@ namespace AppEnd
             if (methodSettings.AccessRules.AllowedUsers.Contains("*")) return;
             throw new Exception($"Access denied, The user [ {dynaUser.UserName} ] doesn't have enough access to execute [ {methodInfo.GetFullName()} ]");
         }
-        private static void LogMethodInvoke(MethodInfo methodInfo, MethodSettings methodSettings, CodeInvokeResult codeInvokeResult, object[]? inputParams,DynaUser? dynaUser,string clientInfo = "")
+        private static void LogMethodInvoke(MethodInfo methodInfo, MethodSettings methodSettings, CodeInvokeResult codeInvokeResult, object[]? inputParams, DynaUser? dynaUser, string clientInfo = "")
         {
             string logMethod;
             if (codeInvokeResult.IsSucceeded)
@@ -235,6 +236,59 @@ namespace AppEnd
             };
             GetMethodInfo(logMethod).Invoke(null, list.ToArray());
         }
+
+        public static void DuplicateMethod(string methodFullName, string methodCopyName)
+        {
+            var parts = MethodPartsNames(methodFullName);
+            string classFullName = methodFullName.Replace($".{parts.Item3}", "");
+            string methodName = parts.Item3;
+            string? filePath = GetMethodFilePath(methodFullName);
+            if (filePath == null) throw new Exception($"{classFullName} is not exist.");
+
+            string controllerBody = File.ReadAllText(filePath);
+
+            SyntaxTree tree = CSharpSyntaxTree.ParseText(controllerBody);
+            MethodDeclarationSyntax method =
+                tree.GetRoot().DescendantNodes().OfType<MethodDeclarationSyntax>()
+                .First(m => m.Identifier.ToString() == methodName);
+
+            string m = method.GetText().ToString();
+            string mCopy = m.Replace($"{methodName}(", $"{methodCopyName}(");
+
+            TextChange tc = new TextChange(method.Span, $"{m.Trim()}{Environment.NewLine}{Environment.NewLine}{mCopy}");
+            controllerBody = tree.GetText().WithChanges(tc).ToString();
+
+            File.WriteAllText(filePath, controllerBody);
+            Refresh();
+        }
+
+        public static void RemoveMethod(string methodFullName)
+        {
+            var parts = MethodPartsNames(methodFullName);
+            string classFullName = methodFullName.Replace($".{parts.Item3}", "");
+            string methodName = parts.Item3;
+            string? filePath = GetMethodFilePath(methodFullName);
+            if (filePath == null) throw new Exception($"{classFullName} is not exist.");
+            string controllerBody = File.ReadAllText(filePath);
+
+            SyntaxTree tree = CSharpSyntaxTree.ParseText(controllerBody);
+            MethodDeclarationSyntax method =
+                tree.GetRoot().DescendantNodes().OfType<MethodDeclarationSyntax>()
+                .First(m => m.Identifier.ToString() == methodName);
+
+            TextChange tc = new TextChange(method.Span, string.Empty);
+            controllerBody = tree.GetText().WithChanges(tc).ToString();
+
+            File.WriteAllText(filePath, controllerBody);
+            Build();
+        }
+
+        //public static string? FindFilePathByClassName(string classFullName)
+        //{
+        //    string fileName = $"{(classFullName.Replace(".cs", string.Empty))}.cs";
+        //    string? filePath = ScriptFiles.SingleOrDefault(i => i.ToLower().EndsWith("/" + fileName.ToLower()));
+        //    return filePath;
+        //}
 
         public static void WriteMethodSettings(string methodFullName, string methodFilePath, MethodSettings methodSettings)
         {
@@ -393,12 +447,18 @@ namespace AppEnd
             }
             return methodInputs.ToArray();
         }
-        private static MethodInfo GetMethodInfo(string methodFullPath)
+        private static MethodInfo GetMethodInfo(string methodFullName)
+        {
+            var parts = MethodPartsNames(methodFullName);
+            return  GetMethodInfo(parts.Item1, parts.Item2, parts.Item3);
+        }
+
+        public static Tuple<string?, string, string> MethodPartsNames(string methodFullPath)
         {
             if (methodFullPath.Trim() == "") throw new Exception($"{methodFullPath} can not be empty");
             string[] parts = methodFullPath.Trim().Split('.');
-            if (parts.Length < 2 || parts.Length > 3) throw new Exception($"Requested method [{methodFullPath}] must contains at least 2 parts separated by dot[.] symbol.");
-            return parts.Length == 3 ? GetMethodInfo(parts[0], parts[1], parts[2]) : GetMethodInfo(null, parts[0], parts[1]);
+            if (parts.Length < 2 || parts.Length > 3) throw new Exception($"Requested method [{methodFullPath}] must contains at least 2 parts separated by 1 or 2 dot(s) symbol like : [NamespaceName.ClassName.MethodName] or [ClassName.MethodName].");
+            return parts.Length == 3 ? new(parts[0], parts[1], parts[2]) : new(null, parts[0], parts[1]);
         }
         private static MethodInfo GetMethodInfo(string? nameSpaceName, string typeName, string methodName)
         {

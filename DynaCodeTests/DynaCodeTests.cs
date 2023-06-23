@@ -296,6 +296,25 @@ namespace DynaCodeTests
         }
 
 
+        [TestMethod()]
+        public void DplicateMethod()
+        {
+            DynaCode.Init(GetSampleInvokeOptions());
+            string methodFullName = "SandboxNS.SandboxT.SandboxM1";
+            string methodFullNameCopy = "SandboxMNewVerSion";
+            try
+            {
+                DynaCode.RemoveMethod("SandboxNS.SandboxT." + methodFullNameCopy);
+                Console.WriteLine($"Method [{methodFullNameCopy}] removed.");
+            }
+            catch
+            {
+                Console.WriteLine($"Method [{methodFullNameCopy}] does not exists so we can not remove it !!!");
+            }
+
+            DynaCode.DuplicateMethod(methodFullName, methodFullNameCopy);
+            Console.WriteLine($"Method [{methodFullName}] Duplicated successfully.");
+        }
 
 
         private CodeInvokeOptions GetSampleInvokeOptions()
