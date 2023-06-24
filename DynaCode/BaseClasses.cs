@@ -11,8 +11,8 @@ namespace AppEnd
 {
     public class MethodSettings
     {
+        public AccessRules AccessRules = new AccessRules() { AllowedRoles = new string[] { }, AllowedUsers = new string[] { }, DeniedUsers = new string[] { } };
         public CachePolicy CachePolicy = new CachePolicy() { CacheLevel = CacheLevel.None };
-        public AccessRules AccessRules = new AccessRules() { AllowedUsers = new string[] { }, AllowedRoles = new string[] { }, DeniedUsers = new string[] { } };
         public LogPolicy LogPolicy = new LogPolicy() { OnErrorLogMethod = "", OnSuccessLogMethod = "", TruncateTo10K = true };
         public string Serialize()
         {
@@ -43,7 +43,7 @@ namespace AppEnd
         public string[] DeniedUsers { set; get; }
     }
 
-public class DynaUser
+    public class DynaUser
     {
         public string UserName { set; get; } = "";
         public string[] Roles { set; get; } = new string[] { };

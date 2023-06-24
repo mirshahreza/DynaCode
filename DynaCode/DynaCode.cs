@@ -80,7 +80,7 @@ namespace AppEnd
             }
         }
 
-        private static List<CodeMap> codeMaps;
+        private static List<CodeMap>? codeMaps;
         public static List<CodeMap> CodeMaps
         {
             get
@@ -114,6 +114,7 @@ namespace AppEnd
             scriptFiles = null;
             asmPath = null;
             dynaAsm = null;
+            codeMaps = null;
 
             Assembly asm = DynaAsm;
         }
@@ -280,28 +281,32 @@ namespace AppEnd
             controllerBody = tree.GetText().WithChanges(tc).ToString();
 
             File.WriteAllText(filePath, controllerBody);
-            Build();
+            Refresh();
         }
 
-        //public static string? FindFilePathByClassName(string classFullName)
-        //{
-        //    string fileName = $"{(classFullName.Replace(".cs", string.Empty))}.cs";
-        //    string? filePath = ScriptFiles.SingleOrDefault(i => i.ToLower().EndsWith("/" + fileName.ToLower()));
-        //    return filePath;
-        //}
-
+        public static void WriteMethodSettings(string methodFullName, MethodSettings methodSettings)
+        {
+            string methodFilePath = GetMethodFilePath(methodFullName);
+            WriteMethodSettings(methodFullName, methodFilePath, methodSettings);
+        }
         public static void WriteMethodSettings(string methodFullName, string methodFilePath, MethodSettings methodSettings)
         {
-            string settingsFileName = methodFilePath + ".settings.json";
+            string settingsFileName = GetSettingsFile(methodFilePath);
             string settingsRaw = File.Exists(settingsFileName) ? File.ReadAllText(settingsFileName) : "{}";
             JsonNode? jsonNode = JsonNode.Parse(settingsRaw);
             if (jsonNode is null) throw new Exception("Unknow Error");
             jsonNode[methodFullName] = JsonNode.Parse(methodSettings.Serialize());
             File.WriteAllText(settingsFileName, jsonNode.ToString());
         }
+
+        public static MethodSettings ReadMethodSettings(string methodFullName)
+        {
+            string methodFilePath = GetMethodFilePath(methodFullName);
+            return ReadMethodSettings(methodFullName, methodFilePath);
+        }
         public static MethodSettings ReadMethodSettings(string methodFullName, string methodFilePath)
-        {            
-            string settingsFileName = methodFilePath + ".settings.json";
+        {
+            string settingsFileName = GetSettingsFile(methodFilePath);
             string settingsRaw = File.Exists(settingsFileName) ? File.ReadAllText(settingsFileName) : "{}";
             try
             {
@@ -317,6 +322,12 @@ namespace AppEnd
                 throw new InvalidCastException($"Stored settings for [ {methodFullName} ] in the file [ {methodFilePath} ] is not valid");
             }
         }
+
+        private static string GetSettingsFile(string methodFilePath)
+        {
+            return methodFilePath.Replace(".cs", "") + ".settings.json";
+        }
+
         public static void RemoveMethodSettings(string methodFullName)
         {
             CodeMap? codeMap = CodeMaps.FirstOrDefault(cm => cm.MethodFullName == methodFullName);
