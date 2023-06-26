@@ -7,6 +7,9 @@ using System.Text.Json.Nodes;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Text.Json.Serialization;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using System.Reflection.Emit;
 
 namespace AppEnd
 {
@@ -96,6 +99,18 @@ namespace Example
             }
         }
 
+
+        public static bool IsRealType(string typeName)
+        {
+            CodeMap? codeMap = DynaCode.CodeMaps.FirstOrDefault(i => DynaCode.MethodPartsNames(i.MethodFullName).Item2 == typeName);
+            return codeMap != null;
+        }
+
+        public static bool IsRealMethod(string methodName)
+        {
+            CodeMap? codeMap = DynaCode.CodeMaps.FirstOrDefault(i => DynaCode.MethodPartsNames(i.MethodFullName).Item3 == methodName);
+            return codeMap != null;
+        }
 
     }
 }

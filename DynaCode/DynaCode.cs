@@ -323,6 +323,33 @@ namespace AppEnd
             }
         }
 
+        public static List<DynaClass> GetDynaClasses()
+        {
+            var dynaClasses = new List<DynaClass>();
+            foreach (var i in DynaAsm.GetTypes())
+            {
+                if (Utils.IsRealType(i.Name))
+                {
+                    List<DynaMethod> dynaMethods = new List<DynaMethod>();
+                    foreach (var method in i.GetMethods())
+                    {
+                        if (Utils.IsRealMethod(method.Name))
+                        {
+                            dynaMethods.Add(new()
+                            {
+                                Name = method.Name,
+                                MethodSettings = ReadMethodSettings($"{i.Namespace}.{i.Name}.{method.Name}")
+                            });
+                        }
+                    }
+                    DynaClass dynamicController = new() { Namespace = i.Namespace, Name = i.Name, DynaMethods = dynaMethods };
+                    dynaClasses.Add(dynamicController);
+                }
+            }
+            return dynaClasses;
+        }
+
+
         private static string GetSettingsFile(string methodFilePath)
         {
             return methodFilePath.Replace(".cs", "") + ".settings.json";

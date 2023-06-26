@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Emit;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -89,6 +90,19 @@ namespace AppEnd
     
     }
 
+    public class DynaClass
+    {
+        public string? Namespace { set; get; }
+        public string Name { set; get; }
+        public List<DynaMethod> DynaMethods { set; get; }
+    }
+
+    public class DynaMethod
+    {
+        public string Name { set; get; } = "";
+        public MethodSettings MethodSettings { set; get; }
+    }
+
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum CacheLevel
     {
@@ -96,4 +110,6 @@ namespace AppEnd
         PerUser,
         AllUsers
     }
+
+
 }
