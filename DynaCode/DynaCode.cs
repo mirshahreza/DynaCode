@@ -207,6 +207,7 @@ namespace AppEnd
             if (methodSettings.AccessRules.AllowedRoles.Contains("*")) return;
             if (methodSettings.AccessRules.AllowedUsers.Contains(dynaUser.UserName)) return;
             if (methodSettings.AccessRules.AllowedUsers.Contains("*")) return;
+            if (invokeOptions.PublicMethods is not null && invokeOptions.PublicMethods.Contains(methodInfo.GetFullName())) return;
             throw new Exception($"Access denied, The user [ {dynaUser.UserName} ] doesn't have enough access to execute [ {methodInfo.GetFullName()} ]");
         }
         private static void LogMethodInvoke(MethodInfo methodInfo, MethodSettings methodSettings, CodeInvokeResult codeInvokeResult, object[]? inputParams, DynaUser? dynaUser, string clientInfo = "")

@@ -79,6 +79,7 @@ namespace AppEnd
         public bool IsDevelopment { get; init; } = false;
         public string PublicKeyUser { get; init; } = "";
         public string PublicKeyRole { get; init; } = "";
+        public string[]? PublicMethods { get; init; } 
         public string AlternativeMethodFullName { get; init; } = "";
         public string ReferencesPath { get; init; } = "";
     }
