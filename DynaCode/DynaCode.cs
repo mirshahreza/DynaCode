@@ -50,7 +50,7 @@ namespace AppEnd
             {
                 if (scriptFiles is null)
                 {
-                    scriptFiles = Utils.GetFiles(invokeOptions.StartPath, "*.cs").ToArray();
+                    scriptFiles = StaticMethods.GetFiles(invokeOptions.StartPath, "*.cs").ToArray();
                 }
                 return scriptFiles;
             }
@@ -96,7 +96,7 @@ namespace AppEnd
         public static void Init(CodeInvokeOptions? codeInvokeOptions = null)
         {
             if (codeInvokeOptions is not null) invokeOptions = codeInvokeOptions;
-            EnsureLogFolders();
+            Utils.EnsureLogFolders(invokeOptions);
             Refresh();
         }
         public static void Refresh()
@@ -508,53 +508,10 @@ namespace AppEnd
             if (dynamicType == null) throw new Exception($"Requested type [ {typeFullName} ] does not exist.");
             return dynamicType;
         }
-        public static void AddExampleCode()
-        {
-            File.WriteAllText(invokeOptions.StartPath + "/Example.cs", @"
-namespace Example
-{
-    public static class ExampleT
-    {
-        public static int ExampleM(int a, int b)
-        {
-            return a + b;
-        }
-    }
-}
-
-");
-        }
-        public static void RemoveExampleCode()
-        {
-            if (File.Exists(invokeOptions.StartPath + "/Example.cs"))
-                File.Delete(invokeOptions.StartPath + "/Example.cs");
-        }
-
-        public static void AddBuiltinLogMethods()
-        {
-
-        }
-
-        private static void EnsureLogFolders()
-        {
-            if(!Directory.Exists(invokeOptions.LogFolderPath))
-            {
-                Directory.CreateDirectory(invokeOptions.LogFolderPath);
-            }
-
-            if (!Directory.Exists(invokeOptions.LogFolderPath + "/success"))
-            {
-                Directory.CreateDirectory(invokeOptions.LogFolderPath + "/success");
-            }
-
-            if (!Directory.Exists(invokeOptions.LogFolderPath + "/error"))
-            {
-                Directory.CreateDirectory(invokeOptions.LogFolderPath + "/error");
-            }
-        }
+        
         private static string CalculateCacheKey(MethodInfo methodInfo, MethodSettings methodSettings, object[]? inputParams, DynaUser? dynaUser)
         {
-            string paramKey = inputParams is null ? "" : $".{inputParams.SerializeO().GetHashCode()}";
+            string paramKey = inputParams is null ? "" : $".{inputParams.ToJsonStringByBuiltIn().GetHashCode()}";
             string levelName = methodSettings.CachePolicy.CacheLevel == CacheLevel.PerUser ? $".{dynaUser?.UserName}" : "";
             return $"{methodInfo.GetFullName()}{levelName}{paramKey}";
         }

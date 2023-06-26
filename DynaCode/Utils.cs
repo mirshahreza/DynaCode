@@ -23,19 +23,7 @@ namespace AppEnd
                 keyValuePairs[parameterInfos[i].Name] = o;
                 i++;
             }
-            return keyValuePairs.SerializeO();
-        }
-
-        public static string SerializeO(this object? o, bool indented = true)
-        {
-            if (o is null) return "";
-            return JsonSerializer.Serialize(o, options: new()
-            {
-                IncludeFields = true,
-                WriteIndented = indented,
-                IgnoreReadOnlyProperties = true,
-                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault
-            });
+            return keyValuePairs.ToJsonStringByBuiltIn();
         }
 
         public static string CreateLogContent(MethodInfo methodInfo, string actor, string methodFullPath, object[]? inputParams, CodeInvokeResult codeInvokeResult, string clientInfo)
@@ -44,7 +32,7 @@ namespace AppEnd
             string inputsSection = "MethodInput:" + Environment.NewLine
                 + inputParams.SerializeObjectsAsJson(methodInfo)
                 + Environment.NewLine + Environment.NewLine;
-            string outputsSection = "MethodOutput:" + Environment.NewLine + codeInvokeResult.Result.SerializeO() + Environment.NewLine + Environment.NewLine;
+            string outputsSection = "MethodOutput:" + Environment.NewLine + codeInvokeResult.Result?.ToJsonStringByBuiltIn() + Environment.NewLine + Environment.NewLine;
 
             return clientSection + inputsSection + outputsSection;
         }
@@ -63,43 +51,51 @@ namespace AppEnd
                 return methodInfo.Name;
         }
 
-        public static IEnumerable<string> GetFiles(string path, string searchPattern)
+        public static void AddExampleCode(CodeInvokeOptions codeInvokeOptions)
         {
-            Queue<string> queue = new Queue<string>();
-            queue.Enqueue(path);
-            while (queue.Count > 0)
+            File.WriteAllText(codeInvokeOptions.StartPath + "/Example.cs", @"
+namespace Example
+{
+    public static class ExampleT
+    {
+        public static int ExampleM(int a, int b)
+        {
+            return a + b;
+        }
+    }
+}
+
+");
+        }
+        public static void RemoveExampleCode(CodeInvokeOptions codeInvokeOptions)
+        {
+            if (File.Exists(codeInvokeOptions.StartPath + "/Example.cs"))
+                File.Delete(codeInvokeOptions.StartPath + "/Example.cs");
+        }
+
+        public static void AddBuiltinLogMethods()
+        {
+
+        }
+
+        public static void EnsureLogFolders(CodeInvokeOptions codeInvokeOptions)
+        {
+            if (!Directory.Exists(codeInvokeOptions.LogFolderPath))
             {
-                path = queue.Dequeue();
-                foreach (string subDir in Directory.GetDirectories(path))
-                {
-                    queue.Enqueue(subDir);
-                }
-                string[] files = Directory.GetFiles(path, searchPattern);
-                if (files != null)
-                {
-                    for (int i = 0; i < files.Length; i++)
-                    {
-                        yield return files[i];
-                    }
-                }
+                Directory.CreateDirectory(codeInvokeOptions.LogFolderPath);
+            }
+
+            if (!Directory.Exists(codeInvokeOptions.LogFolderPath + "/success"))
+            {
+                Directory.CreateDirectory(codeInvokeOptions.LogFolderPath + "/success");
+            }
+
+            if (!Directory.Exists(codeInvokeOptions.LogFolderPath + "/error"))
+            {
+                Directory.CreateDirectory(codeInvokeOptions.LogFolderPath + "/error");
             }
         }
 
-        public static object ToOrigType(this JsonElement s, ParameterInfo parameterInfo)
-        {
-            if (parameterInfo.ParameterType == typeof(int)) return int.Parse(s.ToString());
-            if (parameterInfo.ParameterType == typeof(Int16)) return Int16.Parse(s.ToString());
-            if (parameterInfo.ParameterType == typeof(Int32)) return Int32.Parse(s.ToString());
-            if (parameterInfo.ParameterType == typeof(Int64)) return Int64.Parse(s.ToString());
-            if (parameterInfo.ParameterType == typeof(bool)) return bool.Parse(s.ToString());
-            if (parameterInfo.ParameterType == typeof(DateTime)) return DateTime.Parse(s.ToString());
-            if (parameterInfo.ParameterType == typeof(Guid)) return Guid.Parse(s.ToString());
-            if (parameterInfo.ParameterType == typeof(float)) return float.Parse(s.ToString());
-            if (parameterInfo.ParameterType == typeof(Decimal)) return Decimal.Parse(s.ToString());
-            if (parameterInfo.ParameterType == typeof(string)) return s.ToString();
-            if (parameterInfo.ParameterType == typeof(byte[])) return Encoding.UTF8.GetBytes(s.ToString());
-            return s;
-        }
 
     }
 }
