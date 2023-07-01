@@ -22,7 +22,7 @@ namespace SandboxNS
             return p1.ToString() + " --- " + jsonNode.ToString();
         }
 
-        public static string SandboxM4(DynaUser dynaUser)
+        public static string SandboxM4(AppEndUser dynaUser)
         {
             return dynaUser.UserName;
         }

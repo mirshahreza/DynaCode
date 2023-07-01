@@ -119,18 +119,18 @@ namespace AppEnd
             Assembly asm = DynaAsm;
         }
 
-        public static CodeInvokeResult InvokeByJsonInputs(string methodFullPath, JsonElement? inputParams = null, DynaUser? dynaUser = null, string clientInfo = "", bool ignoreCaching = false)
+        public static CodeInvokeResult InvokeByJsonInputs(string methodFullPath, JsonElement? inputParams = null, AppEndUser? dynaUser = null, string clientInfo = "", bool ignoreCaching = false)
         {
             MethodInfo methodInfo = GetMethodInfo(methodFullPath);
             return Invoke(methodInfo, ExtractParams(methodInfo, inputParams), dynaUser, clientInfo, ignoreCaching);
         }
-        public static CodeInvokeResult InvokeByParamsInputs(string methodFullPath, object[]? inputParams = null, DynaUser? dynaUser = null, string clientInfo = "", bool ignoreCaching = false)
+        public static CodeInvokeResult InvokeByParamsInputs(string methodFullPath, object[]? inputParams = null, AppEndUser? dynaUser = null, string clientInfo = "", bool ignoreCaching = false)
         {
             MethodInfo methodInfo = GetMethodInfo(methodFullPath);
             return Invoke(methodInfo, inputParams, dynaUser, clientInfo, ignoreCaching);
         }
 
-        private static CodeInvokeResult Invoke(MethodInfo methodInfo, object[]? inputParams = null, DynaUser? dynaUser = null, string clientInfo = "", bool ignoreCaching = false)
+        private static CodeInvokeResult Invoke(MethodInfo methodInfo, object[]? inputParams = null, AppEndUser? dynaUser = null, string clientInfo = "", bool ignoreCaching = false)
         {
             string methodFullName = methodInfo.GetFullName();
             string methodFilePath = GetMethodFilePath(methodFullName);
@@ -198,7 +198,7 @@ namespace AppEnd
             return codeMap.FilePath;
         }
 
-        private static void CheckAccess(MethodInfo methodInfo, MethodSettings methodSettings, DynaUser? dynaUser)
+        private static void CheckAccess(MethodInfo methodInfo, MethodSettings methodSettings, AppEndUser? dynaUser)
         {
             if (dynaUser is null) return;
             if (dynaUser.UserName.ToLower() == invokeOptions.PublicKeyUser.ToLower()) return;
@@ -210,7 +210,7 @@ namespace AppEnd
             if (invokeOptions.PublicMethods is not null && invokeOptions.PublicMethods.Contains(methodInfo.GetFullName())) return;
             throw new Exception($"Access denied, The user [ {dynaUser.UserName} ] doesn't have enough access to execute [ {methodInfo.GetFullName()} ]");
         }
-        private static void LogMethodInvoke(MethodInfo methodInfo, MethodSettings methodSettings, CodeInvokeResult codeInvokeResult, object[]? inputParams, DynaUser? dynaUser, string clientInfo = "")
+        private static void LogMethodInvoke(MethodInfo methodInfo, MethodSettings methodSettings, CodeInvokeResult codeInvokeResult, object[]? inputParams, AppEndUser? dynaUser, string clientInfo = "")
         {
             string logMethod;
             if (codeInvokeResult.IsSucceeded)
@@ -537,7 +537,7 @@ namespace AppEnd
             return dynamicType;
         }
         
-        private static string CalculateCacheKey(MethodInfo methodInfo, MethodSettings methodSettings, object[]? inputParams, DynaUser? dynaUser)
+        private static string CalculateCacheKey(MethodInfo methodInfo, MethodSettings methodSettings, object[]? inputParams, AppEndUser? dynaUser)
         {
             string paramKey = inputParams is null ? "" : $".{inputParams.ToJsonStringByBuiltIn().GetHashCode()}";
             string levelName = methodSettings.CachePolicy.CacheLevel == CacheLevel.PerUser ? $".{dynaUser?.UserName}" : "";

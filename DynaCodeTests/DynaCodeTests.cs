@@ -66,8 +66,8 @@ namespace DynaCodeTests
             methodSettings.AccessRules.AllowedUsers = new string[] { "Ali" };
             DynaCode.WriteMethodSettings(methodFullName, methodFilePath, methodSettings);
 
-            DynaUser aliActor = new DynaUser() { UserName = "Ali" };
-            DynaUser mohsenActor = new DynaUser() { UserName = "Mohsen" };
+            AppEndUser aliActor = new AppEndUser() { UserName = "Ali" };
+            AppEndUser mohsenActor = new AppEndUser() { UserName = "Mohsen" };
 
             CodeInvokeResult r1 = DynaCode.InvokeByParamsInputs(methodFullName, new object[] { 4, 6 }, aliActor);
             Assert.IsTrue(r1.IsSucceeded);
@@ -87,7 +87,7 @@ namespace DynaCodeTests
             methodSettings.AccessRules.AllowedUsers = new string[] { "Ali" };
             DynaCode.WriteMethodSettings(methodFullName, methodFilePath, methodSettings);
 
-            DynaUser aliActor = new DynaUser() { UserName = "Ali" };
+            AppEndUser aliActor = new AppEndUser() { UserName = "Ali" };
 
             CodeInvokeResult r1 = DynaCode.InvokeByParamsInputs(methodFullName, new object[] { aliActor }, aliActor);
             Assert.IsTrue(r1.Result?.ToString() == aliActor.UserName);
@@ -168,7 +168,8 @@ namespace DynaCodeTests
         [TestMethod()]
         public void RefreshTest()
         {
-            DynaCode.Init(GetSampleInvokeOptions());
+            CodeInvokeOptions codeInvokeOptions = GetSampleInvokeOptions();
+            DynaCode.Init(codeInvokeOptions);
             try
             {
                 try
@@ -180,13 +181,13 @@ namespace DynaCodeTests
                     Assert.AreEqual(ex.Message, "Requested type [ Example.ExampleT ] does not exist.");
                 }
 
-                DynaCode.AddExampleCode();
+                Utils.AddExampleCode(codeInvokeOptions);
                 DynaCode.Refresh();
 
                 CodeInvokeResult r2 = DynaCode.InvokeByParamsInputs("Example.ExampleT.ExampleM", new object[] { 4, 6 });
                 Assert.AreEqual(r2.Result, 10);
 
-                DynaCode.RemoveExampleCode();
+                Utils.RemoveExampleCode(codeInvokeOptions);
                 DynaCode.Refresh();
 
                 try
@@ -200,7 +201,7 @@ namespace DynaCodeTests
             }
             catch
             {
-                DynaCode.RemoveExampleCode();
+                Utils.RemoveExampleCode(codeInvokeOptions);
             }
 
         }
@@ -219,12 +220,12 @@ namespace DynaCodeTests
             DynaCode.Refresh();
 
             CodeInvokeResult r1 = DynaCode.InvokeByParamsInputs(methodFullName, new object[] { 4, 6, "Ali" });
-            Console.WriteLine(r1.SerializeO());
+            Console.WriteLine(r1.ToJsonStringByBuiltIn());
 
             System.Threading.Thread.Sleep(3000);
 
             CodeInvokeResult r2 = DynaCode.InvokeByParamsInputs(methodFullName, new object[] { 4, 6, "Ali" });
-            Console.WriteLine(r2.SerializeO());
+            Console.WriteLine(r2.ToJsonStringByBuiltIn());
 
 
         }
