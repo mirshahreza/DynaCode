@@ -34,7 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\CommonUtils\CommonUtils.csproj" />
+    <ProjectReference Include="..\..\AppEndCommon\AppEndCommon.csproj" />
   </ItemGroup>
 
   <ItemGroup>
