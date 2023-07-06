@@ -50,7 +50,7 @@ namespace AppEnd
             {
                 if (scriptFiles is null)
                 {
-                    scriptFiles = StaticMethods.GetFiles(invokeOptions.StartPath, "*.cs").ToArray();
+                    scriptFiles = new DirectoryInfo(invokeOptions.StartPath).GetFilesRecursive("*.cs").ToArray();
                 }
                 return scriptFiles;
             }
