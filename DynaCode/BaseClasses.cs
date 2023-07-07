@@ -77,13 +77,6 @@ namespace AppEnd
         public string ReferencesPath { get; init; } = "";
     }
 
-    public class DynaEx
-    {
-        public string Message { get; init; }
-        public List<string>? StackTrace { get; init; }
-    
-    }
-
     public class DynaClass
     {
         public string? Namespace { set; get; }
