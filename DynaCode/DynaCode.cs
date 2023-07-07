@@ -169,35 +169,33 @@ namespace AppEnd
                         stopwatch.Stop();
                         codeInvokeResult = new() { Result = result, FromCache = false, IsSucceeded = true, Duration = stopwatch.ElapsedMilliseconds };
                     }
-                    catch (Exception ex)
+                    catch(Exception ex)
                     {
                         stopwatch.Stop();
+                        Exception _ex = ex.InnerException is null ? ex : ex.InnerException;
                         codeInvokeResult = new()
                         {
-                            Result = new AppEndException(ex.Message)
-                                .AddParam("MethodFullName", methodFullName)
-                                .AddParam("Site", $"{System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType?.Name}, {System.Reflection.MethodBase.GetCurrentMethod()?.Name}"),
+                            Result = _ex,
                             FromCache = null,
                             IsSucceeded = false,
                             Duration = stopwatch.ElapsedMilliseconds
                         };
+
                     }
                 }
             }
             catch (Exception ex)
             {
                 stopwatch.Stop();
+                Exception _ex = ex.InnerException is null ? ex : ex.InnerException;
                 codeInvokeResult = new()
                 {
-                    Result = new AppEndException(ex.Message)
-                            .AddParam("MethodFullName", methodFullName)
-                            .AddParam("Site", $"{System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType?.Name}, {System.Reflection.MethodBase.GetCurrentMethod()?.Name}"),
+                    Result = _ex,
                     FromCache = null,
                     IsSucceeded = false,
                     Duration = stopwatch.ElapsedMilliseconds
                 };
             }
-
 
             LogMethodInvoke(methodInfo, methodSettings, codeInvokeResult, inputParams, dynaUser, clientInfo);
             return codeInvokeResult;
