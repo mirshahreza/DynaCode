@@ -210,6 +210,15 @@ namespace AppEnd
                     ;
             return codeMap.FilePath;
         }
+        public static string GetTypeFilePath(string typeFullName)
+        {
+            CodeMap? codeMap = CodeMaps.FirstOrDefault(cm => cm.MethodFullName.StartsWith(typeFullName));
+            if (codeMap is null) throw new AppEndException("MethodDoesNotExist")
+                    .AddParam("TypeFullName", typeFullName)
+                    .AddParam("Site", $"{System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType?.Name}, {System.Reflection.MethodBase.GetCurrentMethod()?.Name}")
+                    ;
+            return codeMap.FilePath;
+        }
 
         private static void CheckAccess(MethodInfo methodInfo, MethodSettings methodSettings, AppEndUser? actor)
         {
@@ -268,18 +277,40 @@ namespace AppEnd
                     ;
 
             string controllerBody = File.ReadAllText(filePath);
-
             SyntaxTree tree = CSharpSyntaxTree.ParseText(controllerBody);
+
             MethodDeclarationSyntax method =
                 tree.GetRoot().DescendantNodes().OfType<MethodDeclarationSyntax>()
                 .First(m => m.Identifier.ToString() == methodName);
-
             string m = method.GetText().ToString();
             string mCopy = m.Replace($"{methodName}(", $"{methodCopyName}(");
-
             TextChange tc = new TextChange(method.Span, $"{m.Trim()}{Environment.NewLine}{Environment.NewLine}{mCopy}");
+            
             controllerBody = tree.GetText().WithChanges(tc).ToString();
+            File.WriteAllText(filePath, controllerBody);
+            Refresh();
+        }
+        public static void CreateMethod(string typeFullName, string methodName)
+        {
+            string? filePath = GetTypeFilePath(typeFullName);
+            if (filePath == null) throw new AppEndException("MethodFullNameDoesNotExist")
+                    .AddParam("TypeFullName", typeFullName)
+                    .AddParam("Site", $"{System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType?.Name}, {System.Reflection.MethodBase.GetCurrentMethod()?.Name}")
+                    ;
 
+            string controllerBody = File.ReadAllText(filePath);
+            SyntaxTree tree = CSharpSyntaxTree.ParseText(controllerBody);
+
+            string mBody = new AppEndMethod(methodName).MethodImplementation;
+
+            MethodDeclarationSyntax method =
+                tree.GetRoot().DescendantNodes().OfType<MethodDeclarationSyntax>()
+                .Last();
+            string m = method.GetText().ToString();
+            TextChange tc = new TextChange(method.Span, $"{m.Trim()}{Environment.NewLine}{Environment.NewLine}{mBody}");
+
+
+            controllerBody = tree.GetText().WithChanges(tc).ToString();
             File.WriteAllText(filePath, controllerBody);
             Refresh();
         }
