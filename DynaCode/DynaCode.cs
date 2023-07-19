@@ -285,8 +285,8 @@ namespace AppEnd
             string m = method.GetText().ToString();
             string mCopy = m.Replace($"{methodName}(", $"{methodCopyName}(");
             TextChange tc = new TextChange(method.Span, $"{m.Trim()}{Environment.NewLine}{Environment.NewLine}{mCopy}");
-            
-            controllerBody = tree.GetText().WithChanges(tc).ToString();
+            controllerBody = tree.GetText().WithChanges(tc).ToString().RemoveWhitelines();
+
             File.WriteAllText(filePath, controllerBody);
             Refresh();
         }
@@ -308,9 +308,8 @@ namespace AppEnd
                 .Last();
             string m = method.GetText().ToString();
             TextChange tc = new TextChange(method.Span, $"{m.Trim()}{Environment.NewLine}{Environment.NewLine}{mBody}");
+            controllerBody = tree.GetText().WithChanges(tc).ToString().RemoveWhitelines();
 
-
-            controllerBody = tree.GetText().WithChanges(tc).ToString();
             File.WriteAllText(filePath, controllerBody);
             Refresh();
         }
@@ -333,7 +332,7 @@ namespace AppEnd
                 .First(m => m.Identifier.ToString() == methodName);
 
             TextChange tc = new TextChange(method.Span, string.Empty);
-            controllerBody = tree.GetText().WithChanges(tc).ToString();
+            controllerBody = tree.GetText().WithChanges(tc).ToString().RemoveWhitelines();
 
             File.WriteAllText(filePath, controllerBody);
             Refresh();
