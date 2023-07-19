@@ -303,9 +303,7 @@ namespace AppEnd
 
             string mBody = new AppEndMethod(methodName).MethodImplementation;
 
-            MethodDeclarationSyntax method =
-                tree.GetRoot().DescendantNodes().OfType<MethodDeclarationSyntax>()
-                .Last();
+            MethodDeclarationSyntax method = tree.GetRoot().DescendantNodes().OfType<MethodDeclarationSyntax>().Last();
             string m = method.GetText().ToString();
             TextChange tc = new TextChange(method.Span, $"{m.Trim()}{Environment.NewLine}{Environment.NewLine}{mBody}");
             controllerBody = tree.GetText().WithChanges(tc).ToString().RemoveWhitelines();
