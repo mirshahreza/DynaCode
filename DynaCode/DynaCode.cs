@@ -122,7 +122,7 @@ namespace AppEnd
         public static CodeInvokeResult InvokeByJsonInputs(string methodFullPath, JsonElement? inputParams = null, AppEndUser? dynaUser = null, string clientInfo = "", bool ignoreCaching = false)
         {
             MethodInfo methodInfo = GetMethodInfo(methodFullPath);
-            return Invoke(methodInfo, ExtractParams(methodInfo, inputParams), dynaUser, clientInfo, ignoreCaching);
+            return Invoke(methodInfo, ExtractParams(methodInfo, inputParams, dynaUser), dynaUser, clientInfo, ignoreCaching);
         }
         public static CodeInvokeResult InvokeByParamsInputs(string methodFullPath, object[]? inputParams = null, AppEndUser? dynaUser = null, string clientInfo = "", bool ignoreCaching = false)
         {
@@ -539,7 +539,7 @@ namespace AppEnd
             return codeMaps;
         }
 
-        private static object[]? ExtractParams(MethodInfo methodInfo, JsonElement? jsonElement)
+        private static object[]? ExtractParams(MethodInfo methodInfo, JsonElement? jsonElement,AppEndUser? actor)
         {
             if (jsonElement is null) return null;
             List<object> methodInputs = new List<object>();
@@ -548,16 +548,22 @@ namespace AppEnd
 
             foreach (var paramInfo in methodParams)
             {
-                IEnumerable<JsonProperty> l = objects.Where(i => string.Equals(i.Name, paramInfo.Name));
-                if (l.Count() == 0) throw new AppEndException($"MethodCallMustContainsParameter")
-                        .AddParam("MethodFullName", methodInfo.GetFullName())
-                        .AddParam("ParameterName", paramInfo.Name.ToStringEmpty())
-                        .AddParam("Site", $"{System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType?.Name}, {System.Reflection.MethodBase.GetCurrentMethod()?.Name}")
-                        ;
-                JsonProperty p = l.First();
-                methodInputs.Add(p.Value.ToOrigType(paramInfo));
-                //methodInputs.Add(p.Value);
-            }
+                if (paramInfo.Name.ToStringEmpty().ToLower() == "actor" && paramInfo.ParameterType == typeof(AppEndUser))
+                {
+					methodInputs.Add(actor);
+				}
+				else
+                {
+					IEnumerable<JsonProperty> l = objects.Where(i => string.Equals(i.Name, paramInfo.Name));
+					if (l.Count() == 0) throw new AppEndException($"MethodCallMustContainsParameter")
+							.AddParam("MethodFullName", methodInfo.GetFullName())
+							.AddParam("ParameterName", paramInfo.Name.ToStringEmpty())
+							.AddParam("Site", $"{System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType?.Name}, {System.Reflection.MethodBase.GetCurrentMethod()?.Name}")
+							;
+					JsonProperty p = l.First();
+					methodInputs.Add(p.Value.ToOrigType(paramInfo));
+				}
+			}
             return methodInputs.ToArray();
         }
         private static MethodInfo GetMethodInfo(string methodFullName)
