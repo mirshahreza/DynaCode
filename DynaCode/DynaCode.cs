@@ -224,12 +224,12 @@ namespace AppEnd
         {
             if (actor is null) return;
             if (actor.UserName.ToLower() == invokeOptions.PublicKeyUser.ToLower()) return;
-            if (actor.Roles.Contains(invokeOptions.PublicKeyRole)) return;
-            if (actor.Roles.ToList().Exists(i => methodSettings.AccessRules.AllowedRoles.Contains(i))) return;
+            if (actor.Roles.ContainsIgnoreCase(invokeOptions.PublicKeyRole)) return;
+            if (actor.Roles.ToList().HasIntersect(methodSettings.AccessRules.AllowedRoles)) return;
             if (methodSettings.AccessRules.AllowedRoles.Contains("*")) return;
-            if (methodSettings.AccessRules.AllowedUsers.Contains(actor.UserName)) return;
+            if (methodSettings.AccessRules.AllowedUsers.ContainsIgnoreCase(actor.UserName)) return;
             if (methodSettings.AccessRules.AllowedUsers.Contains("*")) return;
-            if (invokeOptions.PublicMethods is not null && invokeOptions.PublicMethods.Contains(methodInfo.GetFullName())) return;
+            if (invokeOptions.PublicMethods is not null && invokeOptions.PublicMethods.ContainsIgnoreCase(methodInfo.GetFullName())) return;
             throw new AppEndException("AccessDenied")
                 .AddParam("Method", methodInfo.GetFullName())
                 .AddParam("Actor", actor.UserName)
@@ -645,11 +645,7 @@ namespace AppEnd
 
         public static Dictionary<string, object> GetAllAllowdAndDeniedActions(AppEndUser? actor)
         {
-            if (actor == null) return new Dictionary<string, object>
-            {
-                { "AllowedActions", "".Split(',') },
-                { "DeniedActions", "".Split(',') }
-            };
+            if (actor == null) return new Dictionary<string, object> { { "AllowedActions", "".Split(',') } };
 
 			List<DynaClass> dynaClasses = GetDynaClasses();
 			List<string> alloweds = new List<string>();
@@ -659,26 +655,25 @@ namespace AppEnd
             {
                 foreach(DynaMethod dynaM in dynaC.DynaMethods)
                 {
-					MethodSettings methodSettings = dynaM.MethodSettings;
-					if (methodSettings.AccessRules.AllowedUsers.Contains(actor.UserName) ||
-						actor.Roles.ToList().Exists(i => methodSettings.AccessRules.AllowedRoles.Contains(i)))
-					{
-						alloweds.Add(dynaC.Namespace + "." + dynaC.Name + "." + dynaM.Name);
-					}
+					MethodSettings ms = dynaM.MethodSettings;
+                    string mFullName = dynaC.Namespace + "." + dynaC.Name + "." + dynaM.Name;
+                    if (
+						invokeOptions.PublicMethods.ContainsIgnoreCase(mFullName) ||
+						invokeOptions.PublicKeyUser.ToLower() == actor.UserName.ToLower() ||
+						actor.Roles.ContainsIgnoreCase(invokeOptions.PublicKeyRole) ||
+                        ms.AccessRules.AllowedUsers.ContainsIgnoreCase(actor.UserName) ||
+                        ms.AccessRules.AllowedRoles.HasIntersect(actor.Roles)
+                        )
+                        alloweds.Add(mFullName);
 
-                    if (methodSettings.AccessRules.DeniedUsers.Contains(actor.UserName))
-                    {
-                        denieds.Add(dynaC.Namespace + "." + dynaC.Name + "." + dynaM.Name);
-                    }
+					if (ms.AccessRules.DeniedUsers.ContainsIgnoreCase(actor.UserName))
+						denieds.Add(mFullName);
 				}
 			}
 
+            foreach(string s in denieds) if (alloweds.ContainsIgnoreCase(s)) alloweds.Remove(s);
 
-			return new Dictionary<string, object>
-			{
-				{ "AllowedActions", alloweds.ToArray() },
-				{ "DeniedActions", denieds.ToArray() }
-			};
+            return new Dictionary<string, object> { { "AllowedActions", alloweds.ToArray() } };
 		}
 
     }
