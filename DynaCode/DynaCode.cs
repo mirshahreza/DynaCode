@@ -539,31 +539,33 @@ namespace AppEnd
             return codeMaps;
         }
 
-        private static object[]? ExtractParams(MethodInfo methodInfo, JsonElement? jsonElement,AppEndUser? actor)
+        private static object[]? ExtractParams(MethodInfo methodInfo, JsonElement? jsonElement, AppEndUser? actor)
         {
-            if (jsonElement is null) return null;
             List<object> methodInputs = new List<object>();
             ParameterInfo[] methodParams = methodInfo.GetParameters();
-            ObjectEnumerator objects = ((JsonElement)jsonElement).EnumerateObject();
+            ObjectEnumerator? objects = jsonElement is null ? null : ((JsonElement)jsonElement).EnumerateObject();
 
             foreach (var paramInfo in methodParams)
             {
                 if (paramInfo.Name.ToStringEmpty().ToLower() == "actor" && paramInfo.ParameterType == typeof(AppEndUser))
                 {
-					methodInputs.Add(actor);
-				}
-				else
+                    methodInputs.Add(actor);
+                }
+                else
                 {
-					IEnumerable<JsonProperty> l = objects.Where(i => string.Equals(i.Name, paramInfo.Name));
-					if (l.Count() == 0) throw new AppEndException($"MethodCallMustContainsParameter")
-							.AddParam("MethodFullName", methodInfo.GetFullName())
-							.AddParam("ParameterName", paramInfo.Name.ToStringEmpty())
-							.AddParam("Site", $"{System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType?.Name}, {System.Reflection.MethodBase.GetCurrentMethod()?.Name}")
-							;
-					JsonProperty p = l.First();
-					methodInputs.Add(p.Value.ToOrigType(paramInfo));
+                    if(objects is not null)
+                    {
+						IEnumerable<JsonProperty> l = ((ObjectEnumerator)objects).Where(i => string.Equals(i.Name, paramInfo.Name));
+						if (l.Count() == 0) throw new AppEndException($"MethodCallMustContainsParameter")
+								.AddParam("MethodFullName", methodInfo.GetFullName())
+								.AddParam("ParameterName", paramInfo.Name.ToStringEmpty())
+								.AddParam("Site", $"{System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType?.Name}, {System.Reflection.MethodBase.GetCurrentMethod()?.Name}")
+								;
+						JsonProperty p = l.First();
+						methodInputs.Add(p.Value.ToOrigType(paramInfo));
+					}
 				}
-			}
+            }
             return methodInputs.ToArray();
         }
         private static MethodInfo GetMethodInfo(string methodFullName)
@@ -639,6 +641,45 @@ namespace AppEnd
             string levelName = methodSettings.CachePolicy.CacheLevel == CacheLevel.PerUser ? $".{dynaUser?.UserName}" : "";
             return $"{methodInfo.GetFullName()}{levelName}{paramKey}";
         }
+
+
+        public static Dictionary<string, object> GetAllAllowdAndDeniedActions(AppEndUser? actor)
+        {
+            if (actor == null) return new Dictionary<string, object>
+            {
+                { "AllowedActions", "".Split(',') },
+                { "DeniedActions", "".Split(',') }
+            };
+
+			List<DynaClass> dynaClasses = GetDynaClasses();
+			List<string> alloweds = new List<string>();
+			List<string> denieds = new List<string>();
+
+			foreach (var dynaC in dynaClasses)
+            {
+                foreach(DynaMethod dynaM in dynaC.DynaMethods)
+                {
+					MethodSettings methodSettings = dynaM.MethodSettings;
+					if (methodSettings.AccessRules.AllowedUsers.Contains(actor.UserName) ||
+						actor.Roles.ToList().Exists(i => methodSettings.AccessRules.AllowedRoles.Contains(i)))
+					{
+						alloweds.Add(dynaC.Namespace + "." + dynaC.Name + "." + dynaM.Name);
+					}
+
+                    if (methodSettings.AccessRules.DeniedUsers.Contains(actor.UserName))
+                    {
+                        denieds.Add(dynaC.Namespace + "." + dynaC.Name + "." + dynaM.Name);
+                    }
+				}
+			}
+
+
+			return new Dictionary<string, object>
+			{
+				{ "AllowedActions", alloweds.ToArray() },
+				{ "DeniedActions", denieds.ToArray() }
+			};
+		}
 
     }
 }
