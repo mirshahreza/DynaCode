@@ -5,9 +5,9 @@ namespace AppEnd
 {
     public class MethodSettings
     {
-        public AccessRules AccessRules = new AccessRules() { AllowedRoles = new string[] { }, AllowedUsers = new string[] { }, DeniedUsers = new string[] { } };
-        public CachePolicy CachePolicy = new CachePolicy() { CacheLevel = CacheLevel.None };
-        public LogPolicy LogPolicy = new LogPolicy() { OnErrorLogMethod = "", OnSuccessLogMethod = "", TruncateTo10K = true };
+        public AccessRules AccessRules = new() { AllowedRoles = [], AllowedUsers = [], DeniedUsers = [] };
+        public CachePolicy CachePolicy = new() { CacheLevel = CacheLevel.None };
+        public LogPolicy LogPolicy = new() { OnErrorLogMethod = "", OnSuccessLogMethod = "", TruncateTo10K = true };
         public string Serialize()
         {
             return JsonSerializer.Serialize(this, options: new()

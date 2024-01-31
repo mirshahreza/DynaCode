@@ -19,7 +19,7 @@ namespace AppEnd
         {
             if (inputParams is null) return "{}";
             ParameterInfo[] parameterInfos = methodInfo.GetParameters();
-            Dictionary<string, object> keyValuePairs = new();            
+            Dictionary<string, object> keyValuePairs = [];            
             int i = 0;
             foreach (object o in inputParams)
             {
