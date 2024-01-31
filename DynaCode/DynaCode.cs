@@ -393,9 +393,10 @@ namespace AppEnd
 
             var compileRefs = GetCompilationReferences();
             var compilerOptions = new CSharpCompilationOptions(outputKind: OutputKind.DynamicallyLinkedLibrary, optimizationLevel: OptimizationLevel.Release, assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default);
-            CSharpCompilation cSharpCompilation = CSharpCompilation.Create(AsmPath, EntierCodeSyntaxes, compileRefs, compilerOptions);
+            CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp12);
+			CSharpCompilation cSharpCompilation = CSharpCompilation.Create(AsmPath, EntierCodeSyntaxes, compileRefs, compilerOptions);
 
-            var result = cSharpCompilation.Emit(peStream);
+			var result = cSharpCompilation.Emit(peStream);
 
             if (!result.Success)
             {
@@ -415,8 +416,7 @@ namespace AppEnd
         private static List<SourceCode> GetAllSourceCodes()
         {
             List<SourceCode> sourceCodes = [];
-            foreach (string f in ScriptFiles)
-				sourceCodes.Add(new() { FilePath = f, RawCode = File.ReadAllText(f) });
+            foreach (string f in ScriptFiles) sourceCodes.Add(new() { FilePath = f, RawCode = File.ReadAllText(f) });
 			return sourceCodes;
         }
         private static List<MetadataReference> GetCompilationReferences()
