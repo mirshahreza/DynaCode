@@ -29,7 +29,7 @@ namespace AppEnd
                 if (entierCodeSyntaxes is null)
                 {
                     List<SourceCode> sourceCodes = GetAllSourceCodes();
-                    var options = CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp10);
+                    var options = CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp12);
                     entierCodeSyntaxes = sourceCodes.Select(sourceCode => SyntaxFactory.ParseSyntaxTree(sourceCode.RawCode, options, sourceCode.FilePath));
                 }
                 return entierCodeSyntaxes;
@@ -393,7 +393,6 @@ namespace AppEnd
 
             var compileRefs = GetCompilationReferences();
             var compilerOptions = new CSharpCompilationOptions(outputKind: OutputKind.DynamicallyLinkedLibrary, optimizationLevel: OptimizationLevel.Release, assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default);
-            CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp12);
 			CSharpCompilation cSharpCompilation = CSharpCompilation.Create(AsmPath, EntierCodeSyntaxes, compileRefs, compilerOptions);
 
 			var result = cSharpCompilation.Emit(peStream);
@@ -402,7 +401,7 @@ namespace AppEnd
             {
                 var failures = result.Diagnostics.Where(diagnostic => diagnostic.IsWarningAsError || diagnostic.Severity == DiagnosticSeverity.Error);
                 var error = failures.FirstOrDefault();
-                throw new AppEndException("{error?.Id}: {error?.GetMessage()}")
+                throw new AppEndException($"{error?.Id}: {error?.GetMessage()}")
                             .AddParam("Site", $"{System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType?.Name}, {System.Reflection.MethodBase.GetCurrentMethod()?.Name}")
                             ;
             }
