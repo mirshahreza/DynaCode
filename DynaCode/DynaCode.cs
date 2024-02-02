@@ -368,7 +368,7 @@ namespace AppEnd
                     dynaClasses.Add(dynamicController);
                 }
             }
-            return dynaClasses;
+            return [.. dynaClasses.OrderBy(i => i.Namespace + i.Name)];
         }
 
 
