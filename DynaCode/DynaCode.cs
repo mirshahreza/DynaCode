@@ -19,7 +19,7 @@ namespace AppEnd
     public static class DynaCode
     {
         private static CodeInvokeOptions invokeOptions = new();
-		public static IMemoryCache LocalMemoryCache { get; } = new MemoryCache(new MemoryCacheOptions());
+		//public static IMemoryCache LocalMemoryCache { get; } = new MemoryCache(new MemoryCacheOptions());
 
 		private static IEnumerable<SyntaxTree>? entierCodeSyntaxes;
         private static IEnumerable<SyntaxTree> EntierCodeSyntaxes
@@ -137,7 +137,7 @@ namespace AppEnd
             {
                 CheckAccess(methodInfo, methodSettings, dynaUser);
                 string cacheKey = CalculateCacheKey(methodInfo, methodSettings, inputParams, dynaUser);
-				if (methodSettings.CachePolicy?.CacheLevel != CacheLevel.None && LocalMemoryCache.TryGetValue(cacheKey, out object? result) && ignoreCaching == false)
+				if (methodSettings.CachePolicy?.CacheLevel != CacheLevel.None && SV.SharedMemoryCache.TryGetValue(cacheKey, out object? result) && ignoreCaching == false)
 				{
 					stopwatch.Stop();
 					codeInvokeResult = new() { Result = result, FromCache = true, IsSucceeded = true, Duration = stopwatch.ElapsedMilliseconds };
@@ -150,7 +150,7 @@ namespace AppEnd
 						if (methodSettings.CachePolicy?.CacheLevel != CacheLevel.None)
 						{
 							MemoryCacheEntryOptions cacheEntryOptions = new() { AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(methodSettings.CachePolicy.AbsoluteExpirationSeconds) };
-							LocalMemoryCache.Set(cacheKey, result, cacheEntryOptions);
+							SV.SharedMemoryCache.Set(cacheKey, result, cacheEntryOptions);
 						}
 						stopwatch.Stop();
 						codeInvokeResult = new() { Result = result, FromCache = false, IsSucceeded = true, Duration = stopwatch.ElapsedMilliseconds };
