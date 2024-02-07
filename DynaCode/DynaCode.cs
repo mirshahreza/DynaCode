@@ -4,22 +4,17 @@ using System.ComponentModel;
 using System.Reflection;
 using static System.Text.Json.JsonElement;
 using System.Text.Json;
-using System.Text;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Text.Json.Nodes;
-using System.Text.Json.Serialization.Metadata;
-using System.Text.Json.Serialization;
 using Microsoft.Extensions.Caching.Memory;
-using System.Security.AccessControl;
 using System.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 
 namespace AppEnd
 {
-    public static class DynaCode
+	public static class DynaCode
     {
         private static CodeInvokeOptions invokeOptions = new();
-		//public static IMemoryCache LocalMemoryCache { get; } = new MemoryCache(new MemoryCacheOptions());
 
 		private static IEnumerable<SyntaxTree>? entierCodeSyntaxes;
         private static IEnumerable<SyntaxTree> EntierCodeSyntaxes
