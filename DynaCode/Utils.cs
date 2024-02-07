@@ -20,13 +20,13 @@ namespace AppEnd
 
         public static string CreateLogContent(MethodInfo methodInfo, string actor, string methodFullPath, object[]? inputParams, CodeInvokeResult codeInvokeResult, string clientInfo)
         {
-            string clientSection = "ClientInfo:" + Environment.NewLine + clientInfo + Environment.NewLine + Environment.NewLine;
-            string inputsSection = "MethodInput:" + Environment.NewLine
-                + inputParams.SerializeObjectsAsJson(methodInfo)
-                + Environment.NewLine + Environment.NewLine;
-            string outputsSection = "MethodOutput:" + Environment.NewLine + codeInvokeResult.Result?.ToJsonStringByBuiltIn() + Environment.NewLine + Environment.NewLine;
+			string actorSection = $"Actor: {actor}{SV.NL2x}";
+			string methodSection = $"Method: {methodFullPath}{SV.NL2x}";
+			string clientSection = $"ClientInfo:{SV.NL}{clientInfo}{SV.NL2x}";
+            string inputsSection = $"MethodInput:{SV.NL}{inputParams.SerializeObjectsAsJson(methodInfo)}{SV.NL2x}";
+            string outputsSection = $"MethodOutput:{SV.NL}{codeInvokeResult.Result?.ToJsonStringByBuiltIn()}{SV.NL2x}";
 
-            return clientSection + inputsSection + outputsSection;
+            return actorSection + methodSection + clientSection + inputsSection + outputsSection;
         }
 
         public static void LogImmed(string content,string logFolder ,string subFolder = "", string filePreFix = "DynaLog-")
