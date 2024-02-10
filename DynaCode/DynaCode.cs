@@ -227,7 +227,7 @@ namespace AppEnd
 
             if (logMethod.IsNullOrEmpty() || methodInfo.GetFullName().EqualsIgnoreCase(logMethod)) return;
 
-            List<object> list = [methodInfo, invokeOptions.LogFolderPath, dynaUser is null ? "" : dynaUser.UserName, methodInfo.GetFullName(), inputParams, codeInvokeResult, clientInfo];
+            List<object> list = [methodInfo, invokeOptions.LogFolderPath, dynaUser is null ? "" : dynaUser.UserName, methodInfo.GetFullName(), clientInfo, codeInvokeResult, inputParams];
             GetMethodInfo(logMethod).Invoke(null, [.. list]);
         }
 

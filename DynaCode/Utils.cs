@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using Newtonsoft.Json.Linq;
+using System.Reflection;
 
 namespace AppEnd
 {
@@ -7,33 +8,21 @@ namespace AppEnd
         public static string SerializeObjectsAsJson(this object[]? inputParams, MethodInfo methodInfo)
         {
             if (inputParams is null) return "{}";
-            ParameterInfo[] parameterInfos = methodInfo.GetParameters();
-            Dictionary<string, object> keyValuePairs = [];            
-            int i = 0;
-            foreach (object o in inputParams)
-            {
-                keyValuePairs[parameterInfos[i].Name] = o;
-                i++;
-            }
-            return keyValuePairs.ToJsonStringByBuiltIn();
+            return ExtractInputItems(inputParams, methodInfo).ToJsonStringByBuiltIn();
         }
 
-        public static string CreateLogContent(MethodInfo methodInfo, string actor, string methodFullPath, object[]? inputParams, CodeInvokeResult codeInvokeResult, string clientInfo)
+        public static Dictionary<string, object> ExtractInputItems(this object[] inputParams, MethodInfo methodInfo)
         {
-			string actorSection = $"Actor: {actor}{SV.NL2x}";
-			string methodSection = $"Method: {methodFullPath}{SV.NL2x}";
-			string clientSection = $"ClientInfo:{SV.NL}{clientInfo}{SV.NL2x}";
-            string inputsSection = $"MethodInput:{SV.NL}{inputParams.SerializeObjectsAsJson(methodInfo)}{SV.NL2x}";
-            string outputsSection = $"MethodOutput:{SV.NL}{codeInvokeResult.Result?.ToJsonStringByBuiltIn()}{SV.NL2x}";
-
-            return actorSection + methodSection + clientSection + inputsSection + outputsSection;
-        }
-
-        public static void LogImmed(string content,string logFolder ,string subFolder = "", string filePreFix = "DynaLog-")
-        {
-            string fn = $"{filePreFix}{DateTime.Now.Year}-{DateTime.Now.Month}-{DateTime.Now.Day}-{DateTime.Now.Hour}-{DateTime.Now.Minute}-{DateTime.Now.Second}-{DateTime.Now.Millisecond}-{+(new Random()).Next(100)}.txt";
-            File.WriteAllText(Path.Combine($"{logFolder}{(subFolder == "" ? "" : $"/{subFolder}")}", fn), content);
-        }
+			ParameterInfo[] parameterInfos = methodInfo.GetParameters();
+			Dictionary<string, object> keyValuePairs = [];
+			int i = 0;
+			foreach (object o in inputParams)
+			{
+				keyValuePairs[parameterInfos[i].Name] = o;
+				i++;
+			}
+			return keyValuePairs;
+		}
 
         public static string GetFullName(this MethodInfo methodInfo)
         {
