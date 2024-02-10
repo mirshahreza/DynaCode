@@ -78,7 +78,6 @@ namespace AppEnd
         public static void Init(CodeInvokeOptions? codeInvokeOptions = null)
         {
             if (codeInvokeOptions is not null) invokeOptions = codeInvokeOptions;
-            Utils.EnsureLogFolders(invokeOptions);
             Refresh();
         }
         public static void Refresh()
@@ -227,7 +226,7 @@ namespace AppEnd
 
             if (logMethod.IsNullOrEmpty() || methodInfo.GetFullName().EqualsIgnoreCase(logMethod)) return;
 
-            List<object> list = [methodInfo, invokeOptions.LogFolderPath, dynaUser is null ? "" : dynaUser.UserName, methodInfo.GetFullName(), clientInfo, codeInvokeResult, inputParams];
+            List<object> list = [methodInfo, dynaUser is null ? "" : dynaUser.UserName, methodInfo.GetFullName(), clientInfo, codeInvokeResult, inputParams];
             GetMethodInfo(logMethod).Invoke(null, [.. list]);
         }
 

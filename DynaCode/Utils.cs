@@ -59,25 +59,6 @@ namespace Example
 
         }
 
-        public static void EnsureLogFolders(CodeInvokeOptions codeInvokeOptions)
-        {
-            if (!Directory.Exists(codeInvokeOptions.LogFolderPath))
-            {
-                Directory.CreateDirectory(codeInvokeOptions.LogFolderPath);
-            }
-
-            if (!Directory.Exists(codeInvokeOptions.LogFolderPath + "/success"))
-            {
-                Directory.CreateDirectory(codeInvokeOptions.LogFolderPath + "/success");
-            }
-
-            if (!Directory.Exists(codeInvokeOptions.LogFolderPath + "/error"))
-            {
-                Directory.CreateDirectory(codeInvokeOptions.LogFolderPath + "/error");
-            }
-        }
-
-
         public static bool IsRealType(string typeName)
         {
             CodeMap? codeMap = DynaCode.CodeMaps.FirstOrDefault(i => DynaCode.MethodPartsNames(i.MethodFullName).Item2 == typeName);

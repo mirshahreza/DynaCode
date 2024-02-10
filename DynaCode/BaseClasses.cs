@@ -59,7 +59,6 @@ namespace AppEnd
     public class CodeInvokeOptions
     {
         public string StartPath { get; init; }
-        public string LogFolderPath { get; init; } = "log";
         public bool CompiledIn { get; init; } = false;
         public bool IsDevelopment { get; init; } = false;
         public string PublicKeyUser { get; init; } = "";
