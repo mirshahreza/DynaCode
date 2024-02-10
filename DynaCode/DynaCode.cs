@@ -219,19 +219,13 @@ namespace AppEnd
         }
         private static void LogMethodInvoke(MethodInfo methodInfo, MethodSettings methodSettings, CodeInvokeResult codeInvokeResult, object[]? inputParams, AppEndUser? dynaUser, string clientInfo = "")
         {
-            string logMethod;
-            if (codeInvokeResult.IsSucceeded)
-            {
-                if (methodSettings.LogPolicy.OnSuccessLogMethod == "") return;
-                logMethod = methodSettings.LogPolicy.OnSuccessLogMethod;
-            }
-            else
-            {
-                if (methodSettings.LogPolicy.OnErrorLogMethod == "") return;
-                logMethod = methodSettings.LogPolicy.OnErrorLogMethod;
-            }
+            string logMethod = "";
+			if (codeInvokeResult.IsSucceeded == true && !methodSettings.LogPolicy.OnSuccessLogMethod.IsNullOrEmpty())
+				logMethod = methodSettings.LogPolicy.OnSuccessLogMethod;
+			if (codeInvokeResult.IsSucceeded == false && !methodSettings.LogPolicy.OnErrorLogMethod.IsNullOrEmpty())
+				logMethod = methodSettings.LogPolicy.OnErrorLogMethod;
 
-            if (methodInfo.GetFullName().EqualsIgnoreCase(logMethod)) return;
+            if (logMethod.IsNullOrEmpty() || methodInfo.GetFullName().EqualsIgnoreCase(logMethod)) return;
 
             List<object> list = [methodInfo, invokeOptions.LogFolderPath, dynaUser is null ? "" : dynaUser.UserName, methodInfo.GetFullName(), inputParams, codeInvokeResult, clientInfo];
             GetMethodInfo(logMethod).Invoke(null, [.. list]);
