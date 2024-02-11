@@ -14,7 +14,7 @@ namespace AppEnd
 {
 	public static class DynaCode
     {
-        private static CodeInvokeOptions invokeOptions = new();
+        private static CodeInvokeOptions invokeOptions = new("");
 
 		private static IEnumerable<SyntaxTree>? entierCodeSyntaxes;
         private static IEnumerable<SyntaxTree> EntierCodeSyntaxes
@@ -141,11 +141,11 @@ namespace AppEnd
 					try
 					{
 						result = methodInfo.Invoke(null, inputParams);
-						if (methodSettings.CachePolicy?.CacheLevel != CacheLevel.None)
-						{
-							MemoryCacheEntryOptions cacheEntryOptions = new() { AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(methodSettings.CachePolicy.AbsoluteExpirationSeconds) };
-							SV.SharedMemoryCache.Set(cacheKey, result, cacheEntryOptions);
-						}
+                        if (methodSettings.CachePolicy?.CacheLevel != CacheLevel.None && methodSettings.CachePolicy is not null)
+                        {
+                            MemoryCacheEntryOptions cacheEntryOptions = new() { AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(methodSettings.CachePolicy.AbsoluteExpirationSeconds) };
+                            SV.SharedMemoryCache.Set(cacheKey, result, cacheEntryOptions);
+                        }
 						stopwatch.Stop();
 						codeInvokeResult = new() { Result = result, FromCache = false, IsSucceeded = true, Duration = stopwatch.ElapsedMilliseconds };
 					}
@@ -153,14 +153,7 @@ namespace AppEnd
 					{
 						stopwatch.Stop();
 						Exception _ex = ex.InnerException is null ? ex : ex.InnerException;
-						codeInvokeResult = new()
-						{
-							Result = _ex,
-							FromCache = null,
-							IsSucceeded = false,
-							Duration = stopwatch.ElapsedMilliseconds
-						};
-
+                        codeInvokeResult = new() { Result = _ex, Duration = stopwatch.ElapsedMilliseconds };
 					}
 				}
 			}
@@ -168,13 +161,7 @@ namespace AppEnd
             {
                 stopwatch.Stop();
                 Exception _ex = ex.InnerException is null ? ex : ex.InnerException;
-                codeInvokeResult = new()
-                {
-                    Result = _ex,
-                    FromCache = null,
-                    IsSucceeded = false,
-                    Duration = stopwatch.ElapsedMilliseconds
-                };
+                codeInvokeResult = new() { Result = _ex, Duration = stopwatch.ElapsedMilliseconds };
             }
 
             LogMethodInvoke(methodInfo, methodSettings, codeInvokeResult, inputParams, dynaUser, clientInfo);
@@ -344,15 +331,9 @@ namespace AppEnd
                     foreach (var method in i.GetMethods())
                     {
                         if (Utils.IsRealMethod(method.Name))
-                        {
-                            dynaMethods.Add(new()
-                            {
-                                Name = method.Name,
-                                MethodSettings = ReadMethodSettings($"{i.Namespace}.{i.Name}.{method.Name}")
-                            });
-                        }
-                    }
-                    DynaClass dynamicController = new() { Namespace = i.Namespace, Name = i.Name, DynaMethods = dynaMethods };
+							dynaMethods.Add(new(method.Name, ReadMethodSettings($"{i.Namespace}.{i.Name}.{method.Name}")));
+					}
+                    DynaClass dynamicController = new(i.Name, dynaMethods) { Namespace = i.Namespace };
                     dynaClasses.Add(dynamicController);
                 }
             }
@@ -403,7 +384,7 @@ namespace AppEnd
         private static List<SourceCode> GetAllSourceCodes()
         {
             List<SourceCode> sourceCodes = [];
-            foreach (string f in ScriptFiles) sourceCodes.Add(new() { FilePath = f, RawCode = File.ReadAllText(f) });
+            foreach (string f in ScriptFiles) sourceCodes.Add(new(f, File.ReadAllText(f)));
 			return sourceCodes;
         }
         private static List<MetadataReference> GetCompilationReferences()
@@ -467,14 +448,14 @@ namespace AppEnd
                     if (member is MethodDeclarationSyntax method)
                     {
                         string nsn = "";
-                        SyntaxNode? parentNameSpace = ((ClassDeclarationSyntax)method.Parent).Parent;
+						SyntaxNode? parentClass = method.Parent as ClassDeclarationSyntax;
+						SyntaxNode? parentNameSpace = parentClass?.Parent;
                         if (parentNameSpace is not null) nsn = ((NamespaceDeclarationSyntax)parentNameSpace).Name.ToString() + ".";
-                        string tn = ((ClassDeclarationSyntax)method.Parent).Identifier.ValueText + ".";
+                        string tn = parentClass is null ? "" : ((ClassDeclarationSyntax)parentClass).Identifier.ValueText + ".";
                         string mn = method.Identifier.ValueText;
-                        codeMaps.Add(new() { FilePath = st.FilePath, MethodFullName = nsn + tn + mn });
+                        codeMaps.Add(new(nsn + tn + mn, st.FilePath));
                     }
                 }
-
             }
             return codeMaps;
         }
