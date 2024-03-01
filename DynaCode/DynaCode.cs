@@ -322,17 +322,17 @@ namespace AppEnd
 
         public static List<DynaClass> GetDynaClasses()
         {
-            var dynaClasses = new List<DynaClass>();
+			List<DynaClass> dynaClasses = [];
             foreach (var i in DynaAsm.GetTypes())
             {
                 if (Utils.IsRealType(i.Name))
                 {
                     List<DynaMethod> dynaMethods = [];
+                    
                     foreach (var method in i.GetMethods())
-                    {
-                        if (Utils.IsRealMethod(method.Name))
+						if (Utils.IsRealMethod(method.Name))
 							dynaMethods.Add(new(method.Name, ReadMethodSettings($"{i.Namespace}.{i.Name}.{method.Name}")));
-					}
+					
                     DynaClass dynamicController = new(i.Name, dynaMethods) { Namespace = i.Namespace };
                     dynaClasses.Add(dynamicController);
                 }
