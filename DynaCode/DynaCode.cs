@@ -152,16 +152,16 @@ namespace AppEnd
 					catch (Exception ex)
 					{
 						stopwatch.Stop();
-						Exception _ex = ex.InnerException is null ? ex : ex.InnerException;
-                        codeInvokeResult = new() { Result = _ex, Duration = stopwatch.ElapsedMilliseconds };
+						Exception exx = ex.InnerException is null ? ex : ex.InnerException;
+                        codeInvokeResult = new() { Result = exx, Duration = stopwatch.ElapsedMilliseconds };
 					}
 				}
 			}
             catch (Exception ex)
             {
                 stopwatch.Stop();
-                Exception _ex = ex.InnerException is null ? ex : ex.InnerException;
-                codeInvokeResult = new() { Result = _ex, Duration = stopwatch.ElapsedMilliseconds };
+                Exception exx = ex.InnerException is null ? ex : ex.InnerException;
+                codeInvokeResult = new() { Result = exx, Duration = stopwatch.ElapsedMilliseconds };
             }
 
             LogMethodInvoke(methodInfo, methodSettings, codeInvokeResult, inputParams, dynaUser, clientInfo);
